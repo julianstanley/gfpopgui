@@ -1,10 +1,38 @@
 {
-  "docs": {
-    "Docusaurus": ["doc1"],
-    "First Category": ["doc2"],
-    "Second Category": ["doc3"]
+  "timeline": {
+    "Introduction": [
+      "timeline/intro_timeline"
+    ],
+    "Community Bonding Period": [
+      "timeline/CBP/may04_may10",
+      "timeline/CBP/may11_may17",
+      "timeline/CBP/may18_may24",
+      "timeline/CBP/may25_may31"
+    ],
+    "Phase 1": [
+      "timeline/Phase1/june01_june07",
+      "timeline/Phase1/june08_june14",
+      "timeline/Phase1/june15_june21",
+      "timeline/Phase1/june22_june28",
+      "timeline/Phase1/june29_july03"
+    ],
+    "Phase 2": [
+      "timeline/Phase2/july04_july12",
+      "timeline/Phase2/july13_july19",
+      "timeline/Phase2/july20_july26",
+      "timeline/Phase2/july27_july31"
+    ],
+    "Phase 3": [
+      "timeline/Phase3/aug01_aug09",
+      "timeline/Phase3/aug10_aug16",
+      "timeline/Phase3/aug17_aug23",
+      "timeline/Phase3/aug24_aug31"
+    ]
   },
   "docs-other": {
-    "First Category": ["doc4", "doc5"]
+    "First Category": [
+      "doc4",
+      "doc5"
+    ]
   }
 }
