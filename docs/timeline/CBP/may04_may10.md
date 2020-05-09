@@ -44,6 +44,12 @@ It describes making a edit-able directed graph with D3 (just javascript, no Shin
 
 This app isn't remotely related to gfpop-gui, but I really like the layout. It uses the same basic shiny dashboard that people use all the time, but it just feels very nice and clean. It would be great to emulate parts of the design.
 
+### thinkr TidyTuesday 2019-10-15
+
+[Application link](https://connect.thinkr.fr/tidytuesday201942/)
+
+Or maybe this sort of layout would be nicer? It's definitely simplier, and maybe more intuititive?
+
 ### More?
 
 I'm really surprised that I'm having this much trouble finding more applications that are similar to what we would like to do. It's exciting--since it means that we're doing something somewhat unique--but also a bit scary.
