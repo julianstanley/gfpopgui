@@ -58,7 +58,7 @@ I'll keep casually looking for more model applications, and make a note to ask a
 
 ## Layout
 
-TODO on May 9th.
+I was off to a slow start this week, so I'm going to move the layout goal to early next week (starting tomorrow!).
 
 ## Future Directions
 
