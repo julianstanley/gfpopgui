@@ -36,7 +36,7 @@ Just an example of integrating D3 and Shiny. Besides that, not useful in this co
 
 This block is central to and will probably be the basis of the gfpop-gui application.
 
-It describes making a editable directed graph with D3 (just javascript, no Shiny).
+It describes making an editable directed graph with D3 (just javascript, no Shiny).
 
 ### rstudio::conf shiny app
 
