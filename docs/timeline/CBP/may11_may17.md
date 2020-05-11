@@ -36,3 +36,8 @@ TODO: sketch
     * Export all results (.Rdata)
     * Export input data and graph (.zip of .csv)
     * Export graph data (.csv)
+
+### Log (meta)
+
+05/10: Sketched out basic components.
+05/11: Drew out the "home" page, but noticed that just sketching might not be the idea way to plan out the app. Just the components list does that well enough. Would be nice to go ahead and build a skeleton as an example UI. Had some trouble with that at first, so reviewing the mastering-shiny book. First, sitting down and giving the gfpop arxiv paper a read-through.
