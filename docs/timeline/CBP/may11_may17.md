@@ -37,7 +37,22 @@ TODO: sketch
     * Export input data and graph (.zip of .csv)
     * Export graph data (.csv)
 
-### Log (meta)
+### Log/notes (meta)
 
-05/10: Sketched out basic components.
-05/11: Drew out the "home" page, but noticed that just sketching might not be the idea way to plan out the app. Just the components list does that well enough. Would be nice to go ahead and build a skeleton as an example UI. Had some trouble with that at first, so reviewing the mastering-shiny book. First, sitting down and giving the gfpop arxiv paper a read-through.
+05/10:
+
+* Sketched out basic components.
+
+05/11:
+
+* Drew out the "home" page, but noticed that just sketching might not be the idea way to plan out the app. Just the components list does that well enough. Would be nice to go ahead and build a skeleton as an example UI. Had some trouble with that at first, so reviewing the mastering-shiny book.
+
+* First, sitting down and giving the gfpop arxiv paper a read-through.
+
+05/12: 
+
+* Maybe the graph/data plots don't need to be written in D3 entirely from scratch? It looks like plotly may have some event handling, and I may be able to leverage that: [stackoverflow answer](https://stackoverflow.com/a/47407363/8290926). 
+
+* Reviewed the gfpop paper yesterday, need to read through that again and ask questions. 
+
+* Also finished reading and doing all exercises for "mastering shiny" chapters 2 and 3, plus Chapter 4.1-4.3. Keeping track of progress in a [personal repo](https://github.com/julianstanley/mastering-shiny-solutions).
