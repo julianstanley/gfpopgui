@@ -56,3 +56,11 @@ TODO: sketch
 * Reviewed the gfpop paper yesterday, need to read through that again and ask questions. 
 
 * Also finished reading and doing all exercises for "mastering shiny" chapters 2 and 3, plus Chapter 4.1-4.3. Keeping track of progress in a [personal repo](https://github.com/julianstanley/mastering-shiny-solutions).
+
+05/13:
+
+* Mostly focused on improving Shiny skills. Attended a Shiny workshop hosted by the Harvard Bioinformatics Core 1PM-4PM, but it was a bit too introductory. Finished reading and completing exerciese for "mastering shiny" chapters 4, 5, 6, and 13.
+
+* I'm going to need some more tangible outputs before Friday's meeting. Tomorrow, I need to wrap up my main goals for the week. I have a couple basic sketches of the UI: I should finish those up and load them. I also need to re-read the gfpop paper one more time and write down questions. I've been thinking about the environment, so I should write down a few notes on that and also read more (Chapters 15 and 16) to make sure I have a plan for using best practices for modules and testing.
+
+* Another note: take a closer look at the [Tabler](tabler.io) package.
