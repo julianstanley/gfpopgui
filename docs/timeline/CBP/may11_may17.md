@@ -12,9 +12,21 @@ Goals:
 
 ## App Layout
 
-TODO: sketch
+### Sketches
 
-### Components
+Welcome:
+![alt-text](assets/may11_may17/layout_1.JPG)
+
+Analysis:
+![alt-text](assets/may11_may17/layout_2.JPG)
+
+Sharing:
+![alt-text](assets/may11_may17/layout_3.JPG)
+
+Help:
+![alt-text](assets/may11_may17/layout_4.JPG)
+
+### Components List
 
 1. Welcome page
     * Title and subtitle
@@ -49,11 +61,11 @@ TODO: sketch
 
 * First, sitting down and giving the gfpop arxiv paper a read-through.
 
-05/12: 
+05/12:
 
-* Maybe the graph/data plots don't need to be written in D3 entirely from scratch? It looks like plotly may have some event handling, and I may be able to leverage that: [stackoverflow answer](https://stackoverflow.com/a/47407363/8290926). 
+* Maybe the graph/data plots don't need to be written in D3 entirely from scratch? It looks like plotly may have some event handling, and I may be able to leverage that: [stackoverflow answer](https://stackoverflow.com/a/47407363/8290926).
 
-* Reviewed the gfpop paper yesterday, need to read through that again and ask questions. 
+* Reviewed the gfpop paper yesterday, need to read through that again and ask questions.
 
 * Also finished reading and doing all exercises for "mastering shiny" chapters 2 and 3, plus Chapter 4.1-4.3. Keeping track of progress in a [personal repo](https://github.com/julianstanley/mastering-shiny-solutions).
 
