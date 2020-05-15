@@ -3,7 +3,7 @@ id: welcome
 title: Welcome to the gfpop-gui docs!
 ---
 
-Last updated: May 11, 2020 ~ 17:00 EST
+Last updated: May 14, 2020 ~ 21:00 EST
 
 Thanks for stopping by. I will be keeping this website up-to-date as I progress through my Summer 2020 "Google Summer of Code" project, creating a graphical user interface (GUI) for the `gfpop` R package.
 
