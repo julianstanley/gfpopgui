@@ -104,3 +104,37 @@ title: 11 May 2020 - 17 May 2020
 * Note: The idea of using plotly instead of base D3 seems to be gaining more traction in my mind. You can customize tooltips with plotly, and add custom event handlers. Carson did a fantastic job documenting the package [here](https://plotly-r.com/). I bet I can do the main interactive changepoint visualization with it. But, the graph-making visualization may still need to be base D3--meaning those graphs would need to be seperated.
 
 * I added some questions about the `gfpop` paper and package, but I think I still need a bit more time to read the manuscript through a few more times and get a better feel for the aspects of the work that will be practical in designing a good GUI.
+
+05/15:
+
+### Notes from morning meeting
+
+* Calls can be around once per week, but skipping weeks is okay. Maybe next meeting should be around the first week of coding. Meetings can be with just Toby or Guillem, don't need to be with both.
+
+Goals:
+
+* Get comfortable with project integration and package management best practices.
+
+* Can also get in touch with the broader shiny community.
+
+* Generally, focus on keeping comments and records in the open: e.g. make issues on the shiny repo.
+
+* First order of business: put an issue on the visNetwork repo explaining what we would like to do. Are our goals reasonable with visNetwork?
+
+* Carefully read the plotly book, especially the data visualization chapters, especially bits about client-side interactivity (this is how we keep things running quickly!)
+
+* On analysis page: add a dropbox to change the penalty score
+
+* Would also be nice to keep track of previously-run analyses to make them easy to re-run/refer to.
+
+* Would also be nice to have a button to get the R code corresponding to the current graph constraint (this corresponds to a common use case where you have the R code with a current graph, and just want to modify that).
+
+* Analysis and annotation should be the same plot, but should maybe have a button to hide the gfpop results and just add annotation.
+
+Additional things to look into:
+
+* Testing! You should be thinking about testing. Look at shinytest and rselenium to get an idea of how that works. It will fireup a headless browser, navigate to the webpage, and automatically test interactive components--e.g. draw on the screen and make sure that a certain number of datapoints appear. Is this compatible with Shiny? You should take a look.
+
+### Misc
+
+* For the rest of the day and tomorrow, will focus on just doing some general reading. Then, on Sunday (05/17), I'll get started formulating next week's goals. That's a wrap for the week!
