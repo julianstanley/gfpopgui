@@ -12,5 +12,3 @@ This is mostly a learning week. In my original proposal, I thought that the codi
 * Learn more about Plotly and Shiny.
 
 ## Log/notes (meta)
-
-05/17: A new week! Focused on learning more about Plotly. Started a datacamp course that seems helpful, keeping track of progress [in a GitHub repo](https://github.com/julianstanley/intermediate-interactive-dataviz-plotly). Tomorrow: think more about this week's goals, and then learn more!

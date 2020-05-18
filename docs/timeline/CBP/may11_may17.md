@@ -138,3 +138,7 @@ Additional things to look into:
 ### Misc
 
 * For the rest of the day and tomorrow, will focus on just doing some general reading. Then, on Sunday (05/17), I'll get started formulating next week's goals. That's a wrap for the week!
+
+05/17:
+
+Focused on learning more about Plotly. Started a datacamp course that seems helpful, keeping track of progress [in a GitHub repo](https://github.com/julianstanley/intermediate-interactive-dataviz-plotly). Tomorrow: think more about this week's goals, and then learn more!
