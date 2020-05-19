@@ -12,3 +12,7 @@ This is mostly a learning week. In my original proposal, I thought that the codi
 * Learn more about Plotly and Shiny.
 
 ## Log/notes (meta)
+
+05/18:
+
+* While taking the datacamp course: the [`crosstalk` package](https://rstudio.github.io/crosstalk/) is probably what I need to link the changepoint plot to the graph plot.
