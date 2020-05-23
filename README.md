@@ -3,6 +3,7 @@
   [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpop-gui)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
    [![Travis build status](https://travis-ci.com/julianstanley/gfpop-gui.svg?branch=master)](https://travis-ci.com/julianstanley/gfpop-gui)
+   [![Codecov test coverage](https://codecov.io/gh/julianstanley/gfpop-gui/branch/master/graph/badge.svg)](https://codecov.io/gh/julianstanley/gfpop-gui?branch=master)
   <!-- badges: end -->
 
 

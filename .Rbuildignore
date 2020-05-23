@@ -8,3 +8,5 @@ $run_dev.*
 ^\.travis\.yml$
 website/*
 docs/*
+^codecov\.yml$
+^\.covrignore$
