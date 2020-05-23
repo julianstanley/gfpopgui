@@ -11,8 +11,24 @@ This is mostly a learning week. In my original proposal, I thought that the codi
 * Read more closely into the visNetwork package, potentially post an issue on the GitHub repo.
 * Learn more about Plotly and Shiny.
 
+## Revised sketches
+
+For more information, see [issue #3](https://github.com/julianstanley/gfpop-gui/issues/3).
+
+TODO
+
+## visNetwork reading
+
+For more information, see [issue #2](https://github.com/julianstanley/gfpop-gui/issues/2).
+
+I've made some progress on visNetwork. I'm now able to record changes to the visNetwork graph, based on [this stackoverflow post](https://stackoverflow.com/questions/54846529/how-to-extract-and-save-visnetwork-manipulation-changes-in-shiny),
+
+## Plotly and Shiny Reading
+
+Mostly focused on Plotly, namely following an intermediate course on datacamp. The course helped me a lot in getting more comfortable with plotly syntax and client-side interactivity. My notes [are here](https://github.com/julianstanley/intermediate-interactive-dataviz-plotly).
+
 ## Log/notes (meta)
 
-05/18:
+No need for day-by-day updates this week. Lots of reading and notetaking, but nothing especially noteworthy.
 
-* While taking the datacamp course: the [`crosstalk` package](https://rstudio.github.io/crosstalk/) is probably what I need to link the changepoint plot to the graph plot.
+I'm also moving some of this commentary to the "issues" tab of the main repository, even though I will keep documenting progress here. This progress log may evolve into more of a blog, unsure.
