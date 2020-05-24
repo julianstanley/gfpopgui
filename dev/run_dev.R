@@ -9,4 +9,5 @@ golem::detach_all_attached()
 golem::document_and_reload()
 
 # Run the application
+options(shiny.port = 11616)
 run_app()
