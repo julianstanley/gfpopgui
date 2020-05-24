@@ -15,7 +15,9 @@ This is mostly a learning week. In my original proposal, I thought that the codi
 
 For more information, see [issue #3](https://github.com/julianstanley/gfpop-gui/issues/3).
 
-TODO
+Just needed to revise the analysis tab:
+
+![revised analysis tab layout](assets/may18_may24/analysis_revised.JPG)
 
 ## visNetwork reading
 
@@ -32,3 +34,5 @@ Mostly focused on Plotly, namely following an intermediate course on datacamp. T
 No need for day-by-day updates this week. Lots of reading and notetaking, but nothing especially noteworthy.
 
 I'm also moving some of this commentary to the "issues" tab of the main repository, even though I will keep documenting progress here. This progress log may evolve into more of a blog, unsure.
+
+Note to self: on May 24th, post on the RStudio community forum asking for help picking a tool to make the constraint graph visualization. The folks over there seem exceptionally helpful.
