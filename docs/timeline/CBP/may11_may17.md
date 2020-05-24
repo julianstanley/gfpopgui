@@ -16,19 +16,19 @@ title: 11 May 2020 - 17 May 2020
 
 #### Welcome Tab
 
-![alt-text](assets/may11_may17/layout_1.JPG)
+![picture of welcome tab layout sketch](assets/may11_may17/layout_1.JPG)
 
 #### Analysis Tab
 
-![alt-text](assets/may11_may17/layout_2.JPG)
+![picture of analysis tab layout sketch](assets/may11_may17/layout_2.JPG)
 
 #### Sharing Tab
 
-![alt-text](assets/may11_may17/layout_3.JPG)
+![picture of sharing tab layout sketch](assets/may11_may17/layout_3.JPG)
 
 #### Help Tab
 
-![alt-text](assets/may11_may17/layout_4.JPG)
+![picture of help tab layout sketch](assets/may11_may17/layout_4.JPG)
 
 ### Components List
 
