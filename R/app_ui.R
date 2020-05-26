@@ -10,15 +10,12 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
-      tags$head(
-        tags$style(HTML("
-          .navbar .navbar-nav {float: right}
-          .navbar .navbar-header {float: left}
-        "))
-      ),
       navbarPage(
         "gfpop",
-        tabPanel("Home"),
+        tabPanel(
+          "Home",
+          mod_home_ui("home")
+        ),
         tabPanel("Analysis"),
         tabPanel("Sharing"),
         tabPanel("Help")
