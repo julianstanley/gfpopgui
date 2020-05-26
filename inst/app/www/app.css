@@ -1,5 +1,9 @@
 /* This version of golem still requires non-empty files in 'www' in order
 to properly run the app. So, here's a placeholder file. */
-.filler: {
-  font-size: 12px;
+hr {
+  border-top: 2px solid grey;
+}
+
+.navbar .navbar-nav {
+  float: right;
 }
