@@ -3,9 +3,9 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import ggplot2
 #' @import plotly
 #' @import gfpop
-#' @import ggplot2
 #' @noRd
 app_server <- function(input, output, session) {
   # List the first level callModules here
