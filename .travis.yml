@@ -16,6 +16,7 @@ latex: false
 
 deploy:
   provider: script
-  script: deploy.R
+  script: 
+    - R -f deploy.R
   on:
     branch: troubleshoot_deploy
