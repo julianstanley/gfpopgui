@@ -10,3 +10,5 @@ website/*
 docs/*
 ^codecov\.yml$
 ^\.covrignore$
+utils/*
+local_only
