@@ -14,7 +14,8 @@ Imports:
     glue,
     htmltools,
     gfpop (>= 0.2.2),
-    plotly
+    plotly,
+    ggplot2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
