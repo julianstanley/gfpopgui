@@ -8,3 +8,16 @@ r_packages:
 
 after_success:
   - Rscript -e 'covr::codecov()'
+
+# Added for shinyapps.io deployment
+dist: xenial
+sudo: false
+latex: false
+script:
+  -R -f deploy.R
+  
+deploy:
+  provider: script
+  script: deploy.R
+  on:
+    branch: master

@@ -1,4 +1,5 @@
 Package: gfpopgui
+Type: Shiny
 Title: gfpop GUI
 Version: 0.0.0.9000
 Authors@R: person('Julian', 'Stanley', email = 'julianstanleya@gmail.com', role = c('cre', 'aut'))
@@ -16,7 +17,8 @@ Imports:
     gfpop (>= 0.2.2),
     ggplot2,
     plotly,
-    visNetwork
+    visNetwork,
+    pkgload
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0

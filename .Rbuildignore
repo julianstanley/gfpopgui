@@ -12,3 +12,5 @@ docs/*
 ^\.covrignore$
 utils/*
 local_only
+^app\.R$
+^rsconnect$
