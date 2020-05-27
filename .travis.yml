@@ -13,9 +13,7 @@ after_success:
 dist: xenial
 sudo: false
 latex: false
-script:
-  -R -f deploy.R
-  
+
 deploy:
   provider: script
   script: deploy.R
