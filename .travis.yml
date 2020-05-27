@@ -18,4 +18,4 @@ deploy:
   provider: script
   script: deploy.R
   on:
-    branch: master
+    branch: troubleshoot_deploy
