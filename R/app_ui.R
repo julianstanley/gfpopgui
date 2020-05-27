@@ -25,7 +25,21 @@ app_ui <- function(request) {
                 HTML("<h4 style='text-align: center'> An analysis tool for graph-constrained <br> changepoint detection </h4>"),
                 br(), br(),
                 h3("Getting started: overview and instructions"),
-                includeHTML("../inst/lorem.html")
+                HTML("
+                <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+              <br><br><br>
+              Duis aute irure dolor:
+                <li> reprehenderit in voluptate velit esse cillum </li>
+                <li> dolore eu fugiat nulla pariatur </li>
+                <li> excepteur sint occaecat cupidatat non provident </li>
+                <li> sunt in culpa qui officia deserunt mollit anim id est laborum </li>
+              <br>
+              In pellentesque massa placerat duis ultricies lacus. Lorem sed risus ultricies tristique nulla aliquet. Nibh sit amet commodo nulla facilisi nullam vehicula ipsum a. 
+              <br><br>
+              Egestas integer eget aliquet nibh praesent. Arcu dui vivamus arcu felis bibendum ut.
+              <br><br>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                ")
               ),
               column(
                 4,
