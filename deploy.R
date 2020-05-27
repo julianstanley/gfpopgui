@@ -6,4 +6,4 @@ setAccountInfo(
   token = Sys.getenv("shinyapps_token"),
   secret = Sys.getenv("shinyapps_secret"))
 
-rsconnect::deployApp()
+rsconnect::deployApp(forceUpdate = TRUE)
