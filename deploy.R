@@ -1,3 +1,5 @@
+library(rsconnect)
+
 setAccountInfo(
   name = Sys.getenv("shinyapps_name"),
   token = Sys.getenv("shinyapps_token"),
