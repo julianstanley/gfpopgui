@@ -1,11 +1,9 @@
 # Generate a graph with the current penalty
 graphdf <- reactive({
-  golem::cat_dev("graphdf\n")
   gfpop::graph(penalty = as.double(input$pen), type = input$graphType)
 })
 
 graphdf_visNetwork <- reactive({
-  golem::cat_dev("graphdf_visNetwork\n")
   graphdf_normal <- graphdf() %>%
     filter(type != "null")
   edge_names <- paste0(graphdf_normal$state1, graphdf_normal$state2)
@@ -39,9 +37,7 @@ changepointdf <- reactive({
 
 # visualize the network, not currently editable
 output$gfpopGraph <- renderVisNetwork({
-  golem::cat_dev("output-gfpopGraph\n")
   graph_data <- graphdf_visNetwork()
-  golem::cat_dev(format(graph_data))
   visNetwork(graph_data$nodes, graph_data$edges) %>%
     visEdges(
       arrows = "to", physics = FALSE,

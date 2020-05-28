@@ -16,6 +16,9 @@ tabPanel(
         choices = c("std", "isotonic", "updown", "relevant")
       ),
       
+      # Generate graph
+      actionButton(inputId = "updateGraph", label = "Update graph with above parameters"),
+      
       # Submit!
       actionButton(inputId = "runGfpop", label = "Run gfpop!"),
       p("Note: for testing, using type = mean")
