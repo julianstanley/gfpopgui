@@ -6,6 +6,15 @@ warnings_are_errors: false
 r_packages:
   - covr
   - rsconnect
+  - devtoos
+  - memoise
+  - parsedate
+  - plyr
+  - rappdirs
+  - rcmdcheck
+  - rematch
+  - rhub
+  - rversions
 
 r_github_packages:
   - julianstanley/gfpop-gui
