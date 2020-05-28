@@ -31,15 +31,11 @@ changepointdf <- reactive({
   generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph, input$gfpopType)
 })
 
-update_graph <- reactive({
-  if(isTruthy(input$constraint_graph)) {
-    graphdf$graph = fread(input$constraint_graph$datapath)
-  }
-})
 # Generate a visualization of the current constraint graph
 # TODO: this isn't actually editable yet
 output$gfpopGraph <- renderVisNetwork({
-  update_graph()
+  # Only run with the "Run gfpop!" button is pressed
+  input$runGfpop
   
   graph_data <- graphdf_visNetwork()
   visNetwork(graph_data$nodes, graph_data$edges) %>%
