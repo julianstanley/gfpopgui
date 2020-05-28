@@ -33,7 +33,11 @@ changepointdf <- reactive({
 
 update_graph <- reactive({
   if(isTruthy(input$constraint_graph)) {
-    graphdf$graph = fread(input$constraint_graph$datapath)
+    graphdf$graph = gfpop::graph(
+      select(
+        data.frame(fread(input$constraint_graph$datapath, stringsAsFactors = FALSE)),
+        one_of(c("state1", "state2", "type", "parameter", "penalty", "K", "a", "min", "max")))
+    )
   }
 })
 # Generate a visualization of the current constraint graph
