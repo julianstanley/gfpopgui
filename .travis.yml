@@ -5,6 +5,19 @@ cache: packages
 warnings_are_errors: false
 r_packages:
   - covr
+  - rsconnect
+  - devtools
+  - memoise
+  - parsedate
+  - plyr
+  - rappdirs
+  - rcmdcheck
+  - rematch
+  - rhub
+  - rversions
+
+r_github_packages:
+  - julianstanley/gfpop-gui
 
 after_success:
   - Rscript -e 'covr::codecov()'
@@ -16,6 +29,7 @@ latex: false
 
 deploy:
   provider: script
-  script: deploy.R
+  script: 
+    - R -f deploy.R
   on:
     branch: master
