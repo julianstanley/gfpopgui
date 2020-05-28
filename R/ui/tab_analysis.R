@@ -20,6 +20,12 @@ tabPanel(
       actionButton(inputId = "updateGraph", label = "Update graph with above parameters"),
       HTML("<hr>"),
       
+      # What cost model?
+      selectInput( 
+        inputId = "gfpopType",
+        label = "Cost model",
+        choices = c("mean", "variance", "poisson", "exp", "negbin")),
+      
       # Submit!
       actionButton(inputId = "runGfpop", label = "Run gfpop!"),
       tags$br(),tags$br(),

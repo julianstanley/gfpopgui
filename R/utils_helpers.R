@@ -1,10 +1,10 @@
 # Given some data, generate a changepoint dataframe
-generate_changepoint <- function(data_input, graph_input) {
+generate_changepoint <- function(data_input, graph_input, type = "mean") {
   model <-
     gfpop(
       data = data_input,
       mygraph = graph_input,
-      type = "mean"
+      type = type
     )
   num_changepoints <- length(model$changepoints)
   changepoint_data <-

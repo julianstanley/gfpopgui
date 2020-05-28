@@ -29,7 +29,7 @@ graphdf_visNetwork <- reactive({
 # From the current input data and graph, generate changepoint results
 changepointdf <- reactive({
   req(gfpop_data$primary_input)
-  generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph)
+  generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph, input$gfpopType)
 })
 
 # Generate a visualization of the current constraint graph
