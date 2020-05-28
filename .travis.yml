@@ -32,4 +32,4 @@ deploy:
   script: 
     - R -f deploy.R
   on:
-    branch: troubleshoot_deploy
+    branch: master
