@@ -25,7 +25,7 @@ tabPanel(
           actionButton(inputId = "genData", label = "Generate!"),
           HTML("<hr>"),
           HTML("<h4>Optional/advanced uploads:</h4><br>"),
-          fileInput("[not working yet] constraint_graph", "Choose a file with a constraint graph (.csv)"),
+          fileInput("constraint_graph", "Choose a file with a constraint graph (.csv)"),
           fileInput("[not working yet] completed_analysis", "Choose a file with a completed analysis (.Rdata)"),
         ),
         h3("Uploaded data:", align = "center"),
