@@ -20,7 +20,6 @@ usethis::use_package( "plotly" )
 usethis::use_package( "ggplot2" )
 usethis::use_package( "visNetwork" )
 usethis::use_package( "shinycssloaders" )
-usethis::use_package( "data.table" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

@@ -43,7 +43,8 @@ update_graph <- reactive({
 # Generate a visualization of the current constraint graph
 # TODO: this isn't actually editable yet
 output$gfpopGraph <- renderVisNetwork({
-  update_graph()
+  # Only run with the "Run gfpop!" button is pressed
+  input$runGfpop
   
   graph_data <- graphdf_visNetwork()
   visNetwork(graph_data$nodes, graph_data$edges) %>%
