@@ -18,10 +18,12 @@ tabPanel(
       
       # Generate graph
       actionButton(inputId = "updateGraph", label = "Update graph with above parameters"),
+      HTML("<hr>"),
       
       # Submit!
       actionButton(inputId = "runGfpop", label = "Run gfpop!"),
-      p("Note: for testing, using type = mean")
+      tags$br(),tags$br(),
+      "Note: for testing, using type = mean"
     ),
     column(
       5,

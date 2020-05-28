@@ -1,10 +1,19 @@
-# Generate a graph with the current penalty
-graphdf <- reactive({
-  gfpop::graph(penalty = as.double(input$pen), type = input$graphType)
+# Initialize our main graphdf object
+graphdf <- reactiveValues(graph = gfpop::graph(penalty = as.double(15), 
+                                               type = "std"))
+print("Running")
+
+# When the "Update graph with above parameters" button is pressed,
+# update the graph
+graphdf_default <- observeEvent(eventExpr = input$updateGraph, {
+  graphdf$graph <- gfpop::graph(penalty = as.double(isolate(input$pen)), 
+                                  type = isolate(input$graphType))
 })
 
+# Some data wrangling: turn the graphdf into a format that visNetwork
+# can understand
 graphdf_visNetwork <- reactive({
-  graphdf_normal <- graphdf() %>%
+  graphdf_normal <- graphdf$graph %>%
     filter(type != "null")
   edge_names <- paste0(graphdf_normal$state1, graphdf_normal$state2)
   node_names <- unique(c(graphdf_normal$state1, graphdf_normal$state2))
@@ -17,26 +26,18 @@ graphdf_visNetwork <- reactive({
   )
 })
 
-
-init.nodes <- data.frame(
-  id = c("up", "down"),
-  label = c("up", "down")
-)
-init.edges <- data.frame(
-  id = c("updown", "downup", "upup"),
-  to = c("up", "down", "up"),
-  from = c("down", "up", "up"),
-  label = c("updown", "downup", "upup")
-)
-
-# Generate a changepoint df from the current graph
+# From the current input data and graph, generate changepoint results
 changepointdf <- reactive({
   req(gfpop_data$primary_input)
-  generate_changepoint(gfpop_data$primary_input$Y, graphdf())
+  generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph)
 })
 
-# visualize the network, not currently editable
+# Generate a visualization of the current constraint graph
+# TODO: this isn't actually editable yet
 output$gfpopGraph <- renderVisNetwork({
+  # Only run with the "Run gfpop!" button is pressed
+  input$runGfpop
+  
   graph_data <- graphdf_visNetwork()
   visNetwork(graph_data$nodes, graph_data$edges) %>%
     visEdges(
@@ -52,7 +53,9 @@ output$gfpopGraph <- renderVisNetwork({
     ))
 })
 
-# Main gfpop plot with red lines
+# Generate the visualization of the data with overlain changepoints
+# TODO: Can we always show the data, and then just overlay changepoints
+# whenever "Run gfpop!" is pressed?
 output$gfpopPlot <- renderPlotly({
   input$runGfpop
   
