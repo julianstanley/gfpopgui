@@ -2,7 +2,7 @@ gfpop_data <- reactiveValues()
 
 get_main_data <- reactive({
   if (isTruthy(input$primary_input)) {
-    primary_input <- read.csv(input$primary_input$datapath, header = F)
+    primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
     colnames(primary_input) <- c("X", "Y")
     gfpop_data$primary_input <- primary_input
     return(primary_input)
@@ -27,7 +27,7 @@ output$main_datatable <- renderDataTable(
 output$graph <- renderDataTable(
   {
     if (isTruthy(input$constraint_graph)) {
-      graph_input <- read.csv(input$constraint_graph$datapath, header = F)
+      graph_input <- fread(input$constraint_graph$datapath, stringsAsFactors = FALSE)
       gfpop_data$graph_input <- graph_input
       graph_input
     } else {

@@ -31,6 +31,15 @@ changepointdf <- reactive({
   generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph, input$gfpopType)
 })
 
+update_graph <- reactive({
+  if(isTruthy(input$constraint_graph)) {
+    graphdf$graph = gfpop::graph(
+      select(
+        data.frame(fread(input$constraint_graph$datapath, stringsAsFactors = FALSE)),
+        one_of(c("state1", "state2", "type", "parameter", "penalty", "K", "a", "min", "max")))
+    )
+  }
+})
 # Generate a visualization of the current constraint graph
 # TODO: this isn't actually editable yet
 output$gfpopGraph <- renderVisNetwork({
