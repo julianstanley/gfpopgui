@@ -1,6 +1,5 @@
 tabPanel(
   "Home",
-  # TODO: Put back in module file
   tagList(
     fluidRow(
       column(
@@ -33,7 +32,7 @@ tabPanel(
         div(
           class = "well",
           h4("Input data:"),
-          dataTableOutput("main_data"),
+          dataTableOutput("main_datatable"),
           h4("Constraint graph:"),
           dataTableOutput("graph")
         )

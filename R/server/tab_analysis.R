@@ -1,7 +1,6 @@
 # Initialize our main graphdf object
 graphdf <- reactiveValues(graph = gfpop::graph(penalty = as.double(15), 
                                                type = "std"))
-print("Running")
 
 # When the "Update graph with above parameters" button is pressed,
 # update the graph
