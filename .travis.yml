@@ -6,7 +6,7 @@ warnings_are_errors: false
 r_packages:
   - covr
   - rsconnect
-  - devtoos
+  - devtools
   - memoise
   - parsedate
   - plyr
