@@ -20,7 +20,7 @@ output$main_datatable <- renderDataTable(
   {
     get_main_data()
   },
-  options = list("pageLength" = 5, dom = "tp", searching = F)
+  options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
 )
 
 # TODO: main_data should also accept .Rdata from `input$completed_analysis`
@@ -35,7 +35,7 @@ output$graph <- renderDataTable(
 Graph data is optional. Please either provide a graph input file or move to the 'analysis' page")
     }
   },
-  options = list("pageLength" = 5, dom = "tp", searching = F)
+  options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
 )
 
 # Generate some data if users ask for it (temporary, for testing)

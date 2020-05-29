@@ -6,6 +6,7 @@
 #' @import ggplot2
 #' @import plotly
 #' @import gfpop
+#' @import data.table
 #' @noRd
 app_server <- function(input, output, session) {
   # include logic for each tab
