@@ -1,5 +1,6 @@
 tabPanel(
-  "Analysis",
+  title = "Analysis",
+  id= "analysis",
   fluidRow(
     column(
       2,

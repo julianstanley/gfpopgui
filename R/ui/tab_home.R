@@ -1,5 +1,6 @@
 tabPanel(
-  "Home",
+  title = "Home",
+  id = "home",
   tagList(
     fluidRow(
       column(

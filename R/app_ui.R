@@ -13,7 +13,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
-      navbarPage(
+      navbarPage(id = "tabs",
         title = "gfpop",
         collapsible = TRUE,
         # include the UI for each tab

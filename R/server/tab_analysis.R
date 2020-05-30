@@ -48,6 +48,7 @@ output$gfpopGraph <- renderVisNetwork({
   
   graph_data <- graphdf_visNetwork()
   visNetwork(graph_data$nodes, graph_data$edges) %>%
+    visLayout(randomSeed = 123) %>%
     visEdges(
       arrows = "to", physics = FALSE,
       smooth = list(
@@ -96,5 +97,5 @@ output$gfpopPlot <- renderPlotly({
     ) +
     xlab("X units (arbitrary)") +
     ylab("Univariate gaussian data (randomly generated)")
-  ggplotly(g, tooltip = c("X", "Y", "text")) 
+  ggplotly(g, tooltip = c("X", "Y")) 
 })
