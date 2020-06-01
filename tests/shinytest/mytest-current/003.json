@@ -1,0 +1,12 @@
+{
+  "output": {
+    "main_datatable": {
+      "message": "No input data provided. Please provide an input file.",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    }
+  }
+}
