@@ -6,8 +6,15 @@ remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4444, browser = "fi
 remDr$open(silent = TRUE)
 
 # Start the app
-test_that("can connect to app", {
-  remDr$navigate(url = "http://127.0.0.1:11616/")
+test_that("can connect to app, local", {
+  skip_on_ci()
+  remDr$navigate(url = "http://127.0.0.1:11616")
+  appTitle <- remDr$getTitle()[[1]]
+  expect_equal(appTitle, "gfpopgui")
+})
+
+test_that("can connect to app, remote", {
+  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
 })
