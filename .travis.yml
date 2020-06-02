@@ -21,6 +21,18 @@ r_github_packages:
 
 after_success:
   - Rscript -e 'covr::codecov()'
+  
+# Added for RSelenium tests
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker pull selenium/standalone-firefox:2.53.0
+  - docker run -d -p 127.0.0.1:4444:4444 selenium/standalone-firefox:2.53.0
+  - Rscript -e 'golem::detach_all_attached();golem::document_and_reload();options(shiny.port = 11616);run_app()' &
+
 
 # Added for shinyapps.io deployment
 # dist: xenial
