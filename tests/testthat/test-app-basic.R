@@ -5,6 +5,9 @@ library(testthat)
 remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4444, browser = "firefox") 
 remDr$open(silent = TRUE)
 
+# Start the app
+system("Rscript -e 'golem::detach_all_attached();golem::document_and_reload();options(shiny.port = 11616);run_app()' &")
+Sys.sleep(2)
 test_that("can connect to app", {
   remDr$navigate(url = "http://127.0.0.1:11616/")
   appTitle <- remDr$getTitle()[[1]]
