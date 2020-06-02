@@ -7,7 +7,6 @@ remDr$open(silent = TRUE)
 
 # Start the app
 test_that("can connect to app, local", {
-  skip_on_travis()
   skip_on_ci()
   remDr$navigate(url = "http://127.0.0.1:11616")
   appTitle <- remDr$getTitle()[[1]]
