@@ -14,13 +14,5 @@ utils/*
 local_only
 ^app\.R$
 ^rsconnect$
-<<<<<<< HEAD
 .vscode
 deploy.R
-!R/*
-||||||| 19e162f
-
-=======
-.vscode
-deploy.R
->>>>>>> 45e6cc3c37d4a5e0eb06f0bf394cf8b7affbeee0
