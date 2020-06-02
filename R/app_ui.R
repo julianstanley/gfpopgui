@@ -17,8 +17,14 @@ app_ui <- function(request) {
         title = "gfpop",
         collapsible = TRUE,
         # include the UI for each tab
-        source(system.file("R/ui/tab_home.R", package = "gfpopgui"))$value,
-        source(system.file("R/ui/tab_analysis.R", package = "gfpopgui"))$value,
+        tabPanel(
+          "Home",
+          mod_home_ui("home_ui_1")
+        ),
+        tabPanel(
+          "Analysis",
+          mod_analysis_ui("analysis_ui_1")
+        ),
         tabPanel("Sharing"),
         tabPanel("Help")
       )

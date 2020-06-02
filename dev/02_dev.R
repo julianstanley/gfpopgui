@@ -26,7 +26,6 @@ usethis::use_package( "shinycssloaders" )
 # Home tab
 golem::add_module( name = "home" ) 
 golem::add_module( name = "analysis" )
-golem::add_module( name = "name_of_module2" ) # Name of the module
 
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
