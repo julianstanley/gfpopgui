@@ -7,7 +7,7 @@ library(gfpopgui)
 # ------------------------------------------------------------------------------
 
 print("In testthat, starting shiny in background")
-system("${R_HOME}/bin/Rscript -e 'golem::detach_all_attached();golem::document_and_reload();options(shiny.port = 11616);run_app()' &")
+system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 11616);run_app()' &")
 # Give the system a couple seconds to load app
 Sys.sleep(2)
 
