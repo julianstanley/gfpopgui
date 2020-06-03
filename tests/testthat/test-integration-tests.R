@@ -24,24 +24,23 @@ Sys.sleep(4)
 
 # Connect to the local app, wait for a second for load
 remDr$navigate(url = "http://127.0.0.1:15123")
-Sys.sleep(2)
 
-test_that("can connect to app, local", {
+try_again(5, test_that("can connect to app, local", {
   appTitle <- remDr$getTitle()[[1]]
   # Screenshot debug, local only:
   # remDr$screenshot(file = "screenshots/test_connect_local.png")
   expect_equal(appTitle, "gfpopgui")
-})
+}))
 
 # Remote Tests -----------------------------------------------------------------
 # Connect to the remote app, wait a second for load
 remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
 Sys.sleep(2)
 
-test_that("can connect to app, remote", {
+try_again(5, test_that("can connect to app, remote", {
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
-})
+}))
 
 # Cleanup steps ----------------------------------------------------------------
 
