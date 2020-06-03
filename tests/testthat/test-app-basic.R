@@ -14,6 +14,7 @@ test_that("can connect to app, local", {
 })
 
 test_that("can connect to app, remote", {
+  skip_on_travis()
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
