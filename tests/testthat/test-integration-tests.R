@@ -26,6 +26,7 @@ init.kill.app <- system("lsof -i:15123 -t | xargs kill",
 system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &", 
        ignore.stdout = TRUE,
        ignore.stderr = TRUE)
+
 # Give the system a few seconds to load app
 Sys.sleep(4)
 
@@ -57,6 +58,7 @@ try_again(5, test_that("can connect to app, remote", {
 
 # Close selenium server
 remDr$close()
+
 # Kill app
 clean.kill.app <- system("lsof -i:15123 -t | xargs kill", intern = TRUE)
 
