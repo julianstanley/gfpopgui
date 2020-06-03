@@ -16,3 +16,4 @@ local_only
 ^rsconnect$
 .vscode
 deploy.R
+tests/testthat/screenshots/*
