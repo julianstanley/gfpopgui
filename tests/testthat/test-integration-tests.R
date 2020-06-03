@@ -3,6 +3,15 @@ library(testthat)
 
 # Initialization steps ---------------------------------------------------------
 
+# For local debug, change to true!
+SCREENSHOT <- FALSE
+RUN_DOCKER <- FALSE
+
+# Start a local selenium server via docker (local only)
+if(RUN_DOCKER) {
+  system("docker run -d --net=host selenium/standalone-firefox&")
+}
+
 # Open port to RSelenium server
 remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4444, browser = "firefox") 
 remDr$open(silent = TRUE)
@@ -28,14 +37,15 @@ remDr$navigate(url = "http://127.0.0.1:15123")
 try_again(5, test_that("can connect to app, local", {
   appTitle <- remDr$getTitle()[[1]]
   # Screenshot debug, local only:
-  # remDr$screenshot(file = "screenshots/test_connect_local.png")
+  if(SCREENSHOT) {
+    remDr$screenshot(file = "screenshots/test_connect_local.png")
+  }
   expect_equal(appTitle, "gfpopgui")
 }))
 
 # Remote Tests -----------------------------------------------------------------
 # Connect to the remote app, wait a second for load
 remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
-Sys.sleep(2)
 
 try_again(5, test_that("can connect to app, remote", {
   appTitle <- remDr$getTitle()[[1]]
