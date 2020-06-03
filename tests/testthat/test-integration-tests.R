@@ -21,11 +21,12 @@ system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);
 Sys.sleep(4)
 
 # Local Tests ------------------------------------------------------------------
-# Connect to the local app
+
+# Connect to the local app, wait for a second for load
 remDr$navigate(url = "http://127.0.0.1:15123")
+Sys.sleep(2)
 
 test_that("can connect to app, local", {
-  skip_on_ci()
   appTitle <- remDr$getTitle()[[1]]
   remDr$screenshot(file = "screenshots/test_connect_local.png")
   expect_equal(appTitle, "gfpopgui")
