@@ -4,7 +4,7 @@ library(golem)
 
 test_that("app ui", {
   ui <- app_ui()
-  golem::expect_shinytaglist(ui)
+  expect_shinytaglist(ui)
 })
 
 test_that("app server", {
@@ -19,9 +19,9 @@ test_that(
     skip_on_travis()
     skip_on_appveyor()
     x <- processx::process$new(
-      "R",
+      "R", 
       c(
-        "-e",
+        "-e", 
         "pkgload::load_all(here::here());run_app()"
       )
     )
@@ -30,3 +30,11 @@ test_that(
     x$kill()
   }
 )
+
+
+
+
+
+
+
+
