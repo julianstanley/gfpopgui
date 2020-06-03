@@ -28,7 +28,8 @@ Sys.sleep(2)
 
 test_that("can connect to app, local", {
   appTitle <- remDr$getTitle()[[1]]
-  remDr$screenshot(file = "screenshots/test_connect_local.png")
+  # Screenshot debug, local only:
+  # remDr$screenshot(file = "screenshots/test_connect_local.png")
   expect_equal(appTitle, "gfpopgui")
 })
 
