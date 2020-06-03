@@ -14,7 +14,7 @@ app_ui <- function(request) {
     # List the first level UI elements here
     fluidPage(
       navbarPage(id = "tabs",
-        title = "gfpopgui",
+        title = "gfpop",
         collapsible = TRUE,
         # include the UI for each tab
         tabPanel(
