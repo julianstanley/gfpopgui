@@ -44,12 +44,11 @@ try_again(5, test_that("can connect to app, local", {
 }))
 
 # Remote Tests -----------------------------------------------------------------
-
-# Connect to the remote app, wait a second for load
-remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
-Sys.sleep(2)
-
 try_again(5, test_that("can connect to app, remote", {
+  skip_on_ci()
+  # Connect to the remote app, wait a second for load
+  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+  Sys.sleep(2)
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
 }))
