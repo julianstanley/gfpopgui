@@ -28,6 +28,7 @@ mod_analysis_ui <- function(id) {
 
         # Generate graph
         actionButton(inputId = ns("updateGraph"), label = "Update graph with above parameters"),
+        actionButton(inputId = ns("updateGraph-fromData"), label = "Update graph from uploaded file"),
         HTML("<hr>"),
 
         # What cost model?
@@ -64,7 +65,12 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     penalty = as.double(15),
     type = "std"
   ))
-
+  
+  # If gfpop_data provides a graph, we should use that
+  observeEvent(eventExpr = input$`updateGraph-fromData`, {
+    graphdf$graph <- gfpop_data$graph_input
+  })
+    
   # When the "Update graph with above parameters" button is pressed,
   # update the graph
   graphdf_default <- observeEvent(eventExpr = input$updateGraph, {
