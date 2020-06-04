@@ -2,6 +2,7 @@
 #' @param annotated_data an annotated changepoint dataset
 #' @returns a ggplot object
 #' @importFrom ggplot2 ggplot geom_point aes geom_segment xlab ylab
+#' @importFrom rlang .data 
 #' @examples
 #' data <- data.frame(X = 1:10, Y = gfpop::dataGenerator(10, c(0.1, 0.3, 0.5, 0.8, 1), 
 #' c(1, 2, 1, 3, 1), sigma = 1))

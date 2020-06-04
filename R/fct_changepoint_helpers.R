@@ -43,6 +43,7 @@ generate_changepoint <- function(data_input, graph_input, type = "mean") {
 #' with the given x location
 #' @importFrom dplyr filter
 #' @importFrom utils head
+#' @importFrom rlang .data
 #' @examples 
 #' data <- gfpop::dataGenerator(10, c(0.1, 0.3, 0.5, 0.8, 1), 
 #' c(1, 2, 1, 3, 1), sigma = 1)
