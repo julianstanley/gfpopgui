@@ -41,6 +41,8 @@ generate_changepoint <- function(data_input, graph_input, type = "mean") {
 #' (see generate_changepoint).
 #' @returns A data.frame/list with the 0 or 1 changepoint location consistent
 #' with the given x location
+#' @importFrom dplyr filter
+#' @importFrom utils head
 #' @examples 
 #' data <- gfpop::dataGenerator(10, c(0.1, 0.3, 0.5, 0.8, 1), 
 #' c(1, 2, 1, 3, 1), sigma = 1)
@@ -50,11 +52,9 @@ generate_changepoint <- function(data_input, graph_input, type = "mean") {
 #' @export
 get_associated_changepoint <-
   function(x_loc, changepoint_data) {
-    consistent_changepoint_data <-
-      subset(
-        changepoint_data,
-        (changepoint >= x_loc) & (changepoint_end <= x_loc)
-      )
+    consistent_changepoint_data <- changepoint_data %>%
+      dplyr::filter((.data$changepoint >= x_loc) &
+                      (.data$changepoint_end <= x_loc))
     return(head(consistent_changepoint_data, 1))
   }
 

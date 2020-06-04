@@ -12,17 +12,17 @@
 #' @export
 plot_changepoint <- function(annotated_data) {
   ggplot(annotated_data, aes(
-    x = X,
-    y = Y,
-    text = CP_Data
+    x = .data$X,
+    y = .data$Y,
+    text = .data$CP_Data
   )) +
     geom_point() +
     geom_segment(
       aes(
-        x = changepoint,
-        xend = changepoint_end,
-        y = y,
-        yend = y
+        x = .data$changepoint,
+        xend = .data$changepoint_end,
+        y = .data$y,
+        yend = .data$y
       ),
       size = 1.5,
       col = "red"
