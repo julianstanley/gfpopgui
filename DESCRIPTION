@@ -19,7 +19,9 @@ Imports:
     visNetwork,
     pkgload,
     shinycssloaders,
-    data.table
+    data.table,
+    dplyr,
+    plyr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
@@ -28,6 +30,7 @@ BugReports: https://github.com/julianstanley/gfpop-gui/issues
 Suggests: 
     testthat,
     covr,
-    RSelenium
+    RSelenium,
+    vdiffr
 Remotes: 
     vrunge/gfpop

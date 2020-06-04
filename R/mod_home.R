@@ -53,6 +53,9 @@ mod_home_ui <- function(id) {
 #' home Server Function
 #'
 #' @noRd
+#'
+#' @import shiny
+#' @importFrom data.table fread
 mod_home_server <- function(input, output, session) {
   ns <- session$ns
   gfpop_data <- reactiveValues()
@@ -99,7 +102,8 @@ Graph data is optional. Please either provide a graph input file or move to the 
   observeEvent(input$genData, {
     primary_input <- data.frame(
       X = 1:input$ndata,
-      Y = dataGenerator(input$ndata, c(0.1, 0.3, 0.5, 0.8, 1), c(1, 2, 1, 3, 1), sigma = input$sigma)
+      Y = dataGenerator(input$ndata, c(0.1, 0.3, 0.5, 0.8, 1), 
+                        c(1, 2, 1, 3, 1), sigma = input$sigma)
     )
     gfpop_data$primary_input <- primary_input
   })
