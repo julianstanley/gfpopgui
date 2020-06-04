@@ -10,10 +10,10 @@ generate_changepoint(data_input, graph_input, type = "mean")
 \arguments{
 \item{data_input}{vector of data to segment}
 
+\item{graph_input}{dataframe of class "graph" to constraint the changepoint inference}
+
 \item{type}{a string defining the cost model to use: "mean", "variance", "poisson",
 "exp", "negbin"}
-
-\item{mygraph}{dataframe of class "graph" to constraint the changepoint inference}
 }
 \value{
 A dataframe with columns:

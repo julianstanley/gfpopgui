@@ -15,6 +15,8 @@ Must have the following columns:
 \item{"state2"}
 \item{"}
 }}
+
+\item{edgeSep}{A character seperating the nodes in an edge label}
 }
 \value{
 a list that can be read by visNetwork

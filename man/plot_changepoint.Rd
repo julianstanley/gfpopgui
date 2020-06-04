@@ -4,7 +4,7 @@
 \alias{plot_changepoint}
 \title{Makes a ggplot object with the changepoint data}
 \usage{
-plot_changepoint(changepoint_annot)
+plot_changepoint(annotated_data)
 }
 \arguments{
 \item{changepoint_annot}{an annotated changepoint dataset}
@@ -14,4 +14,12 @@ a ggplot object
 }
 \description{
 Makes a ggplot object with the changepoint data
+}
+\examples{
+data <- data.frame(X = 1:10, Y = gfpop::dataGenerator(10, c(0.1, 0.3, 0.5, 0.8, 1), 
+c(1, 2, 1, 3, 1), sigma = 1))
+graph <- gfpop::graph(type = "std")
+changepoint_data <- generate_changepoint(data$Y, graph)
+annotated_data <- annotate_data_with_changepoint(data, changepoint_data)
+plot_changepoint(annotated_data)
 }

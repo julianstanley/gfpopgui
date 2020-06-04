@@ -1,7 +1,7 @@
 #' Given data and a constraint graph, generate a changepoint output
 #' A wrapper around gfpop::gfpop()
 #' @param data_input vector of data to segment
-#' @param mygraph dataframe of class "graph" to constraint the changepoint inference
+#' @param graph_input dataframe of class "graph" to constraint the changepoint inference
 #' @param type a string defining the cost model to use: "mean", "variance", "poisson",
 #' "exp", "negbin"
 #' @returns A dataframe with columns:
