@@ -3,19 +3,25 @@ generate_visNetwork_list <- function() {
 }
 
 test_that("graphdf_to_visNetwork generate a list", {
-  expect_type(generate_visNetwork_list(), "list")
+  visNetwork_list <- generate_visNetwork_list()
+  expect_equal(typeof(visNetwork_list), "list")
 })
 
 test_that("graphdf_to_visNetwork has 'nodes' and 'edges' as labels", {
-  expect_equal(labels(generate_visNetwork_list()), c("nodes", "edges"))
+  visNetwork_list <- generate_visNetwork_list()
+  expect_equal(labels(visNetwork_list), c("nodes", "edges"))
 })
 
 test_that("visNetwork function generates a list", {
-  expect_type(generate_visNetwork(generate_visNetwork_list()), "list")
+  visNetwork_list <- generate_visNetwork_list()
+  expect_equal(typeof(generate_visNetwork(visNetwork_list)), "list")
 })
 
 test_that("visNetwork function generates a list with certain labels", {
-  expect_equal(labels(generate_visNetwork(generate_visNetwork_list())), 
+  visNetwork_list <- generate_visNetwork_list()
+  associated_visNetwork <- generate_visNetwork(visNetwork_list)
+  
+  expect_equal(labels(associated_visNetwork), 
                c("x", "width", "height", "sizingPolicy", "dependencies", 
                  "elementId", "preRenderHook", "jsHooks"))
 })

@@ -4,7 +4,7 @@ library(testthat)
 # Initialization steps ---------------------------------------------------------
 
 # For local debug, change to true!
-SCREENSHOT <- TRUE
+SCREENSHOT <- FALSE
 RUN_DOCKER <- FALSE
 
 # To disable remote shinyapps.io checking, change to false!

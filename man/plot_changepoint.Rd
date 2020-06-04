@@ -7,7 +7,7 @@
 plot_changepoint(annotated_data)
 }
 \arguments{
-\item{changepoint_annot}{an annotated changepoint dataset}
+\item{annotated_data}{an annotated changepoint dataset}
 }
 \value{
 a ggplot object

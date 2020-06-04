@@ -3,6 +3,7 @@ test_that("select_graph_columns does its job", {
   newgraph <- graph
   newgraph$test <- c(1,2)
   
-  expect_failure(expect_equal(graph, newgraph))
-  expect_equal(graph, select_graph_columns(newgraph))
+  expect_equal(all.equal(graph, newgraph), 
+               "Length mismatch: comparison on first 9 components")
+  expect_true(all.equal(graph, select_graph_columns(newgraph)))
 })
