@@ -10,6 +10,6 @@
 #' select_graph_columns(graph)
 #' @export
 select_graph_columns <- function(graph_df) {
-  graph_df %>% dplyr::select(.data$state1, .data$state2, .data$type, .data$parameter,
+  dplyr::select(graphdf, .data$state1, .data$state2, .data$type, .data$parameter,
                            .data$penalty, .data$K, .data$a, .data$min, .data$max)
 }
