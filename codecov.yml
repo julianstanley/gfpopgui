@@ -12,3 +12,6 @@ coverage:
         target: auto
         threshold: 1%
         informational: true
+
+ignore:
+  - "R/utils_helpers.R" # Taken from golem, so assuming already tested

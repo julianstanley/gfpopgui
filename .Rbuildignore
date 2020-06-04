@@ -17,3 +17,4 @@ local_only
 .vscode
 deploy.R
 tests/testthat/screenshots/*
+_pkgdown.yml

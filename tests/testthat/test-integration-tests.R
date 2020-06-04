@@ -7,6 +7,9 @@ library(testthat)
 SCREENSHOT <- FALSE
 RUN_DOCKER <- FALSE
 
+# To disable remote shinyapps.io checking, change to false!
+REMOTE <- FALSE
+
 # Start a local selenium server via docker (local only)
 if(RUN_DOCKER) {
   system("docker run -d --net=host selenium/standalone-firefox&")
@@ -28,14 +31,14 @@ system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);
        ignore.stderr = TRUE)
 
 # Give the system a few seconds to load app
-Sys.sleep(4)
+Sys.sleep(10)
 
 # Local Tests ------------------------------------------------------------------
 
 # Connect to the local app, wait for a second for load
 remDr$navigate(url = "http://127.0.0.1:15123")
 
-try_again(5, test_that("can connect to app, local", {
+testthat::try_again(5, test_that("can connect to app, local", {
   appTitle <- remDr$getTitle()[[1]]
   # Screenshot debug, local only:
   if(SCREENSHOT) {
@@ -45,8 +48,11 @@ try_again(5, test_that("can connect to app, local", {
 }))
 
 # Remote Tests -----------------------------------------------------------------
-try_again(5, test_that("can connect to app, remote", {
+testthat::try_again(5, test_that("can connect to app, remote", {
   skip_on_ci()
+  if(!REMOTE) {
+    testthat::skip("Remote testing is disabled")
+  }
   # Connect to the remote app, wait a second for load
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   Sys.sleep(2)
