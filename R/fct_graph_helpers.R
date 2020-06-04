@@ -10,6 +10,9 @@
 #' select_graph_columns(graph)
 #' @export
 select_graph_columns <- function(graph_df) {
-  dplyr::select(graphdf, .data$state1, .data$state2, .data$type, .data$parameter,
+  class(graph_df) <- "data.frame"
+  gfpop::graph(
+    dplyr::select(graph_df, .data$state1, .data$state2, .data$type, .data$parameter,
                            .data$penalty, .data$K, .data$a, .data$min, .data$max)
+  )
 }

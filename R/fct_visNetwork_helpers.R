@@ -17,6 +17,7 @@
 #' graphdf_to_visNetwork(gfpop::graph(type = "std"))
 #' @export
 graphdf_to_visNetwork <- function(graphdf, edgeSep = "_") {
+  class(graphdf) <- "data.frame"
   graphdf_nonull <- graphdf %>% dplyr::filter(.data$type != "null")
 
   edge_names <- paste(graphdf_nonull$state1, graphdf_nonull$state2, sep = edgeSep)

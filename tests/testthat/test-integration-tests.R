@@ -31,7 +31,7 @@ system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);
        ignore.stderr = TRUE)
 
 # Give the system a few seconds to load app
-Sys.sleep(4)
+Sys.sleep(10)
 
 # Local Tests ------------------------------------------------------------------
 
