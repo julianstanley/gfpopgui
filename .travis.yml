@@ -16,6 +16,9 @@ r_packages:
   - rhub
   - rversions
   - RSelenium
+  - dplyr
+  - rlang
+  - plyr
 
 r_github_packages:
   - julianstanley/gfpop-gui
