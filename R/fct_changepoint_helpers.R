@@ -41,7 +41,7 @@ generate_changepoint <- function(data_input, graph_input, type = "mean") {
 #' (see generate_changepoint).
 #' @returns A data.frame/list with the 0 or 1 changepoint location consistent
 #' with the given x location
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter %>%
 #' @importFrom utils head
 #' @importFrom rlang .data
 #' @examples 

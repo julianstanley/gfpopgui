@@ -10,7 +10,7 @@
 #' }
 #' @param edgeSep A character seperating the nodes in an edge label
 #' @returns a list that can be read by visNetwork
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter %>%
 #' @importFrom rlang .data 
 #' @import visNetwork
 #' @examples
