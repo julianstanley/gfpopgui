@@ -34,5 +34,5 @@ Suggests:
     RSelenium,
     vdiffr
 Remotes: 
-    vrunge/gfpop
+    vrunge/gfpop,
     rstudio/shiny
