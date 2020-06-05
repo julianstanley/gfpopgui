@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork — graphdf_to_visNetwork • gfpopgui</title>
+<title>Selects the columns from this graph dataframe that are relevant to gfpop — select_graph_columns • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ can be read by visNetwork — graphdf_to_visNetwork • gfpopgui</title>
 
 
 
-<meta property="og:title" content="Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork — graphdf_to_visNetwork" />
-<meta property="og:description" content="Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork" />
+<meta property="og:title" content="Selects the columns from this graph dataframe that are relevant to gfpop — select_graph_columns" />
+<meta property="og:description" content="Selects the columns from this graph dataframe that are relevant to gfpop" />
 
 
 
@@ -114,50 +111,36 @@ can be read by visNetwork" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork</h1>
-    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpop-gui/blob/master/R/fct_visNetwork_helpers.R'><code>R/fct_visNetwork_helpers.R</code></a></small>
-    <div class="hidden name"><code>graphdf_to_visNetwork.Rd</code></div>
+    <h1>Selects the columns from this graph dataframe that are relevant to gfpop</h1>
+    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpop-gui/blob/master/R/fct_graph_helpers.R'><code>R/fct_graph_helpers.R</code></a></small>
+    <div class="hidden name"><code>select_graph_columns.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork</p>
+    <p>Selects the columns from this graph dataframe that are relevant to gfpop</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graphdf_to_visNetwork</span>(<span class='no'>graphdf</span>, <span class='kw'>edgeSep</span> <span class='kw'>=</span> <span class='st'>"_"</span>)</pre>
+    <pre class="usage"><span class='fu'>select_graph_columns</span>(<span class='no'>graph_df</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>graphdf</th>
-      <td><p>A graph object (in the form of a dataframe) from gfpop
-Must have the following columns:</p><ul>
-<li><p>"state1"</p></li>
-<li><p>"state2"</p></li>
-<li><p>"</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>edgeSep</th>
-      <td><p>A character seperating the nodes in an edge label</p></td>
+      <th>graph_df</th>
+      <td><p>the graph to process</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list that can be read by visNetwork</p>
+    <p>a dataframe with 9 columns, compatable with gfpop</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>graphdf_to_visNetwork</span>(<span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/graph.html'>graph</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"std"</span>))</div><div class='output co'>#&gt; $nodes
-#&gt;    id label
-#&gt; 1 Std   Std
-#&gt; 
-#&gt; $edges
-#&gt;        id   label  to from
-#&gt; 1 Std_Std Std_Std Std  Std
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='no'>graph</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/graph.html'>graph</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"std"</span>)
+<span class='no'>graph</span>$<span class='no'>test</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>)
+<span class='fu'>select_graph_columns</span>(<span class='no'>graph</span>)</div><div class='output co'>#&gt;   state1 state2 type parameter penalty   K a min max
+#&gt; 1    Std    Std null         1       0 Inf 0  NA  NA
+#&gt; 2    Std    Std  std         0       0 Inf 0  NA  NA</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

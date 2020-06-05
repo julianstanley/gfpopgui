@@ -7,10 +7,11 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput 
-#' tags fluidRow column
+#' tags fluidRow column h2 br
 #' @import shinycssloaders
 #' @importFrom plotly plotlyOutput
 #' @importFrom visNetwork visNetworkOutput
+#' @importFrom DT dataTableOutput
 mod_analysis_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -32,7 +33,6 @@ mod_analysis_ui <- function(id) {
 
         # Generate graph
         actionButton(inputId = ns("updateGraph"), label = "Update graph with above parameters"),
-        actionButton(inputId = ns("updateGraph-fromData"), label = "Update graph from uploaded file"),
         HTML("<hr>"),
 
         # What cost model?
@@ -49,13 +49,26 @@ mod_analysis_ui <- function(id) {
       ),
       column(
         5,
+        h2("Graph", align = "center"),
         visNetworkOutput(ns("gfpopGraph"))
       ),
       column(
         5,
+        h2("Changepoints", align = "center"),
         plotlyOutput(ns("gfpopPlot")) %>% withSpinner(type = 6)
       )
-    )
+    ),
+    fluidRow(
+      column(2),
+      column(
+        5,
+        dataTableOutput(ns("graphOutput"))
+      )
+    ),
+    
+    # Button for debugging
+    actionButton(ns("browser"), "browser"),
+    tags$script(paste0("$('#", ns("browser"), "').hide();"))
   )
 }
 
@@ -66,24 +79,27 @@ mod_analysis_ui <- function(id) {
 #' isolate
 #' @importFrom plotly ggplotly renderPlotly
 #' @importFrom visNetwork renderVisNetwork
+#' @importFrom DT renderDataTable
 #' @import gfpop
 mod_analysis_server <- function(input, output, session, gfpop_data) {
   ns <- session$ns
-
-  # Initialize main graphdf object
-  graphdf <- reactiveValues(graph = gfpop::graph(
-    penalty = as.double(15),
-    type = "std"
-  ))
   
-  # If gfpop_data provides a graph, we should use that
-  observeEvent(eventExpr = input$`updateGraph-fromData`, {
-    graphdf$graph <- gfpop::graph(gfpop_data$graph_input)
+  # Grabs the gfpop_data$graph_input, if it exists, or defaults
+  # If you want to change the graphdata, modify gfpop_data$graph_input
+  generate_graphdata <- reactive({
+    if(isTruthy(gfpop_data$graph_input)) {
+      gfpop::graph(gfpop_data$graph_input)
+    } else {
+      gfpop::graph(
+        penalty = as.double(15),
+        type = "std"
+      )
+    }
   })
     
   # When the "Update graph with above parameters" button is pressed, update graph
   graphdf_default <- observeEvent(eventExpr = input$updateGraph, {
-    graphdf$graph <- gfpop::graph(
+    gfpop_data$graph_input <- gfpop::graph(
       penalty = as.double(isolate(input$pen)),
       type = isolate(input$graphType)
     )
@@ -92,8 +108,8 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
   # From the current input data and graph, generate changepoint results
   changepointdf <- reactive({
     req(gfpop_data$primary_input)
-    graphdf$graph <- select_graph_columns(graphdf$graph)
-    generate_changepoint(gfpop_data$primary_input$Y, graphdf$graph, input$gfpopType)
+    graphdata <- generate_graphdata()
+    generate_changepoint(gfpop_data$primary_input$Y, graphdata, input$gfpopType)
   })
   
   # Generate a visualization of the current constraint graph
@@ -102,8 +118,8 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     input$runGfpop
     
     # Convert the df into a list, pass that to visNetwork
-    graph_data <- graphdf_to_visNetwork(graphdf$graph)
-    generate_visNetwork(graph_data)
+    graphdata <- generate_graphdata()
+    generate_visNetwork(graphdf_to_visNetwork(graphdata))
   })
 
   # Generate the visualization of the data with overlain changepoints
@@ -116,13 +132,19 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
       validate(FALSE, "Either you haven't uploaded any data, or you haven't pressed the 'run gfpop!' button yet.")
       return(1)
     }
-    data_input <- isolate(gfpop_data$primary_input)
-    changepoint_data <- isolate(changepointdf())
-
-    changepoint_data_annot <-
-      annotate_data_with_changepoint(data_input, changepoint_data)
     
-    ggplotly(plot_changepoint(changepoint_data_annot), 
+    ggplotly(plot_changepoint(data_input = isolate(gfpop_data$primary_input), 
+                              changepoint_data = isolate(changepointdf())), 
              tooltip = c("X", "Y", "text"))
+  })
+  
+  # Plot graph to confirm
+  output$graphOutput <- DT::renderDataTable({
+    generate_graphdata()
+  }, options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T))
+  
+  # For debugging
+  observeEvent(input$browser,{
+    browser()
   })
 }

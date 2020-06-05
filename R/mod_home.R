@@ -58,6 +58,7 @@ mod_home_ui <- function(id) {
 #' @importFrom shiny reactive isTruthy req observeEvent
 #' @importFrom data.table fread
 #' @importFrom DT renderDataTable
+#' @export
 mod_home_server <- function(input, output, session) {
   ns <- session$ns
   gfpop_data <- reactiveValues()
