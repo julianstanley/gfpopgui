@@ -6,7 +6,11 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput 
+#' tags fluidRow column
+#' @import shinycssloaders
+#' @importFrom plotly plotlyOutput
+#' @importFrom visNetwork visNetworkOutput
 mod_analysis_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -58,8 +62,10 @@ mod_analysis_ui <- function(id) {
 #' analysis Server Function
 #'
 #' @noRd
-#' @import shiny
-#' @importFrom plotly ggplotly 
+#' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate 
+#' isolate
+#' @importFrom plotly ggplotly renderPlotly
+#' @importFrom visNetwork renderVisNetwork
 #' @import gfpop
 mod_analysis_server <- function(input, output, session, gfpop_data) {
   ns <- session$ns
