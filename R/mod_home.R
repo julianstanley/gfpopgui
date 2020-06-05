@@ -6,7 +6,9 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList fluidRow column h1 br h3 includeHTML div 
+#' fileInput p h4
+#' @importFrom DT dataTableOutput
 mod_home_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -41,9 +43,9 @@ mod_home_ui <- function(id) {
         div(
           class = "well",
           h4("Input data:"),
-          dataTableOutput(ns("main_datatable")),
+          DT::dataTableOutput(ns("main_datatable")),
           h4("Constraint graph:"),
-          dataTableOutput(ns("graph"))
+          DT::dataTableOutput(ns("graph"))
         )
       )
     )
@@ -53,13 +55,14 @@ mod_home_ui <- function(id) {
 #' home Server Function
 #'
 #' @noRd
-#'
-#' @import shiny
+#' @importFrom shiny reactive isTruthy req observeEvent
 #' @importFrom data.table fread
+#' @importFrom DT renderDataTable
 mod_home_server <- function(input, output, session) {
   ns <- session$ns
   gfpop_data <- reactiveValues()
 
+  # Loading the main and graph data
   get_main_data <- reactive({
     if (isTruthy(input$primary_input)) {
       primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
@@ -69,31 +72,30 @@ mod_home_server <- function(input, output, session) {
     } else if (isTruthy(gfpop_data$primary_input)) {
       return(gfpop_data$primary_input)
     }
-    else {
-      validate(FALSE, "No input data provided. Please provide an input file.")
-    }
   })
 
+  get_graph_data <- reactive({
+    if (isTruthy(input$constraint_graph)) {
+      graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
+      gfpop_data$graph_input <- graph_input
+      return(gfpop_data$graph_input)
+    } 
+  })
   # TODO: main_data should also accept .Rdata from `input$completed_analysis`
   # Parse the primary input data and return back a DataTable
-  output$main_datatable <- renderDataTable(
+  output$main_datatable <- DT::renderDataTable(
     {
-      get_main_data()
+      data <- get_main_data()
+      data
     },
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
   )
 
   # TODO: main_data should also accept .Rdata from `input$completed_analysis`
-  output$graph <- renderDataTable(
+  output$graph <- DT::renderDataTable(
     {
-      if (isTruthy(input$constraint_graph)) {
-        graph_input <- fread(input$constraint_graph$datapath, stringsAsFactors = FALSE)
-        gfpop_data$graph_input <- graph_input
-        graph_input
-      } else {
-        validate(FALSE, "No graph data provided. 
-Graph data is optional. Please either provide a graph input file or move to the 'analysis' page")
-      }
+      data <- get_graph_data()
+      data
     },
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
   )
