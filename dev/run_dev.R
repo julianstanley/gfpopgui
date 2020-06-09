@@ -12,3 +12,4 @@ golem::document_and_reload()
 options(shiny.port = 11616)
 run_app()
 
+# $('#browser').show();

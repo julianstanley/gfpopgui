@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork — graphdf_to_visNetwork • gfpopgui</title>
+<title>Gets the changepoint location associated with this location on the x axis — get_associated_changepoint • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ can be read by visNetwork — graphdf_to_visNetwork • gfpopgui</title>
 
 
 
-<meta property="og:title" content="Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork — graphdf_to_visNetwork" />
-<meta property="og:description" content="Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork" />
+<meta property="og:title" content="Gets the changepoint location associated with this location on the x axis — get_associated_changepoint" />
+<meta property="og:description" content="Gets the changepoint location associated with this location on the x axis" />
 
 
 
@@ -114,50 +111,43 @@ can be read by visNetwork" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork</h1>
-    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpop-gui/blob/master/R/fct_visNetwork_helpers.R'><code>R/fct_visNetwork_helpers.R</code></a></small>
-    <div class="hidden name"><code>graphdf_to_visNetwork.Rd</code></div>
+    <h1>Gets the changepoint location associated with this location on the x axis</h1>
+    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpop-gui/blob/master/R/fct_changepoint_helpers.R'><code>R/fct_changepoint_helpers.R</code></a></small>
+    <div class="hidden name"><code>get_associated_changepoint.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Turns a graph dataframe (from gfpop) into a list that
-can be read by visNetwork</p>
+    <p>Gets the changepoint location associated with this location on the x axis</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graphdf_to_visNetwork</span>(<span class='no'>graphdf</span>, <span class='kw'>edgeSep</span> <span class='kw'>=</span> <span class='st'>"_"</span>)</pre>
+    <pre class="usage"><span class='fu'>get_associated_changepoint</span>(<span class='no'>x_loc</span>, <span class='no'>changepoint_data</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>graphdf</th>
-      <td><p>A graph object (in the form of a dataframe) from gfpop
-Must have the following columns:</p><ul>
-<li><p>"state1"</p></li>
-<li><p>"state2"</p></li>
-<li><p>"</p></li>
-</ul></td>
+      <th>x_loc</th>
+      <td><p>The X locations to querey</p></td>
     </tr>
     <tr>
-      <th>edgeSep</th>
-      <td><p>A character seperating the nodes in an edge label</p></td>
+      <th>changepoint_data</th>
+      <td><p>A dataframe containing changepoint data 
+(see generate_changepoint).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list that can be read by visNetwork</p>
+    <p>A data.frame/list with the 0 or 1 changepoint location consistent
+with the given x location</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>graphdf_to_visNetwork</span>(<span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/graph.html'>graph</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"std"</span>))</div><div class='output co'>#&gt; $nodes
-#&gt;    id label
-#&gt; 1 Std   Std
-#&gt; 
-#&gt; $edges
-#&gt;        id   label  to from
-#&gt; 1 Std_Std Std_Std Std  Std
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/dataGenerator.html'>dataGenerator</a></span>(<span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>0.3</span>, <span class='fl'>0.5</span>, <span class='fl'>0.8</span>, <span class='fl'>1</span>),
+<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>1</span>), <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>graph</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/graph.html'>graph</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"std"</span>)
+<span class='no'>changepoint_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='generate_changepoint.html'>generate_changepoint</a></span>(<span class='no'>data</span>, <span class='no'>graph</span>)
+<span class='fu'>get_associated_changepoint</span>(<span class='fl'>3</span>, <span class='no'>changepoint_data</span>)</div><div class='output co'>#&gt;   changepoint changepoint_end         y
+#&gt; 1           3               2 0.6954565</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

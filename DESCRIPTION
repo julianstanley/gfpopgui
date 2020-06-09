@@ -16,7 +16,7 @@ Imports:
     gfpop (>= 0.2.2),
     ggplot2,
     plotly,
-    visNetwork,
+    visNetwork (>= 2.1.0),
     pkgload,
     shinycssloaders,
     data.table,
@@ -34,4 +34,6 @@ Suggests:
     RSelenium,
     vdiffr
 Remotes: 
-    vrunge/gfpop
+    vrunge/gfpop,
+    rstudio/shiny,
+    datastorm-open/visNetwork

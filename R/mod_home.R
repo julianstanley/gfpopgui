@@ -58,48 +58,41 @@ mod_home_ui <- function(id) {
 #' @importFrom shiny reactive isTruthy req observeEvent
 #' @importFrom data.table fread
 #' @importFrom DT renderDataTable
+#' @export
 mod_home_server <- function(input, output, session) {
   ns <- session$ns
-  gfpop_data <- reactiveValues()
+  
+  # Set variables --------------------------------------------------------------
+  gfpop_data <- reactiveValues(
+    graphdata = gfpop::graph(
+    penalty = as.double(15),
+    type = "std"
+  ),
+  graphdata_visNetwork = graphdf_to_visNetwork(gfpop::graph(
+    penalty = as.double(15),
+    type = "std"
+  ))
+  )
 
-  # Loading the main and graph data
-  get_main_data <- reactive({
+  # Main Data Input and Preview-------------------------------------------------
+  set_main_data <- reactive({
     if (isTruthy(input$primary_input)) {
       primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
       colnames(primary_input) <- c("X", "Y")
-      gfpop_data$primary_input <- primary_input
-      return(primary_input)
-    } else if (isTruthy(gfpop_data$primary_input)) {
-      return(gfpop_data$primary_input)
+      gfpop_data$main_data <- primary_input
     }
   })
-
-  get_graph_data <- reactive({
-    if (isTruthy(input$constraint_graph)) {
-      graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
-      gfpop_data$graph_input <- graph_input
-      return(gfpop_data$graph_input)
-    } 
-  })
+  
   # TODO: main_data should also accept .Rdata from `input$completed_analysis`
   # Parse the primary input data and return back a DataTable
   output$main_datatable <- DT::renderDataTable(
     {
-      data <- get_main_data()
-      data
+      set_main_data()
+      gfpop_data$main_data
     },
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
   )
-
-  # TODO: main_data should also accept .Rdata from `input$completed_analysis`
-  output$graph <- DT::renderDataTable(
-    {
-      data <- get_graph_data()
-      data
-    },
-    options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
-  )
-
+  
   # Generate some data if users ask for it (temporary, for testing)
   observeEvent(input$genData, {
     primary_input <- data.frame(
@@ -107,8 +100,28 @@ mod_home_server <- function(input, output, session) {
       Y = dataGenerator(input$ndata, c(0.1, 0.3, 0.5, 0.8, 1), 
                         c(1, 2, 1, 3, 1), sigma = input$sigma)
     )
-    gfpop_data$primary_input <- primary_input
+    gfpop_data$main_data <- primary_input
   })
+  
+  
+  # Graph Data Input and Preview -----------------------------------------------
+  set_graph_data <- reactive({
+    if (isTruthy(input$constraint_graph)) {
+      graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
+      gfpop_data$graph_input <- graph_input
+      gfpop_data$graphdata <- gfpop::graph(gfpop_data$graph_input)
+      gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+    } 
+  })
+  
+  # TODO: main_data should also accept .Rdata from `input$completed_analysis`
+  output$graph <- DT::renderDataTable(
+    {
+      set_graph_data()
+      gfpop_data$graphdata
+    },
+    options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
+  )
 
   return(gfpop_data)
 }
