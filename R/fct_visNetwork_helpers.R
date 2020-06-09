@@ -5,7 +5,8 @@ NAtoNone <- function(vec) {
 
 #' @export
 NonetoNA <- function(vec) {
-  sapply(vec, function(x) if (x == "None") NA else x)
+  vectemp <- NAtoNone(vec)
+  sapply(vectemp, function(x) if (x == "None") NA else x)
 }
 
 #' Turns a graph dataframe (from gfpop) into a list that

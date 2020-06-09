@@ -157,6 +157,13 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
 
     if (event$cmd == "editEdge") {
       changed_id <- event$id
+      
+      # Decide whether we need to add selfReference.angle
+      if (event$to == event$from) {
+        angle <- if (event$type == "null") pi else 2*pi 
+      } else {
+        angle = "NA"
+      }
 
       gfpop_data$graphdata_visNetwork$edges <- gfpop_data$graphdata_visNetwork$edges %>%
         mutate_cond(id == changed_id,
@@ -165,8 +172,31 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
           type = event$type, parameter = event$parameter,
           penalty = event$penalty, K = event$K, a = event$a,
           min = event$min, max = event$max,
+          selfReference.angle = angle, selfReference.size = 40,
           hidden = as.logical(event$hidden)
         )
+    }
+    
+    if (event$cmd == "addEdge") {
+      new_row <- data.frame(
+        id = event$id,
+        label = "",
+        to = event$to, from = event$from,
+        type = "null", parameter = "None",
+        penalty = "None", K = "None", a = "None",
+        min = "None", max = "None", 
+        selfReference.angle = NA, selfReference.size = NA, hidden = FALSE)
+      
+      gfpop_data$graphdata_visNetwork$edges <- rbind(gfpop_data$graphdata_visNetwork$edges,
+                                                     new_row)
+    }
+    
+    if (event$cmd == "addNode") {
+      gfpop_data$graphdata_visNetwork$nodes <- rbind(
+        gfpop_data$graphdata_visNetwork$nodes,
+                                                     data.frame(id = event$id,
+                                                                label = event$label,
+                                                                size = 40))
     }
 
     gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
