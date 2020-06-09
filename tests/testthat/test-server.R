@@ -5,5 +5,5 @@ mod_home_server_test <- function(id) {
 }
 
 shiny::testServer(mod_home_server_test, {
-  expect_equal(get_main_data(), NULL) 
+  expect_equal(gfpop_data$main_data, NULL) 
 })
