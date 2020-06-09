@@ -1,4 +1,13 @@
-# TODO: this function should deal with all gfpop graph parameters
+#' @export
+NAtoNone <- function(vec) {
+  sapply(vec, function(x) if (is.na(x)) "None" else x)
+}
+
+#' @export
+NonetoNA <- function(vec) {
+  sapply(vec, function(x) if (x == "None") NA else x)
+}
+
 #' Turns a graph dataframe (from gfpop) into a list that
 #' can be read by visNetwork
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
@@ -6,9 +15,16 @@
 #' \itemize{
 #' \item{"state1"}
 #' \item{"state2"}
-#' \item{"}
+#' \item{"type"}
+#' \item{"parameter"}
+#' \item{"penalty"}
+#' \item{"K"}
+#' \item{"a"}
+#' \item{"min"}
+#' \item{"max"}
 #' }
 #' @param edgeSep A character seperating the nodes in an edge label
+#' @param hideNull (Boolean) hide null edges?
 #' @returns a list that can be read by visNetwork
 #' @importFrom dplyr filter %>%
 #' @importFrom rlang .data 
@@ -16,20 +32,65 @@
 #' @examples
 #' graphdf_to_visNetwork(gfpop::graph(type = "std"))
 #' @export
-graphdf_to_visNetwork <- function(graphdf, edgeSep = "_") {
+graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
   class(graphdf) <- "data.frame"
-  graphdf_nonull <- graphdf %>% dplyr::filter(.data$type != "null")
 
-  edge_names <- paste(graphdf_nonull$state1, graphdf_nonull$state2, sep = edgeSep)
-  node_names <- unique(c(graphdf_nonull$state1, graphdf_nonull$state2))
+  edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
+  node_names <- unique(c(graphdf$state1, graphdf$state2))
 
+  # Set null-specific paramaters
+  selfReference.angle <- c()
+  hidden <- c()
+  for(i in 1:nrow(graphdf)) {
+    row <- graphdf[i,]
+    if(row$state1 != row$state2) {
+      selfReference.angle <- c(selfReference.angle, NA)
+      hidden <- c(hidden, FALSE)
+    } else if(row$state1 == row$state2) {
+      if(row$type == "null") {
+        hidden <- if(showNull) c(hidden, FALSE) else c(hidden, TRUE)
+        selfReference.angle <- c(selfReference.angle, pi)
+      } else {
+        hidden <- c(hidden, FALSE)
+        selfReference.angle <- c(selfReference.angle, 2*pi)
+      }
+    }
+  }
   list(
-    nodes = data.frame(id = node_names, label = node_names),
+    nodes = data.frame(id = node_names, label = node_names, size = rep(40, length(node_names))),
     edges = data.frame(
-      id = edge_names, label = edge_names,
-      to = graphdf_nonull$state2, from = graphdf_nonull$state1
+      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = "_"), 
+      label = paste0(graphdf$type, " | ", graphdf$penalty),
+      to = graphdf$state2, from = graphdf$state1,
+      type = graphdf$type, parameter = graphdf$parameter,
+      penalty = graphdf$penalty, K = as.character(graphdf$K), 
+      a = graphdf$a, min = NAtoNone(graphdf$min), max = NAtoNone(graphdf$max),
+      selfReference.angle = selfReference.angle,
+      selfReference.size = rep(40, length(graphdf$state1)),
+      hidden = hidden
     )
   )
+}
+
+
+#' Turns a list that can be read by visNetwork into graph dataframe (for gfpop)
+#' @param visNetwork_list A list object compatable with visNetwork
+#' See graphdf_to_visNetwork.
+#' @returns a dataframe/graph for gfpop
+#' @importFrom dplyr filter %>%
+#' @importFrom rlang .data 
+#' @import visNetwork
+#' @examples
+#' visNetwork_to_graphdf(graphdf_to_visNetwork(gfpop::graph(type = "std")))
+#' @export
+visNetwork_to_graphdf <- function(visNetwork_list) {
+  edges <- visNetwork_list$edges
+  edges$state1 <- edges$from
+  edges$state2 <- edges$to
+  edges$K <- as.numeric(edges$K)
+  edges$min <- NonetoNA(edges$min)
+  edges$max <- NonetoNA(edges$max)
+  gfpop::graph(select_graph_columns(edges))
 }
 
 #' Generates a visNetwork from a list of nodes and edges
@@ -42,14 +103,17 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_") {
 generate_visNetwork <- function(graph_data) {
   visNetwork(graph_data$nodes, graph_data$edges) %>%
     visEdges(
-      arrows = "to", physics = FALSE,
+      arrows = "to", physics = F,
       smooth = list(
         type = "curvedCW",
         roundness = 0.2
-      )
+      ),
+      font = list(align = 'top')
     ) %>%
     visOptions(manipulation = list(
       enabled = TRUE,
-      editEdge = TRUE
-    ))
+      editEdgeCols = c("from", "to", "label", 
+                       "type", "parameter", "penalty", "K", "a", "min", "max", "hidden")
+    )) %>%
+    visLayout(randomSeed = 123)
 }

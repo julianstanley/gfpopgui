@@ -5,7 +5,7 @@
 \title{Turns a graph dataframe (from gfpop) into a list that
 can be read by visNetwork}
 \usage{
-graphdf_to_visNetwork(graphdf, edgeSep = "_")
+graphdf_to_visNetwork(graphdf, edgeSep = "_", showNull = TRUE)
 }
 \arguments{
 \item{graphdf}{A graph object (in the form of a dataframe) from gfpop
@@ -13,10 +13,18 @@ Must have the following columns:
 \itemize{
 \item{"state1"}
 \item{"state2"}
-\item{"}
+\item{"type"}
+\item{"parameter"}
+\item{"penalty"}
+\item{"K"}
+\item{"a"}
+\item{"min"}
+\item{"max"}
 }}
 
 \item{edgeSep}{A character seperating the nodes in an edge label}
+
+\item{hideNull}{(Boolean) hide null edges?}
 }
 \value{
 a list that can be read by visNetwork
