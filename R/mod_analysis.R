@@ -45,6 +45,7 @@ mod_analysis_ui <- function(id) {
           label = "Show null nodes?",
           value = TRUE
         ),
+        actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
 
         hr(),
         h4("gfpop settings"),
@@ -147,7 +148,10 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
 
   # Generate a visualization of the current constraint graph
   output$gfpopGraph <- renderVisNetwork({
-    generate_visNetwork(gfpop_data$graphdata_visNetwork)
+    # Refresh when one of the Update/Refresh Graph buttons are pressed
+    input$updateGraph
+    input$refreshGraph
+    generate_visNetwork(isolate(gfpop_data$graphdata_visNetwork))
   })
 
   # Monitor edge edits. Edit the gfpop_data$graphdata_visNetwork variable
