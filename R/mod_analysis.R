@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput
-#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel
+#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput
 #' @import shinycssloaders
 #' @importFrom plotly plotlyOutput
 #' @importFrom visNetwork visNetworkOutput
@@ -104,7 +104,11 @@ mod_analysis_ui <- function(id) {
             "Main",
             h3("Changepoints"),
             dataTableOutput(ns("gfpopOutput"))
-          )
+          ),
+          tabPanel(
+            "More",
+            h3("Full Output"),
+            htmlOutput(ns("gfpopOutput_verbose")))
         )
       )
     ),
@@ -168,7 +172,7 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     generate_visNetwork(isolate(gfpop_data$graphdata_visNetwork))
   })
 
-  ## Graph Logistics: Observe graph changes-------------------------------------
+  ### Graph Logistics: Observe graph changes-------------------------------------
   # Monitor edge edits. Edit the gfpop_data$graphdata_visNetwork variable
   # from the observations, and then update the gfpop_data$graphdata
   observeEvent(input$gfpopGraph_graphChange, {
@@ -261,7 +265,7 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
   })
 
-  ## Graph Logistics: Output Data Tables -----
+  ### Graph Logistics: Output Data Tables -----
   output$graphOutput <- DT::renderDT(
     {
       gfpop_data$graphdata
@@ -289,7 +293,7 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
   )
 
-  # Graph Logistics: Edit Observers for Output Data Tables -----
+  ### Graph Logistics: Edit Observers for Output Data Tables -----
   proxy <- dataTableProxy("graphOutput")
   observeEvent(input$graphOutput_cell_edit, {
     info <- input$graphOutput_cell_edit
@@ -361,17 +365,42 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     isolate(initialize_changepoints())
 
     # Build on top of the current base data graphic
-    gfpop_data$base_plot
+    gfpop_data$base_plot %>%
+      add_changepoints(gfpop_data$main_data, gfpop_data$changepoints)
     
   })
 
   output$gfpopOutput <- DT::renderDT(
     {
-      gfpop_data$changepointdf
+      changepoints <- gfpop_data$changepoints
+      data.frame(
+        "State" = changepoints$states,
+        "X Location" = changepoints$changepoints,
+        "Y Mean Before CP" = changepoints$parameters
+      )
     },
     editable = FALSE,
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
   )
+  
+  output$gfpopOutput_verbose <- renderUI({
+    changepoints <- gfpop_data$changepoints
+    outputstr <- paste(
+      "<b>Changepoints:</b>",
+      paste(changepoints$changepoints, collapse = ","), 
+      "<b>States:</b>",
+      paste(changepoints$states, collapse = ","), 
+      "<b>Forced:</b>",
+      paste(changepoints$forced, collapse = ","), 
+      "<b>Parameters (means):</b>", 
+      paste(round(changepoints$parameters, 2), collapse = ","),
+      "<b>Global Cost:</b>",
+      round(changepoints$globalCost, 2),
+      sep = '<br/>'
+    )
+    
+    HTML(outputstr)
+  })
 
   # For debugging --------------------------------------------------------------
   observeEvent(input$browser, {

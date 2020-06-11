@@ -17,12 +17,13 @@
 #' graph <- gfpop::graph(type = "std")
 #' generate_changepoint(data, graph)
 #' @export
-generate_changepoint <- function(data_input, graph_input, type = "mean") {
+generate_changepoint <- function(data_input, graph_input, type = "mean", weights = NULL) {
   model <-
     gfpop::gfpop(
       data = data_input,
       mygraph = graph_input,
-      type = type
+      type = type,
+      weights = weights
     )
   num_changepoints <- length(model$changepoints)
   changepoint_data <-
