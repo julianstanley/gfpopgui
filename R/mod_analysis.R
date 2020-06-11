@@ -13,6 +13,7 @@
 #' @importFrom visNetwork visNetworkOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom utils str
+#' @importFrom shinyjs hidden
 mod_analysis_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -108,9 +109,10 @@ mod_analysis_ui <- function(id) {
       )
     ),
 
-    # Button for debugging
+    # Buttons for debugging
     actionButton(ns("browser"), "browser"),
-    tags$script(paste0("$('#", ns("browser"), "').hide();"))
+    tags$script(paste0("$('#", ns("browser"), "').hide();")),
+    hidden(numericInput(inputId = ns("graph_refresh_helper"), label = "", value = 0))
   )
 }
 
@@ -118,17 +120,21 @@ mod_analysis_ui <- function(id) {
 #'
 #' @noRd
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
-#' isolate
-#' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
+#' isolate updateNumericInput
+#' @importFrom plotly ggplotly renderPlotly plot_ly add_markers 
 #' @importFrom visNetwork renderVisNetwork
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
-#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
+#' @importFrom rlang .data
 #' @import gfpop
 mod_analysis_server <- function(input, output, session, gfpop_data) {
   ns <- session$ns
 
   ## Graph Logistics -----------------------------------------------------------
+
+  # Observer to see the graph refresh helper
+  observeEvent( input$graph_refresh_helper, {} )
 
   # When the "Update graph with above parameters" button is pressed, update graph
   graphdf_default <- observeEvent(eventExpr = input$updateGraph, {
@@ -155,18 +161,24 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     # Refresh when one of the Update/Refresh Graph buttons are pressed
     input$updateGraph
     input$refreshGraph
+    
+    # Or, use this to trigger from elsewhere
+    input$graph_refresh_helper
+
     generate_visNetwork(isolate(gfpop_data$graphdata_visNetwork))
   })
 
-  ## Graph Logistics: Monitoring edits -----------------------------------------
+  ## Graph Logistics: Observe graph changes-------------------------------------
   # Monitor edge edits. Edit the gfpop_data$graphdata_visNetwork variable
   # from the observations, and then update the gfpop_data$graphdata
   observeEvent(input$gfpopGraph_graphChange, {
     event <- input$gfpopGraph_graphChange
-    changed_id <- event$id
-    
+    print(event)
+
+    ### Edit Edge --------------------------------------------------------------
     if (event$cmd == "editEdge") {
-      
+  
+      changed_id <- event$id
       # Decide whether we need to add selfReference.angle
       if (event$to == event$from) {
         angle <- if (event$type == "null") pi else 2*pi 
@@ -184,22 +196,43 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
           selfReference.angle = angle, selfReference.size = 40,
           hidden = as.logical(event$hidden)
         )
+      
+      # Need to refresh graph for things to work properly here
+      updateNumericInput(session = session, inputId = 'graph_refresh_helper', 
+                         value = input$graph_refresh_helper + 1)
     }
     
+    ### Add Edge ---------------------------------------------------------------
     if (event$cmd == "addEdge") {
       new_row <- data.frame(
         id = event$id,
         label = "",
         to = event$to, from = event$from,
-        type = "null", parameter = "None",
-        penalty = "None", K = "None", a = "None",
+        type = "null", parameter = "0",
+        penalty = "0", K = "Inf", a = "0",
         min = "None", max = "None", 
-        selfReference.angle = NA, selfReference.size = NA, hidden = FALSE)
+        selfReference.angle = NA, selfReference.size = 40, hidden = FALSE)
       
       gfpop_data$graphdata_visNetwork$edges <- rbind(gfpop_data$graphdata_visNetwork$edges,
                                                      new_row)
+      
+      # Need to refresh graph for things to work properly here
+      updateNumericInput(session = session, inputId = 'graph_refresh_helper', 
+                         value = input$graph_refresh_helper + 1)
+      
     }
     
+    ### Delete Edge ------------------------------------------------------------
+    if (event$cmd == "deleteElements" && (length(event$edges) > 0)) {
+      print(length(event$edges))
+      for(del_edge in event$edges) {
+        gfpop_data$graphdata_visNetwork$edges <-
+          gfpop_data$graphdata_visNetwork$edges %>%
+          dplyr::filter(.data$id != del_edge)
+      }
+    }
+    
+    ### Add Node ---------------------------------------------------------------
     if (event$cmd == "addNode") {
       gfpop_data$graphdata_visNetwork$nodes <- rbind(
         gfpop_data$graphdata_visNetwork$nodes,
@@ -208,11 +241,21 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
                                         size = 40))
     }
     
+    ### Edit Node --------------------------------------------------------------
     if (event$cmd == "editNode") {
       gfpop_data$graphdata_visNetwork$nodes <- 
         gfpop_data$graphdata_visNetwork$nodes %>%
         mutate_cond(id == event$id,
                     label = event$label)
+    }
+    
+    ### Delete Node ------------------------------------------------------------
+    if (event$cmd == "deleteElements" && (length(event$nodes) > 0)) {
+      for(del_node in event$nodes) {
+        gfpop_data$graphdata_visNetwork$nodes <-
+          gfpop_data$graphdata_visNetwork$nodes %>%
+          dplyr::filter(.data$id != del_node)
+      }
     }
 
     gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
