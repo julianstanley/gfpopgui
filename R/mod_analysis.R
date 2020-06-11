@@ -46,7 +46,6 @@ mod_analysis_ui <- function(id) {
           value = TRUE
         ),
         actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
-
         hr(),
         h4("gfpop settings"),
         selectInput(
@@ -55,7 +54,11 @@ mod_analysis_ui <- function(id) {
           choices = c("mean", "variance", "poisson", "exp", "negbin")
         ),
 
-        actionButton(inputId = ns("runGfpop"), label = "Run gfpop!")
+        actionButton(inputId = ns("runGfpop"), label = "Run gfpop!"),
+        hr(),
+        HTML("<b>Note:</b> Edge and Node IDs <u>cannot</u> be changed once
+             they are created. Please set IDs appropriately (or accept the defaults)
+             when you create them!"),
       ),
       column(
         5,
@@ -116,10 +119,11 @@ mod_analysis_ui <- function(id) {
 #' @noRd
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
 #' isolate
-#' @importFrom plotly ggplotly renderPlotly
+#' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
 #' @importFrom visNetwork renderVisNetwork
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
 #' @importFrom dplyr mutate
+#' @importFrom gfpop gfpop
 #' @import gfpop
 mod_analysis_server <- function(input, output, session, gfpop_data) {
   ns <- session$ns
@@ -154,13 +158,14 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     generate_visNetwork(isolate(gfpop_data$graphdata_visNetwork))
   })
 
+  ## Graph Logistics: Monitoring edits -----------------------------------------
   # Monitor edge edits. Edit the gfpop_data$graphdata_visNetwork variable
   # from the observations, and then update the gfpop_data$graphdata
   observeEvent(input$gfpopGraph_graphChange, {
     event <- input$gfpopGraph_graphChange
-
+    changed_id <- event$id
+    
     if (event$cmd == "editEdge") {
-      changed_id <- event$id
       
       # Decide whether we need to add selfReference.angle
       if (event$to == event$from) {
@@ -198,9 +203,16 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     if (event$cmd == "addNode") {
       gfpop_data$graphdata_visNetwork$nodes <- rbind(
         gfpop_data$graphdata_visNetwork$nodes,
-                                                     data.frame(id = event$id,
-                                                                label = event$label,
-                                                                size = 40))
+                             data.frame(id = event$id,
+                                        label = event$label,
+                                        size = 40))
+    }
+    
+    if (event$cmd == "editNode") {
+      gfpop_data$graphdata_visNetwork$nodes <- 
+        gfpop_data$graphdata_visNetwork$nodes %>%
+        mutate_cond(id == event$id,
+                    label = event$label)
     }
 
     gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
@@ -278,36 +290,36 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
   ## Changepoint/data logistics ------------------------------------------------
 
   # From the current input data and graph, generate changepoint results
-  update_changepointdf <- reactive({
+  # Returns: None. Affects: initializes gfpop_data$changepoints
+  initialize_changepoints <- reactive({
     req(gfpop_data$main_data)
-    graphdata <- gfpop_data$graphdata
-    gfpop_data$changepointdf <- generate_changepoint(
-      gfpop_data$main_data$Y,
-      graphdata, input$gfpopType
-    )
+    # TODO: Allow user to add weights (what do those do?)
+    gfpop_data$changepoints <- gfpop::gfpop(gfpop_data$main_data$Y,
+                                            gfpop_data$graphdata,
+                                            type = input$gfpopType)
   })
 
+  # Creates a base plotly plot with the user data
+  # Returns: None. Affects: initializes gfpop_data$base_plot
+  initialize_plot <- observeEvent(gfpop_data$main_data, {
+    req(gfpop_data$main_data)
+    
+    gfpop_data$base_plot <- 
+      plot_ly(gfpop_data$main_data, x = ~X, y = ~Y, hoverinfo = 'none') %>%
+      add_markers
+  })
+  
   # Generate the visualization of the data with overlain changepoints
-  # TODO: Can we always show the data, and then just overlay changepoints
-  # whenever "Run gfpop!" is pressed?
-  # Should work by storing a base plotly object in memory, then piping from that.
   output$gfpopPlot <- renderPlotly({
+    # Triggered by button to run analysis
     input$runGfpop
+    
+    # Run the analysis
+    isolate(initialize_changepoints())
 
-    isolate(update_changepointdf())
-
-    if (!isTruthy(isolate(gfpop_data$main_data))) {
-      validate(FALSE, "Either you haven't uploaded any data, or you haven't 
-               pressed the 'run gfpop!' button yet.")
-      return(1)
-    }
-
-    ggplotly(plot_changepoint(
-      data_input = isolate(gfpop_data$main_data),
-      changepoint_data = isolate(gfpop_data$changepointdf)
-    ),
-    tooltip = c("X", "Y", "text")
-    )
+    # Build on top of the current base data graphic
+    gfpop_data$base_plot
+    
   })
 
   output$gfpopOutput <- DT::renderDT(
