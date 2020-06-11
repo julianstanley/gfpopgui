@@ -4,16 +4,6 @@
 #' @param changepoint_data The output of gfpop::gfpop() with original_data
 #' @returns a plotly_object with additional traces corresponding to changepoints
 #' @importFrom plotly hide_legend add_lines plot_ly
-#' @importFrom magrittr %>%
-#' @examples 
-#' data <- data.frame(X = seq(5, 870, length = 100), 
-#' Y = gfpop::dataGenerator(100, c(0.1, 0.3, 0.5, 0.8, 1), c(1,2,1,3,1), sigma = 1))
-#' mygraph <- gfpop::graph(type = "updown", penalty = 15)
-#' changepoint_data <- gfpop::gfpop(data = data$Y, mygraph = mygraph,
-#' type = "mean")
-#' plot_ly(data, x = ~X, y = ~Y, hoverinfo = 'none') %>%
-#' add_markers() %>%
-#' add_changepoints(data, changepoint_data)
 #' @export
 add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   # Initialize plotly object to return
