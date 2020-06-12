@@ -19,13 +19,3 @@ a plotly_object with additional traces corresponding to changepoints
 \description{
 Adds changepoints annotations to a plotly plot.
 }
-\examples{
-data <- data.frame(X = seq(5, 870, length = 100), 
-Y = gfpop::dataGenerator(100, c(0.1, 0.3, 0.5, 0.8, 1), c(1,2,1,3,1), sigma = 1))
-mygraph <- gfpop::graph(type = "updown", penalty = 15)
-changepoint_data <- gfpop::gfpop(data = data$Y, mygraph = mygraph,
-type = "mean")
-plot_ly(data, x = ~X, y = ~Y, hoverinfo = 'none') \%>\%
-add_markers() \%>\%
-add_changepoints(data, changepoint_data)
-}
