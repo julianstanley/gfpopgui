@@ -3,20 +3,22 @@
 #' @param original_data A dataset with "X" and "Y" columns (column names required)
 #' @param changepoint_data The output of gfpop::gfpop() with original_data
 #' @returns a plotly_object with additional traces corresponding to changepoints
-#' @importFrom plotly hide_legend add_lines plot_ly
+#' @import plotly
 #' @export
 add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   # Initialize plotly object to return
   return_plotly <- plotly_obj %>%
     hide_legend()
+  
+  changepoint_annotations_regions = data.frame(x = c(), y = c(), text = c())
+  changepoint_annotations = data.frame(x = c(), y = c(), text = c())
 
   changepoints <- changepoint_data$changepoints
 
-  # Note: ds = dataspace, since changepoint data refers to indicices, not in dataspace
+  # Note: ds = dataspace, since changepoint data refers to indicates, not in dataspace
   previous_changepoint <- 1
   previous_changepoint_ds <- original_data$X[1]
   i <- 1
-
   # Add each changepoint to the given plotly object
   for (i in 1:length(changepoints)) {
     changepoint <- changepoints[i]
@@ -29,30 +31,33 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
       length.out = length(changeregion)
     )
 
-    return_plotly <- return_plotly %>%
-      add_lines(
-        x = changeregion_ds, y = rep(changepoint_data$parameters[i]),
-        color = I("#40B0A6"), hoverinfo = "text",
-        text = paste0(
-          "State: ", changepoint_data$states[i], "\n",
-          "Region mean: ", round(changepoint_data$parameters[i], 2), "\n",
-          "Next changepoint: ", round(changepoint_ds, 2)
-        ),
-        line = list(width = 7)
+    changepoint_annotations_regions <- rbind(
+      changepoint_annotations_regions,
+      data.frame(x = c(changeregion_ds, NA),
+                 y = c(rep(changepoint_data$parameters[i], length(changeregion_ds)), NA),
+                 text = c(rep(
+                   paste0(
+                   "State: ", changepoint_data$states[i], "\n",
+                   "Region mean: ", round(changepoint_data$parameters[i], 2), "\n",
+                   "Next changepoint: ", round(changepoint_ds, 2)
+                 ),
+                 length(changeregion_ds)), NA)
       )
-
+    )
     # If this isn't the first region, connect this region with the last
     if (i > 1) {
-      return_plotly <- return_plotly %>%
-        add_lines(
-          x = rep(previous_changepoint_ds, 50), y = seq(changepoint_data$parameters[i - 1],
-            changepoint_data$parameters[i],
-            length.out = 50
-          ),
-          color = I("#E1BE6A"), hoverinfo = "text",
-          text = paste0("Changepoint #", i-1, ": ", round(previous_changepoint_ds, 2)),
-          line = list(width = 7)
+      changepoint_annotations <- rbind(
+        changepoint_annotations,
+        data.frame(
+          x = c(rep(previous_changepoint_ds, 50), NA), 
+          y = c(seq(changepoint_data$parameters[i - 1],
+                                  changepoint_data$parameters[i],
+                                  length.out = 50
+          ), NA),
+          text = c(rep(paste0("Changepoint #", i-1, ": ", round(previous_changepoint_ds, 2)), 50),
+                   NA)
         )
+      )
     }
 
     # Update the previous changepoints
@@ -60,42 +65,20 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     previous_changepoint_ds <- changepoint_ds
   }
 
-  return_plotly
-}
-
-#' Makes a ggplot object with the changepoint data
-#' @param data_input The data associated with the given changepoints
-#' @param changepoint_data The changepoints, in a dataframe format
-#' @returns a ggplot object
-#' @importFrom ggplot2 ggplot geom_point aes geom_segment xlab ylab
-#' @importFrom rlang .data
-#' @examples
-#' data <- data.frame(X = 1:100, Y = gfpop::dataGenerator(100, c(0.1, 0.3, 0.5, 0.8, 1),
-#'   c(1, 2, 1, 3, 1),
-#'   sigma = 1
-#' ))
-#' graph <- gfpop::graph(type = "std", penalty = 15)
-#' changepoint_data <- generate_changepoint(data$Y, graph)
-#' plot_changepoint(data, changepoint_data)
-#' @export
-plot_changepoint <- function(data_input, changepoint_data) {
-  annotated_data <- annotate_data_with_changepoint(data_input, changepoint_data)
-  ggplot(annotated_data, aes(
-    x = .data$X,
-    y = .data$Y,
-    text = .data$CP_Data
-  )) +
-    geom_point() +
-    geom_segment(
-      aes(
-        x = .data$changepoint,
-        xend = .data$changepoint_end,
-        y = .data$y,
-        yend = .data$y
-      ),
-      size = 1.5,
-      col = "red"
-    ) +
-    xlab("X units (arbitrary)") +
-    ylab("Univariate gaussian data (randomly generated)")
+  return_plotly %>%
+    add_lines(data = changepoint_annotations_regions,
+              x = ~x,
+              y = ~y, 
+              color = ~I("#40B0A6"),
+              hoverinfo = "text", text = ~text,
+              connectgaps = F,
+              line = list(width = 7)) %>%
+    add_lines(data = changepoint_annotations,
+              x = ~x,
+              y = ~y, 
+              color = ~I("#E1BE6A"),
+              hoverinfo = "text", text = ~text,
+              connectgaps = F,
+              line = list(width = 7)) %>%
+    layout(hovermode = "x unified")
 }
