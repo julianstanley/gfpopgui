@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @importFrom shiny tagList fluidPage navbarPage tabPanel
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -10,6 +11,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
+      useShinyjs(),
       navbarPage(id = "tabs",
         title = "gfpop",
         collapsible = TRUE,

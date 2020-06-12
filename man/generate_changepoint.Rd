@@ -5,7 +5,7 @@
 \title{Given data and a constraint graph, generate a changepoint output
 A wrapper around gfpop::gfpop()}
 \usage{
-generate_changepoint(data_input, graph_input, type = "mean")
+generate_changepoint(data_input, graph_input, type = "mean", weights = NULL)
 }
 \arguments{
 \item{data_input}{vector of data to segment}

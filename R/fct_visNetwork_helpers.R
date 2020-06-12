@@ -88,7 +88,10 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   edges <- visNetwork_list$edges
   edges$state1 <- edges$from
   edges$state2 <- edges$to
+  edges$parameter <- as.numeric(edges$parameter)
+  edges$penalty <- as.numeric(edges$penalty)
   edges$K <- as.numeric(edges$K)
+  edges$a <- as.numeric(edges$a)
   edges$min <- NonetoNA(edges$min)
   edges$max <- NonetoNA(edges$max)
   gfpop::graph(select_graph_columns(edges))
@@ -113,7 +116,7 @@ generate_visNetwork <- function(graph_data) {
     ) %>%
     visOptions(manipulation = list(
       enabled = TRUE,
-      editEdgeCols = c("from", "to", "label", 
+      editEdgeCols = c("from", "to", 
                        "type", "parameter", "penalty", "K", "a", "min", "max", "hidden")
     )) %>%
     visLayout(randomSeed = 123)

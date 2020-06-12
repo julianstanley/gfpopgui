@@ -24,6 +24,7 @@ usethis::use_package( "shinycssloaders" )
 usethis::use_package( "dplyr" )
 usethis::use_package( "plyr" )
 usethis::use_package( "rlang" )
+usethis::use_package( "shinyjs" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

@@ -19,7 +19,7 @@ mod_home_ui <- function(id) {
         HTML("<h4 style='text-align: center'> An analysis tool for graph-constrained <br> changepoint detection </h4>"),
         br(), br(),
         h3("Getting started: overview and instructions"),
-        includeHTML(system.file("app/www/lorem.html", package = "gfpopgui")),
+        includeHTML(system.file("app/www/intro.html", package = "gfpopgui")),
       ),
       column(
         4,
@@ -28,7 +28,7 @@ mod_home_ui <- function(id) {
           class = "well",
           HTML("<h4>Basic uploads:</h4><br>"),
           fileInput(ns("primary_input"), "Choose a file with primary input data (.csv)"),
-          p("Or generate data (temporary):"),
+          p("Or generate random data:"),
           fluidRow(
             column(6, numericInput(inputId = ns("ndata"), label = "# Datapoints", value = 1000)),
             column(6, numericInput(inputId = ns("sigma"), label = "sigma", value = 1, min = 0.1)),

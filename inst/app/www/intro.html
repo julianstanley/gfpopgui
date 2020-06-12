@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<style>
+  h5 {
+    font-weight: bold;
+  }
+</style>
+<p>Welcome to gfpop. This home page is where you can upload data to analyze with the GFPOP algorithm. It also has some introductionary information about the algorithm and this website. For more comprehensive information, see the Help tab.</p>
+<h3>Purpose</h3>
+Given some 2-dimensional data, where do sudden changes in the data occur? Such changes might be reprentative of a quick voltage change in an electrophysiology experiment or a sudden spike in a stock price. In other words: identifying these sudden changepoints can be important to analyzing many different datasets. 
+<br><br>
+Identifying changepoints without any prior information is computationally intractable. To combat this challenge, the GFPOP algorithm assumes that the user has an idea of the pattern of changepoints--for examples, DNA CHIP-sequencing users might expect that their data undergoes up-shifts followed by down-shifts, etc. GFPOP asks that users codify those expectations by providing their constraints as a directed graph, where edges represent expected changepoints.
+<br><br>
+This application allows users to upload their own data, interactively build a directed graph to send to gfpop, and then see how changing that graph affects where changepoints are detected.
+<br><br>
+We hope that this application can help users find the graph that is best-suited for their data so that they can then use gfpop to effectively detected changepoints in their data in high-throughput.
+<h3>Prerequisites</h3>
+<li>A 2-dimensional dataset</li>
+<li>(Optional) A CSV file containing specifications for a constraint graph</li> 
+<h3>Using this application</h3>
+
+<h5>1. Upload your data</h5>
+See the upload box to the right. It can be CSV or tab-separated. Headers are optional,
+and will be changed to "X" and "Y". 
+
+<h5>2. Upload your graph data, if appliciable</h5>
+By default, `gfpop::graph(type = "std")` is loaded for you. If you have a pre-defined
+gfpop graph that you would like to upload, there is also an area to the right for that.
+Uploaded data can be CSV or tab-separated. Column names matter here: they should be the exact 
+same names as given in the default-loaded graph.
+
+<h5>3. Navigate to the 'analysis' tab</h5>
+<h5>4. Restructure the graph, if needed</h5>
+On the analysis page, you'll find an interactive tool to configure your constraint graph 
+as you see fit. Add and configure nodes and edges. Once you're happy with your graph, move to the next step.
+<h5>5. Click "Run gfpop!" to view your changepoint results</h5>
+gfpop will run with the provided/configured constraint graph. 
+<h5>6. Analyze how closely gfpop's changepoints correspond with the ones you expected (pending) </h5>
+If you're not satisfied with the results, consider going back one step and tweaking your constraint graph.
+<h5>7. Export/Share your results (pending)</h5>
+
