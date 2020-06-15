@@ -31,17 +31,14 @@ shiny::testServer(mod_home_server_test, {
   generate_data()
   expect_equal(names(gfpop_data), c("graphdata_visNetwork", 
                                     "graphdata", "main_data"))
-  print(gfpop_data$main_data)
-  print(length(output$main_datatable))
+  #print(gfpop_data$main_data)
+  #print(length(output$main_datatable))
 })
 
 # mod_analysis_server.R---------------------------------------------------------
-mod_analysis_server_test <- function(id, gfpop_data) {
-  moduleServer(id, function(input, output, session) {
-    mod_analysis_server(input, output, session, gfpop_data)
-  })
-}
-
-shiny::testServer(mod_analysis_server_test, {
-  print(gfpop_data)
-}, args = list(gfpop_data = 1))
+shiny::testServer(mod_analysis_server, {
+  session$setInputs(pen = 15, graphType = "std", showNull = TRUE)
+  print(updateGraph())
+  print(names(gfpop_data))
+  
+})

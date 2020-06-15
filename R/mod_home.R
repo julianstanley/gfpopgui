@@ -59,7 +59,10 @@ mod_home_ui <- function(id) {
 #' @importFrom data.table fread
 #' @importFrom DT renderDataTable
 #' @export
-mod_home_server <- function(input, output, session) {
+mod_home_server <- function(id) {
+  moduleServer(
+    id,
+    function(input, output, session) {
   ns <- session$ns
   
   # Set variables --------------------------------------------------------------
@@ -128,4 +131,6 @@ mod_home_server <- function(input, output, session) {
   )
 
   return(gfpop_data)
+    }
+)
 }
