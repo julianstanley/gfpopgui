@@ -1,12 +1,18 @@
+#' Converts all NA objects in a vector to "None"
+#' @param vec a vector or unnamed list (vector equivalent)
+#' @returns a unnamed list (vector equivalent) where "None"-->NA
 #' @export
 NAtoNone <- function(vec) {
-  sapply(vec, function(x) if (is.na(x)) "None" else x)
+  lapply(vec, function(x) if (is.na(x)) "None" else x)
 }
 
+#' Converts all "None" objects in a vector into NA
+#' @param vec a vector or unnamed list (vector equivalent)
+#' @returns a unnamed list (vector equivalent) where "None"-->NA
 #' @export
 NonetoNA <- function(vec) {
   vectemp <- NAtoNone(vec)
-  sapply(vectemp, function(x) if (x == "None") NA else x)
+  lapply(vectemp, function(x) if (x == "None") NA else x)
 }
 
 #' Turns a graph dataframe (from gfpop) into a list that
@@ -65,7 +71,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), 
-      a = graphdf$a, min = NAtoNone(graphdf$min), max = NAtoNone(graphdf$max),
+      a = graphdf$a, min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
       selfReference.angle = selfReference.angle,
       selfReference.size = rep(40, length(graphdf$state1)),
       hidden = hidden
@@ -92,8 +98,8 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   edges$penalty <- as.numeric(edges$penalty)
   edges$K <- as.numeric(edges$K)
   edges$a <- as.numeric(edges$a)
-  edges$min <- NonetoNA(edges$min)
-  edges$max <- NonetoNA(edges$max)
+  edges$min <- as.numeric(NonetoNA(edges$min))
+  edges$max <- as.numeric(NonetoNA(edges$max))
   gfpop::graph(select_graph_columns(edges))
 }
 

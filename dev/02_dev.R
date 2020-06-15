@@ -39,7 +39,6 @@ golem::add_module( name = "analysis" )
 ## Creates ftc_* and utils_*
 golem::add_fct( "visNetwork_helpers" ) 
 golem::add_fct( "graph_helpers")
-golem::add_fct( "changepoint_helpers")
 golem::add_fct( "changepoint_plot_helpers")
 golem::add_utils( "general" )
 

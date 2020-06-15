@@ -132,6 +132,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom gfpop gfpop
 #' @importFrom rlang .data
 #' @import gfpop
+#' @export
 mod_analysis_server <- function(input, output, session, gfpop_data) {
   ns <- session$ns
 
@@ -141,7 +142,7 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
   observeEvent( input$graph_refresh_helper, {} )
 
   # When the "Update graph with above parameters" button is pressed, update graph
-  graphdf_default <- observeEvent(eventExpr = input$updateGraph, {
+  updateGraph <- reactive({
     gfpop_data$graphdata <- gfpop::graph(
       penalty = as.double(isolate(input$pen)),
       type = isolate(input$graphType)
@@ -152,12 +153,20 @@ mod_analysis_server <- function(input, output, session, gfpop_data) {
     )
   })
 
-  # Hide nodes
-  observeEvent(eventExpr = input$showNull, {
+  observeEvent(eventExpr = input$updateGraph, {
+    updateGraph()
+  })
+
+  # Hide null nodes
+  hideNull <- reactive({
     gfpop_data$graphdata_visNetwork$edges$hidden <- sapply(
       gfpop_data$graphdata_visNetwork$edges$type,
       function(x) if (input$showNull) FALSE else (x == "null")
     )
+  })
+
+  observeEvent(eventExpr = input$showNull, {
+    hideNull()
   })
 
   # Generate a visualization of the current constraint graph
