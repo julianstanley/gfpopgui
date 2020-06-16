@@ -38,4 +38,5 @@ Suggests:
 Remotes: 
     vrunge/gfpop,
     rstudio/shiny,
-    datastorm-open/visNetwork
+    datastorm-open/visNetwork,
+    ThinkR-open/golem
