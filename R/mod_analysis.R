@@ -187,7 +187,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # from the observations, and then update the gfpop_data$graphdata
       observeEvent(input$gfpopGraph_graphChange, {
         event <- input$gfpopGraph_graphChange
-        print(event)
         
         ### Edit Edge --------------------------------------------------------------
         if (event$cmd == "editEdge") {
