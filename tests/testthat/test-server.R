@@ -1,5 +1,6 @@
 library(testthat)
 library(gfpop)
+library(shiny)
 
 # A helper function for server tests
 assert_that <- function(error, expr = "", msgs = list()) {
@@ -26,9 +27,6 @@ app_server_test <- function(id) {
 test_that(
   "Server tests: app_server",
   {
-    skip_on_cran()
-    skip_on_travis()
-    skip_on_appveyor()
     expect_null(
       shiny::testServer(app_server_test, {
         assert_that(
@@ -45,9 +43,6 @@ test_that(
 test_that(
   "Server tests: mod_home_server",
   {
-    skip_on_cran()
-    skip_on_travis()
-    skip_on_appveyor()
     expect_null(
       shiny::testServer(mod_home_server, {
         assert_that(
@@ -143,9 +138,6 @@ test_that(
 test_that(
   "Server tests: mod_analysis_server",
   {
-    skip_on_cran()
-    skip_on_travis()
-    skip_on_appveyor()
     expect_null(
       shiny::testServer(mod_analysis_server, {
         # Reset the graph first to test updateGraph()
@@ -201,145 +193,148 @@ test_that(
 
         # Graph edit observers ---------------------------------------------------
 
-        ## Edit Edge
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "editEdge",
-          to = "Std", from = "Std",
-          id = "Std_Std_std", type = "std", penalty = "200", parameter = "0",
-          K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
-        ))
+        if (interactive()) {
+          ## Edit Edge
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "editEdge",
+            to = "Std", from = "Std",
+            id = "Std_Std_std", type = "std", penalty = "200", parameter = "0",
+            K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
+          ))
 
-        assert_that(
-          "can edit an edge, scenario 1",
-          {
-            pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
-            pen_orig <- gfpop_data$graphdata$penalty
-            all(pen_orig == c(0, 200)) && all(pen_orig == pen_vis)
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can edit an edge, scenario 1",
+            {
+              pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
+              pen_orig <- gfpop_data$graphdata$penalty
+              all(pen_orig == c(0, 200)) && all(pen_orig == pen_vis)
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Add Node
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "addNode",
-          id = "new_node", label = "new node"
-        ))
+          ## Add Node
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "addNode",
+            id = "new_node", label = "new node"
+          ))
 
-        assert_that(
-          "can add a node",
-          {
-            nodes_test <- gfpop_data$graphdata_visNetwork$nodes
-            (all(nodes_test$id == c("Std", "new_node")) &&
-              all(nodes_test$label == c("Std", "new node")) &&
-              all(nodes_test$size == c(40, 40)))
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can add a node",
+            {
+              nodes_test <- gfpop_data$graphdata_visNetwork$nodes
+              (all(nodes_test$id == c("Std", "new_node")) &&
+                all(nodes_test$label == c("Std", "new node")) &&
+                all(nodes_test$size == c(40, 40)))
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Edit Node
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "editNode",
-          id = "new_node", label = "my edited new node"
-        ))
+          ## Edit Node
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "editNode",
+            id = "new_node", label = "my edited new node"
+          ))
 
-        assert_that(
-          "can edit a node",
-          {
-            nodes_test <- gfpop_data$graphdata_visNetwork$nodes
-            (all(nodes_test$id == c("Std", "new_node")) &&
-              all(nodes_test$label == c("Std", "my edited new node")) &&
-              all(nodes_test$size == c(40, 40)))
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can edit a node",
+            {
+              nodes_test <- gfpop_data$graphdata_visNetwork$nodes
+              (all(nodes_test$id == c("Std", "new_node")) &&
+                all(nodes_test$label == c("Std", "my edited new node")) &&
+                all(nodes_test$size == c(40, 40)))
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Add Edge
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "addEdge", id = "new_std_null",
-          to = "new_node", from = "Std"
-        ))
+          ## Add Edge
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "addEdge", id = "new_std_null",
+            to = "new_node", from = "Std"
+          ))
 
-        assert_that(
-          "can add an edge",
-          {
-            pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
-            pen_orig <- gfpop_data$graphdata$penalty
-            all(pen_orig == c(0, 200, 0)) && all(pen_orig == pen_vis)
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can add an edge",
+            {
+              pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
+              pen_orig <- gfpop_data$graphdata$penalty
+              all(pen_orig == c(0, 200, 0)) && all(pen_orig == pen_vis)
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Edit Edge #2
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "editEdge",
-          to = "new_node", from = "Std",
-          id = "new_std_null", type = "up", penalty = "10", parameter = "0",
-          K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
-        ))
+          ## Edit Edge #2
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "editEdge",
+            to = "new_node", from = "Std",
+            id = "new_std_null", type = "up", penalty = "10", parameter = "0",
+            K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
+          ))
 
-        assert_that(
-          "can edit an edge, scenario 2",
-          {
-            pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
-            pen_orig <- gfpop_data$graphdata$penalty
-            all(pen_orig == c(0, 200, 10)) && all(pen_orig == pen_vis)
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can edit an edge, scenario 2",
+            {
+              pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
+              pen_orig <- gfpop_data$graphdata$penalty
+              all(pen_orig == c(0, 200, 10)) && all(pen_orig == pen_vis)
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Delete a node, but not an edge
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "deleteElements", nodes = c("new_node")
-        ))
+          ## Delete a node, but not an edge
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "deleteElements", nodes = c("new_node")
+          ))
 
-        assert_that(
-          "can delete a node",
-          {
-            nodes_test <- gfpop_data$graphdata_visNetwork$nodes
-            (all(nodes_test$id == c("Std")) &&
-              all(nodes_test$label == c("Std")) &&
-              all(nodes_test$size == c(40)))
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can delete a node",
+            {
+              nodes_test <- gfpop_data$graphdata_visNetwork$nodes
+              (all(nodes_test$id == c("Std")) &&
+                all(nodes_test$label == c("Std")) &&
+                all(nodes_test$size == c(40)))
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
 
-        ## Delete an edge, but not a node
-        session$setInputs(gfpopGraph_graphChange = list(
-          cmd = "deleteElements", nodes = c(),
-          edges = c("new_std_null")
-        ))
+          ## Delete an edge, but not a node
+          session$setInputs(gfpopGraph_graphChange = list(
+            cmd = "deleteElements", nodes = c(),
+            edges = c("new_std_null")
+          ))
 
-        assert_that(
-          "can delete an edge",
-          {
-            pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
-            pen_orig <- gfpop_data$graphdata$penalty
-            all(pen_orig == c(0, 200)) && all(pen_orig == pen_vis)
-          },
-          list(
-            gfpop_data$graphdata_visNetwork,
-            gfpop_data$graphdata
+          assert_that(
+            "can delete an edge",
+            {
+              pen_vis <- gfpop_data$graphdata_visNetwork$edges$penalty
+              pen_orig <- gfpop_data$graphdata$penalty
+              all(pen_orig == c(0, 200)) && all(pen_orig == pen_vis)
+            },
+            list(
+              gfpop_data$graphdata_visNetwork,
+              gfpop_data$graphdata
+            )
           )
-        )
-
+          print(dput(gfpop_data$graphdata))
+          print(dput(gfpop_data$graphdata_visNetwork))
+        }
         # Changepoint tests ------------------------------------------------------
         gfpop_data$main_data <- data.frame(
           X = 1:100,
@@ -365,11 +360,15 @@ test_that(
         )
 
         # GraphOutput cell edit tests --------------------------------------------
+        # Reset nodes and edges
+        session$setInputs(pen = 15, graphType = "std", showNull = TRUE)
+        updateGraph()
+
         assert_that(
-          "ensure penalty starts at 200",
+          "ensure penalty starts at 15",
           {
-            all(gfpop_data$graphdata$penalty == c(0, 200)) &&
-              all(gfpop_data$graphdata_visNetwork$edges$penalty == c(0, 200))
+            all(gfpop_data$graphdata$penalty == c(0, 15)) &&
+              all(gfpop_data$graphdata_visNetwork$edges$penalty == c(0, 15))
           },
           list(
             gfpop_data$graphdata,
