@@ -3,6 +3,7 @@
 export(NAtoNone)
 export(NonetoNA)
 export(add_changepoints)
+export(app_server)
 export(generate_visNetwork)
 export(graphdf_to_visNetwork)
 export(mod_analysis_server)

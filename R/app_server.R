@@ -4,6 +4,7 @@
 #'     DO NOT REMOVE.
 #' @importFrom shiny callModule
 #' @noRd
+#' @export
 app_server <- function(input, output, session) {
   set.seed(123)
   # include logic for each tab
