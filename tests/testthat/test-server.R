@@ -332,8 +332,6 @@ test_that(
               gfpop_data$graphdata
             )
           )
-          print(dput(gfpop_data$graphdata))
-          print(dput(gfpop_data$graphdata_visNetwork))
         }
         # Changepoint tests ------------------------------------------------------
         gfpop_data$main_data <- data.frame(

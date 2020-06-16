@@ -187,88 +187,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # from the observations, and then update the gfpop_data$graphdata
       observeEvent(input$gfpopGraph_graphChange, {
         event <- input$gfpopGraph_graphChange
-        
-        ### Edit Edge --------------------------------------------------------------
-        if (event$cmd == "editEdge") {
-          
-          changed_id <- event$id
-          # Decide whether we need to add selfReference.angle
-          if (event$to == event$from) {
-            angle <- if (event$type == "null") pi else 2*pi 
-          } else {
-            angle = "NA"
-          }
-          
-          gfpop_data$graphdata_visNetwork$edges <- gfpop_data$graphdata_visNetwork$edges %>%
-            mutate_cond(id == changed_id,
-                        label = paste0(event$type, " | ", event$penalty),
-                        to = event$to, from = event$from,
-                        type = event$type, parameter = event$parameter,
-                        penalty = event$penalty, K = event$K, a = event$a,
-                        min = event$min, max = event$max,
-                        selfReference.angle = angle, selfReference.size = 40,
-                        hidden = as.logical(event$hidden)
-            )
-          
-          # Need to refresh graph for things to work properly here
+  
+        modified_data <- modify_visNetwork(event,
+                                          gfpop_data$graphdata_visNetwork)
+        gfpop_data$graphdata_visNetwork <- modified_data$data
+        if(modified_data$refresh) {
           updateNumericInput(session = session, inputId = 'graph_refresh_helper', 
                              value = input$graph_refresh_helper + 1)
-        }
-        
-        ### Add Edge ---------------------------------------------------------------
-        if (event$cmd == "addEdge") {
-          new_row <- data.frame(
-            id = event$id,
-            label = "",
-            to = event$to, from = event$from,
-            type = "null", parameter = "0",
-            penalty = "0", K = "Inf", a = "0",
-            min = "None", max = "None", 
-            selfReference.angle = NA, selfReference.size = 40, hidden = FALSE)
-          
-          gfpop_data$graphdata_visNetwork$edges <- rbind(gfpop_data$graphdata_visNetwork$edges,
-                                                         new_row)
-          
-          # Need to refresh graph for things to work properly here
-          updateNumericInput(session = session, inputId = 'graph_refresh_helper', 
-                             value = input$graph_refresh_helper + 1)
-          
-        }
-        
-        ### Delete Edge ------------------------------------------------------------
-        if (event$cmd == "deleteElements" && (length(event$edges) > 0)) {
-          print(length(event$edges))
-          for(del_edge in event$edges) {
-            gfpop_data$graphdata_visNetwork$edges <-
-              gfpop_data$graphdata_visNetwork$edges %>%
-              dplyr::filter(.data$id != del_edge)
-          }
-        }
-        
-        ### Add Node ---------------------------------------------------------------
-        if (event$cmd == "addNode") {
-          gfpop_data$graphdata_visNetwork$nodes <- rbind(
-            gfpop_data$graphdata_visNetwork$nodes,
-            data.frame(id = event$id,
-                       label = event$label,
-                       size = 40))
-        }
-        
-        ### Edit Node --------------------------------------------------------------
-        if (event$cmd == "editNode") {
-          gfpop_data$graphdata_visNetwork$nodes <- 
-            gfpop_data$graphdata_visNetwork$nodes %>%
-            mutate_cond(id == event$id,
-                        label = event$label)
-        }
-        
-        ### Delete Node ------------------------------------------------------------
-        if (event$cmd == "deleteElements" && (length(event$nodes) > 0)) {
-          for(del_node in event$nodes) {
-            gfpop_data$graphdata_visNetwork$nodes <-
-              gfpop_data$graphdata_visNetwork$nodes %>%
-              dplyr::filter(.data$id != del_node)
-          }
         }
         
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)

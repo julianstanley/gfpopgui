@@ -10,7 +10,7 @@ website/*
 docs/*
 ^codecov\.yml$
 ^\.covrignore$
-utils/*
+^utils/*
 local_only
 ^app\.R$
 ^rsconnect$
