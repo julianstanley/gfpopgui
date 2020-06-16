@@ -11,7 +11,6 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
-      useShinyjs(),
       navbarPage(id = "tabs",
         title = "gfpop",
         collapsible = TRUE,
@@ -49,8 +48,9 @@ golem_add_external_resources <- function() {
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "gfpopgui"
-    )
+    ),
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
+    useShinyjs()
   )
 }

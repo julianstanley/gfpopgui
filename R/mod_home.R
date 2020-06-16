@@ -59,7 +59,10 @@ mod_home_ui <- function(id) {
 #' @importFrom data.table fread
 #' @importFrom DT renderDataTable
 #' @export
-mod_home_server <- function(input, output, session) {
+mod_home_server <- function(id) {
+  moduleServer(
+    id,
+    function(input, output, session) {
   ns <- session$ns
   
   # Set variables --------------------------------------------------------------
@@ -94,13 +97,17 @@ mod_home_server <- function(input, output, session) {
   )
   
   # Generate some data if users ask for it (temporary, for testing)
-  observeEvent(input$genData, {
+  generate_data <- reactive({
     primary_input <- data.frame(
-      X = 1:input$ndata,
-      Y = dataGenerator(input$ndata, c(0.1, 0.3, 0.5, 0.8, 1), 
-                        c(1, 2, 1, 3, 1), sigma = input$sigma)
+      X = 1:isolate(input$ndata),
+      Y = dataGenerator(isolate(input$ndata), c(0.1, 0.3, 0.5, 0.8, 1), 
+                        c(1, 2, 1, 3, 1), sigma = isolate(input$sigma))
     )
     gfpop_data$main_data <- primary_input
+  })
+
+  observe_generate_data <- observeEvent(input$genData, {
+    generate_data()
   })
   
   
@@ -124,4 +131,6 @@ mod_home_server <- function(input, output, session) {
   )
 
   return(gfpop_data)
+    }
+)
 }
