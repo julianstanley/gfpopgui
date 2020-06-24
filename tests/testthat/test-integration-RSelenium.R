@@ -10,7 +10,7 @@ version <- "latest"
 platform <- "Windows 10"
 
 extraCapabilities <- list(
-  name = "Main test-integration | June24 Interact",
+  name = "Main test-integration",
   username = user,
   accessKey = pass,
   tags = list("RSelenium-vignette", "OS/Browsers-vignette"),
@@ -25,14 +25,13 @@ remDr <- remoteDriver$new(
   platform = platform,
   extraCapabilities = extraCapabilities
 )
-remDr$open()
 
+remDr$open(silent = T)
 remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
 Sys.sleep(5)
 
 test_that("can connect to app, remote", {
   # Connect to the remote app, wait a second for load
-  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
 })
