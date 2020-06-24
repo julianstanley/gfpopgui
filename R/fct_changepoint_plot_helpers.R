@@ -65,20 +65,26 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     previous_changepoint_ds <- changepoint_ds
   }
 
-  return_plotly %>%
+  return_plotly <- return_plotly %>%
     add_lines(data = changepoint_annotations_regions,
               x = ~x,
               y = ~y, 
               color = ~I("#40B0A6"),
               hoverinfo = "text", text = ~text,
               connectgaps = F,
-              line = list(width = 7)) %>%
-    add_lines(data = changepoint_annotations,
-              x = ~x,
-              y = ~y, 
-              color = ~I("#E1BE6A"),
-              hoverinfo = "text", text = ~text,
-              connectgaps = F,
-              line = list(width = 7)) %>%
-    layout(hovermode = "x unified")
+              line = list(width = 7)) 
+  
+  if(nrow(changepoint_annotations) > 0) {
+    return_plotly <- return_plotly %>%
+      add_lines(data = changepoint_annotations,
+                x = ~x,
+                y = ~y, 
+                color = ~I("#E1BE6A"),
+                hoverinfo = "text", text = ~text,
+                connectgaps = F,
+                line = list(width = 7)) 
+  }
+  
+  return_plotly %>% layout(hovermode = "x unified")
+    
 }
