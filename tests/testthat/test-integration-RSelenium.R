@@ -1,7 +1,6 @@
 library(RSelenium)
 library(testthat)
 
-# Initialization steps ---------------------------------------------------------
 user <- "julianstanley"
 pass <- "0135a1f4-8837-4202-a428-d58151760e6b"
 port <- 80
@@ -11,10 +10,11 @@ version <- "latest"
 platform <- "Windows 10"
 
 extraCapabilities <- list(
-  name = "Main test-integration, gfpopgui",
+  name = "Main test-integration | June24 Interact",
   username = user,
   accessKey = pass,
-  tags = list("RSelenium-vignette", "OS/Browsers-vignette")
+  tags = list("RSelenium-vignette", "OS/Browsers-vignette"),
+  "screen-resolution" = "1920x1080"
 )
 
 remDr <- remoteDriver$new(
@@ -27,11 +27,24 @@ remDr <- remoteDriver$new(
 )
 remDr$open()
 
+remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+Sys.sleep(5)
+
 test_that("can connect to app, remote", {
   # Connect to the remote app, wait a second for load
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   appTitle <- remDr$getTitle()[[1]]
   expect_equal(appTitle, "gfpopgui")
+})
+
+test_that("the generate data button works", {
+  # Select entry from DataTable 0 to make sure it exists
+  webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")
+  expect_equal(webElem$getElementAttribute("innerHTML")[[1]], "Std")
+  expect_error(remDr$findElement("xpath", "//table[@id='DataTables_Table_1']/tbody/tr/td[2]"))
+  remDr$findElement("id", "home_ui_1-genData")$clickElement()
+  webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_1']/tbody/tr/td[2]")
+  expect_equal(webElem$getElementAttribute("innerHTML")[[1]], "1")
 })
 
 remDr$close()
