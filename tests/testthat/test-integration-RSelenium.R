@@ -51,7 +51,7 @@ is.bad <- function(code) {
 test_that("can connect to app", {
   remDr$open(silent = T)
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
-  Sys.sleep(5)
+  remDr$setImplicitWaitTimeout(milliseconds = 5000)
   # Connect to the remote app, wait a second for load
   appTitle <- remDr$getTitle()[[1]]
   result <- if(appTitle == "gfpopgui") "true" else "false"
@@ -64,7 +64,7 @@ test_that("can connect to app", {
 test_that("the generate data button works", {
   remDr$open(silent = T)
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
-  Sys.sleep(5)
+  remDr$setImplicitWaitTimeout(milliseconds = 5000)
   # Select entry from DataTable 0 to make sure it exists
   webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")
   result1 <- webElem$getElementAttribute("innerHTML")[[1]] == "Std"
