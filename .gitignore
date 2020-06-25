@@ -12,6 +12,7 @@ website/node_modules
 website/i18n/*
 .Rproj.user
 .Rhistory
+.Renviron
 
 local_only/*
 
