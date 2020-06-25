@@ -1,10 +1,10 @@
 library(RSelenium)
 library(testthat)
 
-user <- "julianstanley"
-pass <- "0135a1f4-8837-4202-a428-d58151760e6b"
-port <- 80
-ip <- paste0(user, ":", pass, "@ondemand.saucelabs.com")
+user <- Sys.getenv("SAUCE_USERNAME")
+pass <- Sys.getenv("SAUCE_SECRET_KEY")
+port <- 4445
+ip <- paste0(user, ":", pass, "@localhost")
 rdBrowser <- "chrome"
 version <- "latest"
 platform <- "Windows 10"
@@ -13,8 +13,9 @@ extraCapabilities <- list(
   name = "Main test-integration",
   username = user,
   accessKey = pass,
-  tags = list("RSelenium-vignette", "OS/Browsers-vignette"),
-  "screen-resolution" = "1920x1080"
+  tags = list("R", "Shiny"),
+  "screen-resolution" = "1920x1080",
+  'tunnel-identifier' = Sys.getenv("TRAVIS_JOB_NUMBER")
 )
 
 remDr <- remoteDriver$new(
@@ -25,6 +26,8 @@ remDr <- remoteDriver$new(
   platform = platform,
   extraCapabilities = extraCapabilities
 )
+
+appURL <- "http://localhost:3000"
 
 # Set build
 buildName <- paste0("build-gfpopgui-main_", 
@@ -50,7 +53,7 @@ is.bad <- function(code) {
 
 test_that("can connect to app", {
   remDr$open(silent = T)
-  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+  remDr$navigate(url = appURL)
   remDr$setImplicitWaitTimeout(milliseconds = 5000)
   appTitle <- remDr$getTitle()[[1]]
   result <- if(appTitle == "gfpopgui") "true" else "false"
@@ -62,7 +65,7 @@ test_that("can connect to app", {
 
 test_that("the generate data button works", {
   remDr$open(silent = T)
-  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+  remDr$navigate(url = appURL)
   remDr$setImplicitWaitTimeout(milliseconds = 5000)
   # Select entry from DataTable 0 to make sure it exists
   webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")

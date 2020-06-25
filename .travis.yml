@@ -23,6 +23,13 @@ r_packages:
 after_success:
   - Rscript -e 'covr::codecov()'
 
+script:
+- nohup R --slave --no-restore -e 'shiny::runApp(port = 3000)' &
+
+addons:
+  sauce_connect:
+    username: "$SAUCE_USERNAME"
+    access_key: "$SAUCE_SECRET_KEY"
 
 # Added for shinyapps.io deployment
 # dist: xenial
