@@ -168,9 +168,9 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
   if (event$cmd == "addEdge") {
     new_row <- data.frame(
       id = event$id,
-      label = "",
+      label = "null | 0",
       to = event$to, from = event$from,
-      type = "null", parameter = "0",
+      type = "null", parameter = "1",
       penalty = "0", K = "Inf", a = "0",
       min = "None", max = "None", 
       selfReference.angle = NA, selfReference.size = 40, hidden = FALSE)
