@@ -3,8 +3,8 @@ library(testthat)
 
 user <- Sys.getenv("SAUCE_USERNAME")
 pass <- Sys.getenv("SAUCE_SECRET_KEY")
-port <- 4445
-ip <- paste0(user, ":", pass, "@localhost")
+port <- 443
+ip <- paste0(user, ":", pass, "@ondemand.saucelabs.com/wd/hub")
 rdBrowser <- "chrome"
 version <- "latest"
 platform <- "Windows 10"
