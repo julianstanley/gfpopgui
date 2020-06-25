@@ -26,24 +26,59 @@ remDr <- remoteDriver$new(
   extraCapabilities = extraCapabilities
 )
 
-remDr$open(silent = T)
-remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
-Sys.sleep(5)
+# Set build
+buildName <- paste0("build-gfpopgui-main_", 
+                    format(Sys.time(), "%m-%d-%Y_%s"))
 
-test_that("can connect to app, remote", {
+submit_job_info <- function(remDr, build, name, result) {
+  if (!(result %in% c("passed", "failed", "true", "false"))) {
+    stop("Invalid result. Please use: passed, failed, true, or false")
+  }
+  
+  remDr$executeScript(paste0("sauce:job-build=", build))
+  remDr$executeScript(paste0("sauce:job-name=", name))
+  remDr$executeScript(paste0("sauce:job-result=", result))
+  
+} 
+
+is.bad <- function(code) {
+  isTRUE(tryCatch(code,
+                  error = function(c) TRUE,
+                  warning = function(c) TRUE
+  ))
+}
+
+test_that("can connect to app", {
+  remDr$open(silent = T)
+  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+  Sys.sleep(5)
   # Connect to the remote app, wait a second for load
   appTitle <- remDr$getTitle()[[1]]
+  result <- if(appTitle == "gfpopgui") "true" else "false"
+  submit_job_info(remDr, buildName, name = "can connect to app",
+                                    result = result)
   expect_equal(appTitle, "gfpopgui")
+  remDr$close()
 })
 
 test_that("the generate data button works", {
+  remDr$open(silent = T)
+  remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
+  Sys.sleep(5)
   # Select entry from DataTable 0 to make sure it exists
   webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")
+  result1 <- webElem$getElementAttribute("innerHTML")[[1]] == "Std"
   expect_equal(webElem$getElementAttribute("innerHTML")[[1]], "Std")
+  
   expect_error(remDr$findElement("xpath", "//table[@id='DataTables_Table_1']/tbody/tr/td[2]"))
   remDr$findElement("id", "home_ui_1-genData")$clickElement()
   webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_1']/tbody/tr/td[2]")
+  result2 <- webElem$getElementAttribute("innerHTML")[[1]] == "1"
   expect_equal(webElem$getElementAttribute("innerHTML")[[1]], "1")
+  
+  result <- if(result1 & result2) "true" else "false"
+  submit_job_info(remDr, buildName, name = "the generate data button works",
+                                    result = result)
+  remDr$close()
 })
 
-remDr$close()
