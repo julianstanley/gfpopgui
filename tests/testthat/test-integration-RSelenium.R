@@ -52,7 +52,6 @@ test_that("can connect to app", {
   remDr$open(silent = T)
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   remDr$setImplicitWaitTimeout(milliseconds = 5000)
-  # Connect to the remote app, wait a second for load
   appTitle <- remDr$getTitle()[[1]]
   result <- if(appTitle == "gfpopgui") "true" else "false"
   submit_job_info(remDr, buildName, name = "can connect to app",
@@ -81,4 +80,3 @@ test_that("the generate data button works", {
                                     result = result)
   remDr$close()
 })
-
