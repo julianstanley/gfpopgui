@@ -10,4 +10,6 @@ app_server <- function(input, output, session) {
   # include logic for each tab
   gfpop_data <- mod_home_server("home_ui_1")
   mod_analysis_server("analysis_ui_1", gfpop_data)
+  
+  session$allowReconnect("force")
 }
