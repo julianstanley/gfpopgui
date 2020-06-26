@@ -104,6 +104,29 @@ test_that(
   }
 )
 
+test_that("Editing an edge turns the edge type lowercase", {
+  event <- list(
+    cmd = "editEdge",
+    to = "Std", from = "Std",
+    id = "Std_Std_std", type = "Std", penalty = "200", parameter = "0",
+    K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
+  )
+  new_data <- modify_visNetwork(event, data)
+  expect_equal(new_data$data$edges$type, c("null", "std"))
+})
+
+test_that("modify_visNetwork rejects an invalid type parameter 
+by throwing a warning", {
+  event <- list(
+    cmd = "editEdge",
+    to = "Std", from = "Std",
+    id = "Std_Std_std", type = "Stdd", penalty = "200", parameter = "0",
+    K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
+  )
+  expect_warning(modify_visNetwork(event, data), "Invalid 'type'")
+  expect_equal(suppressWarnings(modify_visNetwork(event, data)$data), data)
+})
+
 test_that(
   "can add node",
   {
@@ -166,7 +189,7 @@ test_that("Can add an edge", {
   
   new_data <- modify_visNetwork(event, data)
   
-  print(new_data$data$penalty, c(0, 15, 0))
+  expect_equal(new_data$data$edges$penalty, as.character(c(0, 15, 0)))
 })
 
 test_that("Can delete node without deleting edge", {
@@ -194,3 +217,4 @@ test_that("Can delete edge without deleting node", {
   
   expect_equal(new_data$data$edges$penalty, c(15))
 })
+

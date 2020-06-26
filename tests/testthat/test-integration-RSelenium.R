@@ -48,11 +48,27 @@ is.bad <- function(code) {
   ))
 }
 
+wait_for_title <- function(remDr, seconds, title_expected) {
+  count <- 0
+  while(count < seconds) {
+    appTitle <- remDr$getTitle()[[1]]
+    if(appTitle == title_expected) {
+      break
+    }
+    message(paste0("Waited ", count, " seconds. App isn't loaded yet, waiting
+                   for another second."))
+    Sys.sleep(1)
+    count <- count + 1
+  }
+  
+  return(appTitle)
+}
+
 test_that("can connect to app", {
   remDr$open(silent = T)
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   remDr$setImplicitWaitTimeout(milliseconds = 5000)
-  appTitle <- remDr$getTitle()[[1]]
+  appTitle <- wait_for_title(remDr, 10, "gfpopgui")
   result <- if(appTitle == "gfpopgui") "true" else "false"
   submit_job_info(remDr, buildName, name = "can connect to app",
                                     result = result)
@@ -64,6 +80,11 @@ test_that("the generate data button works", {
   remDr$open(silent = T)
   remDr$navigate(url = "http://julianstanley.shinyapps.io/gfpopgui")
   remDr$setImplicitWaitTimeout(milliseconds = 5000)
+  # Wait for the app to load
+  appTitle <- wait_for_title(remDr, 10, "gfpopgui")
+  if(appTitle != "gfpopgui") {
+    warning("Title is not 'gfpopgui'. Did the application load successfully?")
+  }
   # Select entry from DataTable 0 to make sure it exists
   webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")
   result1 <- webElem$getElementAttribute("innerHTML")[[1]] == "Std"
