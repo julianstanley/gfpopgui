@@ -26,17 +26,7 @@ after_success:
 # For shinyapps.io deployment
 deploy:
   - provider: script
-    script: deploy_shinyapp.sh
+    script: 
+      - R -f deploy.R
     on:
       branch: master
-# Added for shinyapps.io deployment
-# dist: xenial
-# sudo: false
-# latex: false
-# 
-# deploy:
-#   provider: script
-#   script: 
-#     - R -f deploy.R
-#   on:
-#     branch: master
