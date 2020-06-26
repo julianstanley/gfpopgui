@@ -140,8 +140,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
   refresh <- FALSE
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
-    if (!(event$type %in% c("std", "isotonic", "updown", "relevant"))) {
-      warning("Invalid 'type' parameter, returning unchanged data and a refresh recommendation.")
+    if (!(event$type %in% c("null", "std", "up", "down", "abs"))) {
+      warning("Invalid 'type' parameter, returning unchangaed data and a refresh recommendation.")
       return(list(data = graphdata_visNetwork, refresh = TRUE))
     }
   }
