@@ -129,6 +129,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
 #' @importFrom visNetwork renderVisNetwork
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
+#' @importFrom data.table data.table
 #' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
 #' @importFrom rlang .data
@@ -138,6 +139,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
   moduleServer(
     id,
     function(input, output, session) {
+      ## Keep track of some analyses
+      saved_analyses <- reactiveValues(saved_full = list(), 
+                                       saved_descriptions = data.table())
+
       ## Graph Logistics -----------------------------------------------------------
 
       # Observer to see the graph refresh helper
@@ -305,6 +310,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
             isolate(gfpop_data$main_data),
             isolate(gfpop_data$changepoints)
           )
+        
+        
       })
 
       # Generate the visualization of the data with overlain changepoints
@@ -350,4 +357,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       })
     }
   )
+  
+  gfpop_data
 }
