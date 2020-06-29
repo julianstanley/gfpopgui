@@ -1,4 +1,4 @@
-# gfpop-gui
+# gfpopgui
   <!-- badges: start -->
   [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpop-gui)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -16,7 +16,7 @@ A work in progress, a [Google Summer of Code](https://summerofcode.withgoogle.co
 
 To install:
 ```R
-devtools::install_github("julianstanley/gfpop-gui")
+devtools::install_github("julianstanley/gfpopgui")
 ```
 
 To run, you can either [visit the web application](https://julianstanley.shinyapps.io/gfpopgui/), or run:

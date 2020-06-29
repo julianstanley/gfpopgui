@@ -1,5 +1,5 @@
 library(rsconnect)
-devtools::install_github("julianstanley/gfpop-gui")
+devtools::install_github("julianstanley/gfpopgui")
 
 setAccountInfo(
   name = Sys.getenv("shinyapps_name"),
