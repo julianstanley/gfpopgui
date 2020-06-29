@@ -59,7 +59,7 @@ mod_analysis_ui <- function(id) {
         hr(),
         HTML("<b>Note:</b> Edge and Node IDs <u>cannot</u> be changed once
              they are created. Please set IDs appropriately (or accept the defaults)
-             when you create them!"),
+             when you create them!")
       ),
       column(
         5,
@@ -76,7 +76,17 @@ mod_analysis_ui <- function(id) {
     ),
     # Row with datatable outputs
     fluidRow(
-      column(2),
+      column(2,
+            hr(),             
+             h2("Save"),
+             textInput(inputId = ns("saveId"),
+                       label = "Unique Save Name"),
+             actionButton(inputId = ns("saveButton"),
+                          label = "Save Analysis"),
+             h2("Load"),
+             uiOutput(ns("uiLoadId")),
+             actionButton(inputId = ns("loadButton"),
+                          label = "Load Analysis")),
       column(
         5,
         h2("Graph (Editable DataTable)", align = "center"),
@@ -133,17 +143,41 @@ mod_analysis_ui <- function(id) {
 #' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
 #' @importFrom rlang .data
+#' @importFrom shinyalert shinyalert
 #' @import gfpop
 #' @export
 mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
   moduleServer(
     id,
     function(input, output, session) {
+      ns <- session$ns
+      ## Saving and Loading ----------------------------------------------------
       ## Keep track of some analyses
       saved_analyses <- reactiveValues(saved_full = list(), 
                                        saved_descriptions = data.table())
+      
+      ## Render the saved analyses
+      output$uiLoadId <- renderUI({
+        selectInput(ns("loadId"), "Select a previous analysis", 
+                    choices = saved_analyses$saved_descriptions$id)
+      })
+      
+      # Observe a save
+      observeEvent(input$saveButton, {
+        req(input$saveId)
+        saveId <- input$saveId
+        saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
+        saved_analyses$saved_descriptions <- rbind(saved_analyses$saved_descriptions,
+                                                   data.table(id = input$saveId))
+      })
+      
+      # Observe a load
+      observeEvent(input$loadButton, {
+        req(input$loadId)
+        gfpop_data <<- do.call("reactiveValues", saved_analyses$saved_full[[input$loadId]])
+      })
 
-      ## Graph Logistics -----------------------------------------------------------
+      ## Graph Logistics -------------------------------------------------------
 
       # Observer to see the graph refresh helper
       observeEvent(input$graph_refresh_helper, {})
@@ -151,8 +185,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # When the "Update graph with above parameters" button is pressed, update graph
       updateGraph <- reactive({
         gfpop_data$graphdata <- gfpop::graph(
-          penalty = as.double(isolate(input$pen)),
-          type = isolate(input$graphType)
+          penalty = as.double(input$pen),
+          type = input$graphType
         )
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
           gfpop_data$graphdata,
@@ -205,7 +239,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
             value = input$graph_refresh_helper + 1
           )
         }
-
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
       })
 
@@ -284,10 +317,23 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Returns: None. Affects: initializes gfpop_data$changepoints
       initialize_changepoints <- reactive({
         req(gfpop_data$main_data)
-        # TODO: Allow user to add weights (what do those do?)
-        gfpop_data$changepoints <- gfpop::gfpop(gfpop_data$main_data$Y,
-          gfpop_data$graphdata,
-          type = input$gfpopType
+        
+        tryCatch(
+          expr = {
+            # TODO: Allow user to add weights (what do those do?)
+            gfpop_data$changepoints <- gfpop::gfpop(gfpop_data$main_data$Y,
+                                                    gfpop_data$graphdata,
+                                                    type = input$gfpopType
+            )
+          },
+          error = function(e) {
+            shinyalert(paste0(
+              "Failed to initalize changepoints:\n ", e), type = "error")
+          },
+          warning = function(w) {
+            shinyalert(paste0(
+              "Got a warning while initalizing changepoints: ", w), type = "warning")
+          }
         )
       })
 

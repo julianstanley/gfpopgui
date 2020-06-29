@@ -51,6 +51,7 @@ golem_add_external_resources <- function() {
     ),
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
-    useShinyjs()
+    useShinyjs(),
+    shinyalert::useShinyalert()
   )
 }
