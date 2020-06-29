@@ -293,14 +293,16 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Generate the visualization of the data with overlain changepoints
       output$gfpopPlot <- renderPlotly({
         # Triggered by button to run analysis
-        input$runGfpop
+        if(input$runGfpop > 0) {
         
         # Run the analysis
         isolate(initialize_changepoints())
         
         # Build on top of the current base data graphic
         gfpop_data$base_plot %>%
-          add_changepoints(gfpop_data$main_data, gfpop_data$changepoints)
+          add_changepoints(isolate(gfpop_data$main_data), 
+                           isolate(gfpop_data$changepoints))
+        }
         
       })
       
