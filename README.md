@@ -1,4 +1,4 @@
-# gfpopgui
+# gfpop GUI
   <!-- badges: start -->
   [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpop-gui)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -7,10 +7,22 @@
    [![Sauce Test Status](https://saucelabs.com/buildstatus/julianstanley?dummy=unused)](https://app.saucelabs.com/u/julianstanley)
   <!-- badges: end -->
 
+## Overview
 
-A Shiny-based graphical user interface for GFPOP.
+This is a graphical user interface (GUI) for the [gfpop](https://github.com/vrunge/gfpop) package.
 
-A work in progress, a [Google Summer of Code](https://summerofcode.withgoogle.com/) 2020 [project](https://summerofcode.withgoogle.com/projects/#6502959753461760) with the [R Project for Statistical Computing](https://www.r-project.org/).
+Generally, `gfpop` is an R package implementing an algorithm that lets users detect changepoints
+in their data. Unlike related packages (e.g. `changepoint`), `gfpop` works under the assumption
+that its users have some general idea about the patterns of their changepoints. For example,
+you might expect that your data alternates between "up" and "down" changepoints, each with 
+a mean change of at least 1. If you can represent your assumptions about your changepoints
+as a directed graph, `gfpop` can take that constraint graph as an input and very efficiently predict
+changepoints in your data. 
+
+This GUI for gfpop lets you draw a constraint graph and edit its parameters interactively. Then, it will
+run the `gfpop` algorithm and let you interactively see changepoint differences.
+
+This is an in-progress summer project. See the project description at [Google Summer of Code 2020](https://summerofcode.withgoogle.com/projects/#6502959753461760).
 
 ## Installation and Use
 
@@ -24,6 +36,8 @@ To run, you can either [visit the web application](https://julianstanley.shinyap
 ```R
 gfpopgui::run_app()
 ```
+
+See the application for more detailed usage information. [Documentation](https://julianstanley.github.io/gfpop-gui) is still in progress.
 
 ## Attributions
 
