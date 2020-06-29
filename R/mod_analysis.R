@@ -306,7 +306,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       
       output$gfpopOutput <- DT::renderDT(
         {
-          changepoints <- gfpop_data$changepoints
+          changepoints <- req(gfpop_data$changepoints)
           data.frame(
             "State" = changepoints$states,
             "X Location" = changepoints$changepoints,
@@ -318,7 +318,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       )
       
       output$gfpopOutput_verbose <- renderUI({
-        changepoints <- gfpop_data$changepoints
+        changepoints <- req(gfpop_data$changepoints)
         outputstr <- paste(
           "<b>Changepoints:</b>",
           paste(changepoints$changepoints, collapse = ","), 
