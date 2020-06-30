@@ -56,6 +56,7 @@ mod_analysis_ui <- function(id) {
         ),
 
         actionButton(inputId = ns("runGfpop"), label = "Run gfpop!"),
+        actionButton(inputId = ns("clsCp"), label = "Clear Changepoints"),
         hr(),
         HTML("<b>Note:</b> Edge and Node IDs <u>cannot</u> be changed once
              they are created. Please set IDs appropriately (or accept the defaults)
@@ -177,17 +178,30 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       observeEvent(input$saveButton, {
         req(input$saveId)
         saveId <- input$saveId
-        saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
-        saved_analyses$saved_descriptions <- rbind(
-          saved_analyses$saved_descriptions,
-          data.table(id = input$saveId)
-        )
+
+        if (saveId %in% names(saved_analyses$saved_full)) {
+          shinyalert(paste0("Error: '", saveId, "' already exists.\nIDs must be unique."))
+        } else {
+          saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
+          saved_analyses$saved_descriptions <- rbind(
+            saved_analyses$saved_descriptions,
+            data.table(id = input$saveId)
+          )
+        }
+
+        updateTextInput(session, "saveId", value = "")
       })
 
       # Observe a load
       observeEvent(input$loadButton, {
         req(input$loadId)
         gfpop_data <<- do.call("reactiveValues", saved_analyses$saved_full[[input$loadId]])
+
+        # Update the graph
+        updateNumericInput(
+          session = session, inputId = "graph_refresh_helper",
+          value = input$graph_refresh_helper + 1
+        )
       })
 
       ## Graph Logistics -------------------------------------------------------
@@ -326,15 +340,24 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       ## Changepoint/data logistics ------------------------------------------------
 
+      # Clear changepoints
+      observeEvent(input$clsCp, {
+        gfpop_data$changepoints <- NULL
+        gfpop_data$changepoint_plot <- gfpop_data$base_plot
+      })
+
       # From the current input data and graph, generate changepoint results
       # Returns: None. Affects: initializes gfpop_data$changepoints
       initialize_changepoints <- reactive({
         req(gfpop_data$main_data)
 
+        # Update this function when changepoints update
+        gfpop_data$changepoints
+
         tryCatch(
           expr = {
             # TODO: Allow user to add weights (what do those do?)
-            gfpop_data$changepoints <- gfpop::gfpop(gfpop_data$main_data$Y,
+            gfpop_data$changepoints <<- gfpop::gfpop(gfpop_data$main_data$Y,
               gfpop_data$graphdata,
               type = input$gfpopType
             )
@@ -375,12 +398,20 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # Generate the visualization of the data with overlain changepoints
       output$gfpopPlot <- renderPlotly({
-        gfpop_data$changepoint_plot
+        input$loadButton
+
+        if (isTruthy(gfpop_data$changepoints)) {
+          gfpop_data$changepoint_plot
+        } else {
+          gfpop_data$base_plot
+        }
       })
 
       output$gfpopOutput <- DT::renderDT(
         {
+          input$loadButton
           changepoints <- req(gfpop_data$changepoints)
+          print(gfpop_data$changepoints)
           data.frame(
             "State" = changepoints$states,
             "X Location" = changepoints$changepoints,
@@ -392,6 +423,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       )
 
       output$gfpopOutput_verbose <- renderUI({
+        input$loadButton
         changepoints <- req(gfpop_data$changepoints)
         outputstr <- paste(
           "<b>Changepoints:</b>",
