@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput
-#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput 
+#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput
 #' textInput uiOutput
 #' @import shinycssloaders
 #' @importFrom plotly plotlyOutput
@@ -23,7 +23,6 @@ mod_analysis_ui <- function(id) {
         2,
         h2("Settings"),
         hr(),
-
         h4("global graph parameters"),
 
         numericInput(
@@ -77,17 +76,25 @@ mod_analysis_ui <- function(id) {
     ),
     # Row with datatable outputs
     fluidRow(
-      column(2,
-            hr(),             
-             h2("Save"),
-             textInput(inputId = ns("saveId"),
-                       label = "Unique Save Name"),
-             actionButton(inputId = ns("saveButton"),
-                          label = "Save Analysis"),
-             h2("Load"),
-             uiOutput(ns("uiLoadId")),
-             actionButton(inputId = ns("loadButton"),
-                          label = "Load Analysis")),
+      column(
+        2,
+        hr(),
+        h2("Save"),
+        textInput(
+          inputId = ns("saveId"),
+          label = "Unique Save Name"
+        ),
+        actionButton(
+          inputId = ns("saveButton"),
+          label = "Save Analysis"
+        ),
+        h2("Load"),
+        uiOutput(ns("uiLoadId")),
+        actionButton(
+          inputId = ns("loadButton"),
+          label = "Load Analysis"
+        )
+      ),
       column(
         5,
         h2("Graph (Editable DataTable)", align = "center"),
@@ -154,24 +161,29 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       ns <- session$ns
       ## Saving and Loading ----------------------------------------------------
       ## Keep track of some analyses
-      saved_analyses <- reactiveValues(saved_full = list(), 
-                                       saved_descriptions = data.table())
-      
+      saved_analyses <- reactiveValues(
+        saved_full = list(),
+        saved_descriptions = data.table()
+      )
+
       ## Render the saved analyses
       output$uiLoadId <- renderUI({
-        selectInput(ns("loadId"), "Select a previous analysis", 
-                    choices = saved_analyses$saved_descriptions$id)
+        selectInput(ns("loadId"), "Select a previous analysis",
+          choices = saved_analyses$saved_descriptions$id
+        )
       })
-      
+
       # Observe a save
       observeEvent(input$saveButton, {
         req(input$saveId)
         saveId <- input$saveId
         saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
-        saved_analyses$saved_descriptions <- rbind(saved_analyses$saved_descriptions,
-                                                   data.table(id = input$saveId))
+        saved_analyses$saved_descriptions <- rbind(
+          saved_analyses$saved_descriptions,
+          data.table(id = input$saveId)
+        )
       })
-      
+
       # Observe a load
       observeEvent(input$loadButton, {
         req(input$loadId)
@@ -318,22 +330,24 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Returns: None. Affects: initializes gfpop_data$changepoints
       initialize_changepoints <- reactive({
         req(gfpop_data$main_data)
-        
+
         tryCatch(
           expr = {
             # TODO: Allow user to add weights (what do those do?)
             gfpop_data$changepoints <- gfpop::gfpop(gfpop_data$main_data$Y,
-                                                    gfpop_data$graphdata,
-                                                    type = input$gfpopType
+              gfpop_data$graphdata,
+              type = input$gfpopType
             )
           },
           error = function(e) {
             shinyalert(paste0(
-              "Failed to initalize changepoints:\n ", e), type = "error")
+              "Failed to initalize changepoints:\n ", e
+            ), type = "error")
           },
           warning = function(w) {
             shinyalert(paste0(
-              "Got a warning while initalizing changepoints: ", w), type = "warning")
+              "Got a warning while initalizing changepoints: ", w
+            ), type = "warning")
           }
         )
       })
@@ -357,8 +371,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
             isolate(gfpop_data$main_data),
             isolate(gfpop_data$changepoints)
           )
-        
-        
       })
 
       # Generate the visualization of the data with overlain changepoints
@@ -404,6 +416,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       })
     }
   )
-  
+
   gfpop_data
 }
