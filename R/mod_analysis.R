@@ -7,7 +7,8 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput
-#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput
+#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput 
+#' textInput uiOutput
 #' @import shinycssloaders
 #' @importFrom plotly plotlyOutput
 #' @importFrom visNetwork visNetworkOutput
@@ -135,7 +136,7 @@ mod_analysis_ui <- function(id) {
 #'
 #' @noRd
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
-#' isolate updateNumericInput
+#' isolate updateNumericInput renderUI
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
 #' @importFrom visNetwork renderVisNetwork
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
