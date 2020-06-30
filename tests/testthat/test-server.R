@@ -345,7 +345,7 @@ test_that(
         session$setInputs(gfpopType = "mean")
         assert_that(
           "changepoints do not exist before init",
-          all(names(gfpop_data) == c("graphdata_visNetwork", "graphdata", "main_data", "base_plot")),
+          !("changepoints" %in% names(gfpop_data)),
           list(gfpop_data)
         )
 
