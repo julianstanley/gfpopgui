@@ -1,9 +1,9 @@
 # gfpop GUI
   <!-- badges: start -->
-  [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpop-gui)
+  [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpopgui)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-   [![Travis build status](https://travis-ci.com/julianstanley/gfpop-gui.svg?branch=master)](https://travis-ci.com/julianstanley/gfpop-gui)
-   [![Codecov test coverage](https://codecov.io/gh/julianstanley/gfpop-gui/branch/master/graph/badge.svg)](https://codecov.io/gh/julianstanley/gfpop-gui?branch=master)
+   [![Travis build status](https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master)](https://travis-ci.com/julianstanley/gfpopgui)
+   [![Codecov test coverage](https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg)](https://codecov.io/gh/julianstanley/gfpopgui?branch=master)
    [![Sauce Test Status](https://saucelabs.com/buildstatus/julianstanley?dummy=unused)](https://app.saucelabs.com/u/julianstanley)
   <!-- badges: end -->
 
@@ -37,7 +37,7 @@ To run, you can either [visit the web application](https://julianstanley.shinyap
 gfpopgui::run_app()
 ```
 
-See the application for more detailed usage information. [Documentation](https://julianstanley.github.io/gfpop-gui) is still in progress.
+See the application for more detailed usage information. [Documentation](https://julianstanley.github.io/gfpopgui) is still in progress.
 
 ## Attributions
 

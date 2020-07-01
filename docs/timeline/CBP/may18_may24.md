@@ -13,7 +13,7 @@ This is mostly a learning week. In my original proposal, I thought that the codi
 
 ## Revised sketches
 
-For more information, see [issue #3](https://github.com/julianstanley/gfpop-gui/issues/3).
+For more information, see [issue #3](https://github.com/julianstanley/gfpopgui/issues/3).
 
 Just needed to revise the analysis tab:
 
@@ -21,7 +21,7 @@ Just needed to revise the analysis tab:
 
 ## visNetwork reading
 
-For more information, see [issue #2](https://github.com/julianstanley/gfpop-gui/issues/2).
+For more information, see [issue #2](https://github.com/julianstanley/gfpopgui/issues/2).
 
 I've made some progress on visNetwork. I'm now able to record changes to the visNetwork graph, based on [this stackoverflow post](https://stackoverflow.com/questions/54846529/how-to-extract-and-save-visnetwork-manipulation-changes-in-shiny),
 

@@ -3,7 +3,7 @@ id: may25_may31
 title: 25 May 2020 - 31 May 2020
 ---
 
-This is the last week in the community bonding period! From now on, these timeline posts will be more like a reflective blog than a day-by-day update. Those updates [have now moved to the issues tab of the repo](https://github.com/julianstanley/gfpop-gui/issues).
+This is the last week in the community bonding period! From now on, these timeline posts will be more like a reflective blog than a day-by-day update. Those updates [have now moved to the issues tab of the repo](https://github.com/julianstanley/gfpopgui/issues).
 
 So, I'll write these posts at the end of the week and highlight some of the things that I learned.
 
@@ -80,7 +80,7 @@ I also learned about the `r_github_packages` option, which lets you install an R
 
 ```YAML
 r_github_packages:
-  - julianstanley/gfpop-gui
+  - julianstanley/gfpopgui
 ```
 
 However, my auto-deploy to shinyapps.io had some weird problems.
@@ -146,7 +146,7 @@ While I haven't put the graph into production yet, I wrote a quick [proof-of-con
 
 Finally, this week has really increased my appreciation for using issues, branches, and pull requests. In fact, I think I've been using them a lot more than most users (hopefully not too much!)
 
-Just this week, I opened 12 issues in gfpop-gui, as well as [one in gfpop](https://github.com/vrunge/gfpop/issues/11), [one in shinytest](https://github.com/rstudio/shinytest/issues/312), and one in [visNetwork](https://github.com/datastorm-open/visNetwork/issues/377), and also [commented on some in golem](https://github.com/ThinkR-open/golem/issues/263).
+Just this week, I opened 12 issues in gfpopgui, as well as [one in gfpop](https://github.com/vrunge/gfpop/issues/11), [one in shinytest](https://github.com/rstudio/shinytest/issues/312), and one in [visNetwork](https://github.com/datastorm-open/visNetwork/issues/377), and also [commented on some in golem](https://github.com/ThinkR-open/golem/issues/263).
 
 I think that creating issues for my own repository has been a fantastic way to keep track of my progress and thoughts, which has helped me be more focused and productive. And creating issues in other repositories, as well as participating in conversations in the [RStudio community forums](https://community.rstudio.com) has really helped me to connect with the open-source community, and think more critically about how to ask good questions and contribute thoughtfully.
 

@@ -140,4 +140,4 @@ Has no output. So, I commented on an [existing shiny issue](https://github.com/r
 
 ## Further features
 
-That's it for this week, but more information about this week's progress is located in [the issues tab of the gfpop-gui repo](https://github.com/julianstanley/gfpop-gui/issues).
+That's it for this week, but more information about this week's progress is located in [the issues tab of the gfpopgui repo](https://github.com/julianstanley/gfpopgui/issues).

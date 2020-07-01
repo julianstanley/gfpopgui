@@ -1,6 +1,6 @@
 ---
 id: welcome
-title: Welcome to the gfpop-gui docs!
+title: Welcome to the gfpopgui docs!
 ---
 
 Last updated: 30 May, 2020

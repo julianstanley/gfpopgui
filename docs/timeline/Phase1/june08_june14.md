@@ -135,9 +135,9 @@ In the meantime, I [posted this on RStudio community](https://community.rstudio.
 
 When a user edits a visNetwork plot, the data underlying the plot remains unchanged.
 
-So, in the case of gfpop-gui, where I want to take user's visNetwork graph edits and use the resulting graph to estimate changepoints, I need additional code to watch for graph edits and edit the underlying graph data.
+So, in the case of gfpopgui, where I want to take user's visNetwork graph edits and use the resulting graph to estimate changepoints, I need additional code to watch for graph edits and edit the underlying graph data.
 
-visNetwork provides that functionality by passing user edits in an object contained in `input${graph name}_graphChange`. So, in the case of gfpop-gui, the graph name is `gfpopGraph`, so the input to observe is `input$gfpopGraph_graphChange`.
+visNetwork provides that functionality by passing user edits in an object contained in `input${graph name}_graphChange`. So, in the case of gfpopgui, the graph name is `gfpopGraph`, so the input to observe is `input$gfpopGraph_graphChange`.
 
 The `input$gfpopGraph_graphChange` object has a `cmd` entry that specifies the type of change. Then, in response to those different graphChange commands, I can edit the data:
 
