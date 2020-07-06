@@ -34,6 +34,7 @@ usethis::use_package( "shinyalert" )
 golem::add_module( name = "home" ) 
 # Analysis tab
 golem::add_module( name = "analysis" )
+golem::add_module( name = "sharing" )
 
 ## Add helper functions ----
 

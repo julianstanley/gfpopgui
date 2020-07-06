@@ -37,7 +37,7 @@ mod_home_ui <- function(id) {
           HTML("<hr>"),
           HTML("<h4>Optional/advanced uploads:</h4><br>"),
           fileInput(ns("constraint_graph"), "Choose a file with a constraint graph (.csv)"),
-          fileInput(ns("completed_analysis"), "[Pending] Choose a file with a completed analysis (.Rdata)"),
+          fileInput(ns("completed_analysis"), "Choose a file with a completed analysis (.Rdata)"),
         ),
         h3("Uploaded data:", align = "center"),
         div(
@@ -78,19 +78,23 @@ mod_home_server <- function(id) {
   )
 
   # Main Data Input and Preview-------------------------------------------------
-  set_main_data <- reactive({
-    if (isTruthy(input$primary_input)) {
-      primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
-      colnames(primary_input) <- c("X", "Y")
-      gfpop_data$main_data <- primary_input
-    }
+  observeEvent(input$completed_analysis, {
+    rdata_name <- load(input$completed_analysis$datapath)
+    gfpop_data_list <- mget(rdata_name, environment())
+    lapply(names(gfpop_data_list[[1]]), 
+           function(x) gfpop_data[[x]] <- gfpop_data_list[[1]][[x]])
+  })
+
+  observeEvent(input$primary_input, {
+    primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
+    colnames(primary_input) <- c("X", "Y")
+    gfpop_data$main_data <- primary_input
   })
   
   # TODO: main_data should also accept .Rdata from `input$completed_analysis`
   # Parse the primary input data and return back a DataTable
   output$main_datatable <- DT::renderDataTable(
     {
-      set_main_data()
       gfpop_data$main_data
     },
     options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
@@ -112,6 +116,7 @@ mod_home_server <- function(id) {
   
   
   # Graph Data Input and Preview -----------------------------------------------
+  
   set_graph_data <- reactive({
     if (isTruthy(input$constraint_graph)) {
       graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)

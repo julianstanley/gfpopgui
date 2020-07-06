@@ -141,7 +141,7 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
     if (!(event$type %in% c("null", "std", "up", "down", "abs"))) {
-      warning("Invalid 'type' parameter, returning unchangaed data and a refresh recommendation.")
+      warning("Invalid 'type' parameter, returning unchanged data and a refresh recommendation.")
       return(list(data = graphdata_visNetwork, refresh = TRUE))
     }
   }
@@ -225,6 +225,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
     }
   }
   
-  list(data = graphdata_visNetwork_return, refresh = refresh)
+  list(data = graphdata_visNetwork_return, refresh = FALSE)
 }
 #' 
