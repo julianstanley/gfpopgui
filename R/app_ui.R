@@ -23,7 +23,10 @@ app_ui <- function(request) {
           "Analysis",
           mod_analysis_ui("analysis_ui_1")
         ),
-        tabPanel("Sharing"),
+        tabPanel(
+          "Sharing",
+          mod_sharing_ui("sharing_ui_1")
+        ),
         tabPanel("Help")
       )
     )

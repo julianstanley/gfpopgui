@@ -7,8 +7,8 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList actionButton HTML NS numericInput selectInput
-#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel htmlOutput
-#' textInput uiOutput
+#' tags fluidRow column h2 br hr h5 checkboxInput tabsetPanel verbatimTextOutput
+#' textInput uiOutput htmlOutput
 #' @import shinycssloaders
 #' @importFrom plotly plotlyOutput
 #' @importFrom visNetwork visNetworkOutput
@@ -104,7 +104,8 @@ mod_analysis_ui <- function(id) {
             "Basic",
             h3("Current Graph"),
             h5("This is what gets sent to gfpop"),
-            dataTableOutput(ns("graphOutput"))
+            dataTableOutput(ns("graphOutput")),
+            uiOutput(ns("graphOutput_code"))
           ),
           tabPanel(
             "Advanced",
@@ -144,7 +145,7 @@ mod_analysis_ui <- function(id) {
 #'
 #' @noRd
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
-#' isolate updateNumericInput renderUI
+#' isolate updateNumericInput renderUI renderText
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
 #' @importFrom visNetwork renderVisNetwork
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
@@ -180,7 +181,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         saveId <- input$saveId
 
         if (saveId %in% names(saved_analyses$saved_full)) {
-          shinyalert(paste0("Error: '", saveId, "' already exists.\nIDs must be unique."))
+          shinyalert(paste0(
+            "Error: '", saveId,
+            "' already exists.\nIDs must be unique."
+          ))
         } else {
           saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
           saved_analyses$saved_descriptions <- rbind(
@@ -269,7 +273,22 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
       })
 
-      ### Graph Logistics: Output Data Tables -----
+      ### Graph Logistics: Output Data Tables & Code-----
+      output$graphOutput_code <- renderUI({
+        HTML(
+          "<details>
+          <summary>Current Graph (R Code)</summary>",
+          "<code>",
+          gsub(
+            " ", "&nbsp;",
+            gsub(pattern = "\n", "<br>", graph_to_R_code(gfpop_data$graphdata))
+          ),
+          "<br><br>",
+          "</code>",
+          "</details>"
+        )
+      })
+
       output$graphOutput <- DT::renderDT(
         {
           gfpop_data$graphdata
