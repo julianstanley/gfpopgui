@@ -123,7 +123,7 @@ generate_visNetwork <- function(graph_data) {
     visOptions(manipulation = list(
       enabled = TRUE,
       editEdgeCols = c("from", "to", 
-                       "type", "parameter", "penalty", "K", "a", "min", "max", "hidden")
+                       "type", "parameter", "penalty", "K", "a", "min", "max")
     )) %>%
     visLayout(randomSeed = 123)
 }
@@ -164,7 +164,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
                   penalty = event$penalty, K = event$K, a = event$a,
                   min = event$min, max = event$max,
                   selfReference.angle = angle, selfReference.size = 40,
-                  hidden = as.logical(event$hidden)
       )
     
     # Need to refresh graph for things to work properly here
