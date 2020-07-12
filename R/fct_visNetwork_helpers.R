@@ -103,10 +103,33 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   gfpop::graph(select_graph_columns(edges))
 }
 
+additional_js <-"function(el, x) {
+// Validate edge type when the save button is pressed
+$('#editedge-saveButton').on('click', function() {
+let from = $('#editedge-from').val();
+let to = $('#editedge-to').val();
+let type = $('#editedge-type').val();
+let param = $('#editedge-parameter').val();
+let pen = $('#editedge-penalty').val();
+let K = $('#editedge-K').val();
+let a = $('#editedge-a').val();
+let min = $('#editedge-min').val();
+let max = $('#editedge-max').val();
+
+if (!['null', 'std', 'up', 'down', 'abs'].includes(type.toLowerCase())) {
+alert(`${type} is not a valid type. Defaulting to null`);
+$('#editedge-type').val('null');
+}
+alert(`${from}\n${to}\n${type}\n${param}\n${pen}\n${K}\n${a}\n${min}\n${max}\n`);
+})
+
+}
+"
 #' Generates a visNetwork from a list of nodes and edges
 #' @param graph_data A list containing 'nodes' and 'edges' is visNetwork format
 #' @returns a visNetwork object
 #' @import visNetwork
+#' @importFrom htmlwidgets onRender
 #' @examples 
 #' generate_visNetwork(graphdf_to_visNetwork(gfpop::graph(type = "std")))
 #' @export
@@ -125,7 +148,8 @@ generate_visNetwork <- function(graph_data) {
       editEdgeCols = c("from", "to", 
                        "type", "parameter", "penalty", "K", "a", "min", "max")
     )) %>%
-    visLayout(randomSeed = 123)
+    visLayout(randomSeed = 123) %>%
+    onRender(additional_js)
 }
 
 #' Edits a visNetwork data based on the given command, consistent with the format
