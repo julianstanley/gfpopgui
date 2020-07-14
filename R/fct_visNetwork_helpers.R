@@ -15,6 +15,16 @@ NonetoNA <- function(vec) {
   lapply(vectemp, function(x) if (x == "None") NA else x)
 }
 
+#' Creates a 'label' array for a graphdf, given the columns that you
+#' want to include in the label and the seperator
+#' @param graphdf A graph object (in the form of a dataframe) from gfpop
+#' @param columns a character vector of columns to be included in the label.
+#' @param collapse A string to seperate each item
+#' @returns a character vector combining those columns as specified
+create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
+  apply(graphdf[, columns], 1, paste, collapse = collapse)
+}
+
 #' Turns a graph dataframe (from gfpop) into a list that
 #' can be read by visNetwork
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
@@ -34,7 +44,7 @@ NonetoNA <- function(vec) {
 #' @param hideNull (Boolean) hide null edges?
 #' @returns a list that can be read by visNetwork
 #' @importFrom dplyr filter %>%
-#' @importFrom rlang .data 
+#' @importFrom rlang .data
 #' @import visNetwork
 #' @examples
 #' graphdf_to_visNetwork(gfpop::graph(type = "std"))
@@ -45,36 +55,32 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
   edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
 
-  # Set null-specific paramaters
+  # Determine the value of selfReference.angle and hidden
   selfReference.angle <- c()
   hidden <- c()
-  for(i in 1:nrow(graphdf)) {
-    row <- graphdf[i,]
-    if(row$state1 != row$state2) {
-      selfReference.angle <- c(selfReference.angle, NA)
-      hidden <- c(hidden, FALSE)
-    } else if(row$state1 == row$state2) {
-      if(row$type == "null") {
-        hidden <- if(showNull) c(hidden, FALSE) else c(hidden, TRUE)
-        selfReference.angle <- c(selfReference.angle, pi)
-      } else {
-        hidden <- c(hidden, FALSE)
-        selfReference.angle <- c(selfReference.angle, 2*pi)
-      }
+  apply(graphdf, 1, function(x) {
+    # Non-self
+    if (x[["state1"]] != x[["state2"]]) {
+      selfReference.angle <<- c(selfReference.angle, NA)
+      hidden <<- c(hidden, FALSE)
+    } else if (x[["type"]] == "null") {
+      hidden <<- if (showNull) c(hidden, FALSE) else c(hidden, TRUE)
+      selfReference.angle <<- c(selfReference.angle, pi)
+    } else {
+      hidden <<- c(hidden, FALSE)
+      selfReference.angle <<- c(selfReference.angle, 2 * pi)
     }
-  }
+  })
+
   list(
-    nodes = data.frame(id = node_names, label = node_names, size = rep(40, length(node_names))),
+    nodes = data.frame(id = node_names, label = node_names, size = 40),
     edges = data.frame(
-      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = "_"), 
-      label = paste0(graphdf$type, " | ", graphdf$penalty),
-      to = graphdf$state2, from = graphdf$state1,
+      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
+      label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
-      penalty = graphdf$penalty, K = as.character(graphdf$K), 
-      a = graphdf$a, min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
-      selfReference.angle = selfReference.angle,
-      selfReference.size = rep(40, length(graphdf$state1)),
-      hidden = hidden
+      penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
+      min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
+      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden
     )
   )
 }
@@ -85,7 +91,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
 #' See graphdf_to_visNetwork.
 #' @returns a dataframe/graph for gfpop
 #' @importFrom dplyr filter %>%
-#' @importFrom rlang .data 
+#' @importFrom rlang .data
 #' @import visNetwork
 #' @examples
 #' visNetwork_to_graphdf(graphdf_to_visNetwork(gfpop::graph(type = "std")))
@@ -103,7 +109,7 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   gfpop::graph(select_graph_columns(edges))
 }
 
-additional_js <-"function(el, x) {
+additional_js <- "function(el, x) {
 // Validate edge type when the save button is pressed
 $('#editedge-saveButton').on('click', function() {
 let type = $('#editedge-type').val();
@@ -119,7 +125,7 @@ $('#editedge-type').val('null');
 #' @returns a visNetwork object
 #' @import visNetwork
 #' @importFrom htmlwidgets onRender
-#' @examples 
+#' @examples
 #' generate_visNetwork(graphdf_to_visNetwork(gfpop::graph(type = "std")))
 #' @export
 generate_visNetwork <- function(graph_data) {
@@ -130,12 +136,14 @@ generate_visNetwork <- function(graph_data) {
         type = "curvedCW",
         roundness = 0.2
       ),
-      font = list(align = 'top')
+      font = list(align = "top")
     ) %>%
     visOptions(manipulation = list(
       enabled = TRUE,
-      editEdgeCols = c("from", "to", 
-                       "type", "parameter", "penalty", "K", "a", "min", "max")
+      editEdgeCols = c(
+        "from", "to",
+        "type", "parameter", "penalty", "K", "a", "min", "max"
+      )
     )) %>%
     visLayout(randomSeed = 123) %>%
     onRender(additional_js)
@@ -160,29 +168,28 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
   }
   ### Edit Edge --------------------------------------------------------------
   if (event$cmd == "editEdge") {
-    
     changed_id <- event$id
     # Decide whether we need to add selfReference.angle
     if (event$to == event$from) {
-      angle <- if (event$type == "null") pi else 2*pi 
+      angle <- if (event$type == "null") pi else 2 * pi
     } else {
-      angle = "NA"
+      angle <- "NA"
     }
-    
+
     graphdata_visNetwork_return$edges <- graphdata_visNetwork_return$edges %>%
       mutate_cond(id == changed_id,
-                  label = paste0(event$type, " | ", event$penalty),
-                  to = event$to, from = event$from,
-                  type = event$type, parameter = event$parameter,
-                  penalty = event$penalty, K = event$K, a = event$a,
-                  min = event$min, max = event$max,
-                  selfReference.angle = angle, selfReference.size = 40,
+        label = paste0(event$type, " | ", event$penalty),
+        to = event$to, from = event$from,
+        type = event$type, parameter = event$parameter,
+        penalty = event$penalty, K = event$K, a = event$a,
+        min = event$min, max = event$max,
+        selfReference.angle = angle, selfReference.size = 40,
       )
-    
+
     # Need to refresh graph for things to work properly here
-    refresh = TRUE
+    refresh <- TRUE
   }
-  
+
   ### Add Edge ---------------------------------------------------------------
   if (event$cmd == "addEdge") {
     new_row <- data.frame(
@@ -191,52 +198,58 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
       to = event$to, from = event$from,
       type = "null", parameter = "1",
       penalty = "0", K = "Inf", a = "0",
-      min = "None", max = "None", 
-      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE)
-    
-    graphdata_visNetwork_return$edges <- rbind(graphdata_visNetwork_return$edges,
-                                                   new_row)
-    
+      min = "None", max = "None",
+      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE
+    )
+
+    graphdata_visNetwork_return$edges <- rbind(
+      graphdata_visNetwork_return$edges,
+      new_row
+    )
+
     # Need to refresh graph for things to work properly here
-    refresh = TRUE
-    
+    refresh <- TRUE
   }
-  
+
   ### Delete Edge ------------------------------------------------------------
   if (event$cmd == "deleteElements" && (length(event$edges) > 0)) {
-    for(del_edge in event$edges) {
+    for (del_edge in event$edges) {
       graphdata_visNetwork_return$edges <-
         graphdata_visNetwork_return$edges %>%
         dplyr::filter(.data$id != del_edge)
     }
   }
-  
+
   ### Add Node ---------------------------------------------------------------
   if (event$cmd == "addNode") {
     graphdata_visNetwork_return$nodes <- rbind(
       graphdata_visNetwork_return$nodes,
-      data.frame(id = event$id,
-                 label = event$label,
-                 size = 40))
+      data.frame(
+        id = event$id,
+        label = event$label,
+        size = 40
+      )
+    )
   }
-  
+
   ### Edit Node --------------------------------------------------------------
   if (event$cmd == "editNode") {
-    graphdata_visNetwork_return$nodes <- 
+    graphdata_visNetwork_return$nodes <-
       graphdata_visNetwork_return$nodes %>%
       mutate_cond(id == event$id,
-                  label = event$label)
+        label = event$label
+      )
   }
-  
+
   ### Delete Node ------------------------------------------------------------
   if (event$cmd == "deleteElements" && (length(event$nodes) > 0)) {
-    for(del_node in event$nodes) {
+    for (del_node in event$nodes) {
       graphdata_visNetwork_return$nodes <-
         graphdata_visNetwork_return$nodes %>%
         dplyr::filter(.data$id != del_node)
     }
   }
-  
+
   list(data = graphdata_visNetwork_return, refresh = FALSE)
 }
-#' 
+#'
