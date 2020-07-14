@@ -106,23 +106,12 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
 additional_js <-"function(el, x) {
 // Validate edge type when the save button is pressed
 $('#editedge-saveButton').on('click', function() {
-let from = $('#editedge-from').val();
-let to = $('#editedge-to').val();
 let type = $('#editedge-type').val();
-let param = $('#editedge-parameter').val();
-let pen = $('#editedge-penalty').val();
-let K = $('#editedge-K').val();
-let a = $('#editedge-a').val();
-let min = $('#editedge-min').val();
-let max = $('#editedge-max').val();
-
 if (!['null', 'std', 'up', 'down', 'abs'].includes(type.toLowerCase())) {
 alert(`${type} is not a valid type. Defaulting to null`);
 $('#editedge-type').val('null');
 }
-alert(`${from}\n${to}\n${type}\n${param}\n${pen}\n${K}\n${a}\n${min}\n${max}\n`);
 })
-
 }
 "
 #' Generates a visNetwork from a list of nodes and edges
