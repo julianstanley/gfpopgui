@@ -1,6 +1,7 @@
 library(RSelenium)
 library(testthat)
-
+enable_integration_tests <- FALSE
+if (enable_integration_tests) {
 user <- "julianstanley"
 pass <- "0135a1f4-8837-4202-a428-d58151760e6b"
 port <- 80
@@ -101,3 +102,4 @@ test_that("the generate data button works", {
                                     result = result)
   remDr$close()
 })
+}
