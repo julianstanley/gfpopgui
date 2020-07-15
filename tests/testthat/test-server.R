@@ -148,8 +148,7 @@ test_that(
           (is.null(gfpop_data$graphdata) && is.null(gfpop_data$graphdata_visNetwork))
         )
 
-        session$setInputs(pen = 15, graphType = "std", showNull = TRUE)
-        updateGraph()
+        session$setInputs(pen = 15, graphType = "std", showNull = TRUE, updateGraph = 1)
 
         assert_that(
           "graphdata is reasonable after  update_graph [analysis]",
@@ -174,7 +173,6 @@ test_that(
         )
 
         session$setInputs(showNull = FALSE)
-        hideNull()
         assert_that(
           "hideNull works",
           all(gfpop_data$graphdata_visNetwork$edges$hidden == c("TRUE", "FALSE")),
@@ -359,8 +357,7 @@ test_that(
 
         # GraphOutput cell edit tests --------------------------------------------
         # Reset nodes and edges
-        session$setInputs(pen = 15, graphType = "std", showNull = TRUE)
-        updateGraph()
+        session$setInputs(pen = 15, graphType = "std", showNull = TRUE, updateGraph = 1)
 
         assert_that(
           "ensure penalty starts at 15",

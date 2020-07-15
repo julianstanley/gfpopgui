@@ -100,7 +100,7 @@ test_that(
       K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
     )
     new_data <- modify_visNetwork(event, data)
-    expect_equal(new_data$data$edges$penalty, as.character(c(0, 200)))
+    expect_equal(new_data$edges$penalty, as.character(c(0, 200)))
   }
 )
 
@@ -112,19 +112,7 @@ test_that("Editing an edge turns the edge type lowercase", {
     K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
   )
   new_data <- modify_visNetwork(event, data)
-  expect_equal(new_data$data$edges$type, c("null", "std"))
-})
-
-test_that("modify_visNetwork rejects an invalid type parameter 
-by throwing a warning", {
-  event <- list(
-    cmd = "editEdge",
-    to = "Std", from = "Std",
-    id = "Std_Std_std", type = "Stdd", penalty = "200", parameter = "0",
-    K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
-  )
-  expect_warning(modify_visNetwork(event, data), "Invalid 'type'")
-  expect_equal(suppressWarnings(modify_visNetwork(event, data)$data), data)
+  expect_equal(new_data$edges$type, c("null", "std"))
 })
 
 test_that(
@@ -135,7 +123,7 @@ test_that(
       id = "new_node", label = "new node"
     )
     new_data <- modify_visNetwork(event, data)
-    nodes_test <- new_data$data$nodes
+    nodes_test <- new_data$nodes
     
     expect_equal(nodes_test$id, c("Std", "new_node"))
     expect_equal(nodes_test$label, c("Std", "new node"))
@@ -150,7 +138,7 @@ test_that(
     id = "Std", label = "my edited node"
   )
   new_data <- modify_visNetwork(event, data)
-  nodes_test <- new_data$data$nodes
+  nodes_test <- new_data$nodes
   
   expect_equal(nodes_test$id, c("Std"))
   expect_equal(nodes_test$label, c("my edited node"))
@@ -172,8 +160,8 @@ test_that(
       id = "new_node", label = "my edited node"
     )
     
-    new_data2 <- modify_visNetwork(event2, new_data1$data)
-    nodes_test <- new_data2$data$nodes
+    new_data2 <- modify_visNetwork(event2, new_data1)
+    nodes_test <- new_data2$nodes
     
     expect_equal(nodes_test$id, c("Std", "new_node"))
     expect_equal(nodes_test$label, c("Std", "my edited node"))
@@ -189,7 +177,7 @@ test_that("Can add an edge", {
   
   new_data <- modify_visNetwork(event, data)
   
-  expect_equal(new_data$data$edges$penalty, as.character(c(0, 15, 0)))
+  expect_equal(new_data$edges$penalty, as.character(c(0, 15, 0)))
 })
 
 test_that("Can delete node without deleting edge", {
@@ -198,14 +186,14 @@ test_that("Can delete node without deleting edge", {
     id = "new_node", label = "new node"
   )
   new_data1 <- modify_visNetwork(event1, data)
-  expect_equal(new_data1$data$nodes$id, c("Std", "new_node"))
+  expect_equal(new_data1$nodes$id, c("Std", "new_node"))
 
   event2 <- list(
     cmd = "deleteElements", nodes = c("new_node"))
-  new_data2 <- modify_visNetwork(event2, new_data1$data)
+  new_data2 <- modify_visNetwork(event2, new_data1)
   
-  expect_equal(new_data2$data$nodes$id, c("Std"))
-  expect_equal(new_data2$data$edges$penalty, c(0, 15))
+  expect_equal(new_data2$nodes$id, c("Std"))
+  expect_equal(new_data2$edges$penalty, c(0, 15))
 })
 
 test_that("Can delete edge without deleting node", {
@@ -215,6 +203,6 @@ test_that("Can delete edge without deleting node", {
 
   new_data <- modify_visNetwork(event, data)
   
-  expect_equal(new_data$data$edges$penalty, c(15))
+  expect_equal(new_data$edges$penalty, c(15))
 })
 

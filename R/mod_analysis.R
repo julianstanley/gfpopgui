@@ -136,8 +136,7 @@ mod_analysis_ui <- function(id) {
 
     # Buttons for debugging
     actionButton(ns("browser"), "browser"),
-    tags$script(paste0("$('#", ns("browser"), "').hide();")),
-    hidden(numericInput(inputId = ns("graph_refresh_helper"), label = "", value = 0))
+    tags$script(paste0("$('#", ns("browser"), "').hide();"))
   )
 }
 
@@ -147,7 +146,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
 #' isolate updateNumericInput renderUI renderText
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
-#' @importFrom visNetwork renderVisNetwork
+#' @importFrom visNetwork renderVisNetwork visNetworkProxy visUpdateNodes visUpdateEdges
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
 #' @importFrom data.table data.table
 #' @importFrom dplyr mutate filter
@@ -161,6 +160,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
     id,
     function(input, output, session) {
       ns <- session$ns
+
       ## Saving and Loading ----------------------------------------------------
       ## Keep track of some analyses
       saved_analyses <- reactiveValues(
@@ -210,66 +210,69 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       ## Graph Logistics -------------------------------------------------------
 
-      # Observer to see the graph refresh helper
-      observeEvent(input$graph_refresh_helper, {})
+      # A reactive value to trigger a graph refresh
+      dummy_graph_refresh <- reactiveValues(i = 0)
 
       # When the "Update graph with above parameters" button is pressed, update graph
-      updateGraph <- reactive({
+      # Note: for testing purposes, all observeEvent's are
+      observeEvent(eventExpr = input$updateGraph, {
         gfpop_data$graphdata <- gfpop::graph(
           penalty = as.double(input$pen),
           type = input$graphType
         )
+
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
           gfpop_data$graphdata,
           showNull = input$showNull
         )
+        
+        # When we update the graph this way, we should do a full refresh
+        dummy_graph_refresh$i <- dummy_graph_refresh$i + 1
       })
 
-      observeEvent(eventExpr = input$updateGraph, {
-        updateGraph()
-      })
-
-      # Hide null nodes
-      hideNull <- reactive({
+      # Toggle whether null edges are visible
+      observeEvent(eventExpr = input$showNull, {
         gfpop_data$graphdata_visNetwork$edges$hidden <- sapply(
           gfpop_data$graphdata_visNetwork$edges$type,
           function(x) if (input$showNull) FALSE else (x == "null")
         )
       })
 
-      observeEvent(eventExpr = input$showNull, {
-        hideNull()
+      # Update visNetwork graph in-place (via visNetworkProxy)
+      observe({
+        # Update edge labels
+        gfpop_data$graphdata_visNetwork$edges$label <- create_label(
+          gfpop_data$graphdata_visNetwork$edges
+        )
+
+        # Update graph edges and nodes
+        visNetworkProxy(ns("gfpopGraph")) %>%
+          visUpdateNodes(nodes = gfpop_data$graphdata_visNetwork$nodes) %>%
+          visUpdateEdges(edges = gfpop_data$graphdata_visNetwork$edges)
       })
 
       # Generate a visualization of the current constraint graph
       output$gfpopGraph <- renderVisNetwork({
-        # Refresh when one of the Update/Refresh Graph buttons are pressed
-        input$updateGraph
+        # Refresh when the refresh Graph button is pressed
+        # Or when the dummy graph refresh is modified
         input$refreshGraph
-
-        # Or, use this to trigger from elsewhere
-        input$graph_refresh_helper
+        dummy_graph_refresh$i
 
         generate_visNetwork(isolate(gfpop_data$graphdata_visNetwork))
       })
 
       ### Graph Logistics: Observe graph changes-------------------------------------
-      # Monitor edge edits. Edit the gfpop_data$graphdata_visNetwork variable
-      # from the observations, and then update the gfpop_data$graphdata
+
+      # Respond to a change in the visNetwork plot (via manipulation params)
       observeEvent(input$gfpopGraph_graphChange, {
         event <- input$gfpopGraph_graphChange
 
-        modified_data <- modify_visNetwork(
+        gfpop_data$graphdata_visNetwork <- modify_visNetwork(
           event,
           gfpop_data$graphdata_visNetwork
         )
-        gfpop_data$graphdata_visNetwork <- modified_data$data
-        if (modified_data$refresh) {
-          updateNumericInput(
-            session = session, inputId = "graph_refresh_helper",
-            value = input$graph_refresh_helper + 1
-          )
-        }
+
+        # We also need to make sure graphdata stays in sync with visNetwork
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
       })
 
@@ -430,7 +433,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         {
           input$loadButton
           changepoints <- req(gfpop_data$changepoints)
-          print(gfpop_data$changepoints)
           data.frame(
             "State" = changepoints$states,
             "X Location" = changepoints$changepoints,

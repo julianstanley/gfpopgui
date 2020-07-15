@@ -18,6 +18,7 @@ NonetoNA <- function(vec) {
 #' Creates a 'label' array for a graphdf, given the columns that you
 #' want to include in the label and the seperator
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
+#' or the "edges" from a visNetwork list.
 #' @param columns a character vector of columns to be included in the label.
 #' @param collapse A string to seperate each item
 #' @returns a character vector combining those columns as specified
@@ -158,7 +159,6 @@ generate_visNetwork <- function(graph_data) {
 #' @export
 modify_visNetwork <- function(event, graphdata_visNetwork) {
   graphdata_visNetwork_return <- graphdata_visNetwork
-  refresh <- FALSE
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
     if (!(event$type %in% c("null", "std", "up", "down", "abs"))) {
@@ -186,8 +186,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
         selfReference.angle = angle, selfReference.size = 40,
       )
 
-    # Need to refresh graph for things to work properly here
-    refresh <- TRUE
   }
 
   ### Add Edge ---------------------------------------------------------------
@@ -206,9 +204,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
       graphdata_visNetwork_return$edges,
       new_row
     )
-
-    # Need to refresh graph for things to work properly here
-    refresh <- TRUE
   }
 
   ### Delete Edge ------------------------------------------------------------
@@ -250,6 +245,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
     }
   }
 
-  list(data = graphdata_visNetwork_return, refresh = FALSE)
+  graphdata_visNetwork_return
 }
 #'
