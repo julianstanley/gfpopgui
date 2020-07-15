@@ -7,3 +7,9 @@ hr {
 .navbar .navbar-nav {
   float: right;
 }
+
+#analysis_ui_1-gfpopOutput_verbose {
+  overflow-x: scroll; 
+  max-width: 100%;
+  background: ghostwhite;
+}
