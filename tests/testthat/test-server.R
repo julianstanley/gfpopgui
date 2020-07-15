@@ -86,9 +86,7 @@ test_that(
           is.null(gfpop_data$main_data)
         )
 
-        session$setInputs(ndata = 100, sigma = 1)
-        generate_data()
-
+        session$setInputs(ndata = 100, sigma = 1, genData = input$genData + 1)
         assert_that(
           "The generate data reactive works",
           nrow(gfpop_data$main_data) == 100,
