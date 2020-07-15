@@ -39,6 +39,14 @@ gfpopgui::run_app()
 
 See the application for more detailed usage information. [Documentation](https://julianstanley.github.io/gfpopgui) is still in progress.
 
+## Testing
+
+Uses a combination of testing frameworks. `testthat` and `shiny::testServer` are used for most functionality and run via CI.
+
+Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10:
+
+![](https://saucelabs.com/browser-matrix/julianstanley.svg)
+
 ## Attributions
 
 Project supported by the R Project for Statistical Computing            |  With funding provided by Google Summer of Code
