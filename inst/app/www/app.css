@@ -4,6 +4,9 @@ hr {
   border-top: 2px solid grey;
 }
 
+.navbar {
+  background-color: #F8F8F8;
+}
 .navbar .navbar-nav {
   float: right;
 }
@@ -11,5 +14,21 @@ hr {
 #analysis_ui_1-gfpopOutput_verbose {
   overflow-x: scroll; 
   max-width: 100%;
-  background: ghostwhite;
+  background: #F8F8F8;
 }
+
+.footer {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        line-height: 18pt;
+        vertical-align: middle;
+        text-align: center;
+        background-color: #F8F8F8;
+        padding-bottom: 1em;
+        padding-top: 1em;
+}
+a {
+        color: #006080;
+        text-decoration: none;
+    }
