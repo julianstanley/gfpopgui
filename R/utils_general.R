@@ -12,6 +12,11 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
   .data
 }
 
+#' Negate in
+#' @import dplyr
+#' @export
+`%notin%` <- Negate(`%in%`)
+
 #' Creates an inline block div component aligned top with the given width %
 #' @param width numeric between 0 and 1, width of the div component
 #' @param ... Parameters to be put inside the div, usually some shiny UI elem

@@ -53,14 +53,19 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
   class(graphdf) <- "data.frame"
 
+  # Keep track of starting and ending nodes, but seperate them from the rest
+  starts <- graphdf %>% filter(type == "start") %>% select(state1) %>% .$state1
+  ends <- graphdf %>% filter(type == "end") %>% select(state1) %>% .$state1
+  graphdf <- graphdf %>% filter(type != "start" & type != "end")
+  
+  # Set edge and node names
   edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
 
-  # Determine the value of selfReference.angle and hidden
+  # Determine the value of selfReference.angle and hidden (edge params)
   selfReference.angle <- c()
   hidden <- c()
   apply(graphdf, 1, function(x) {
-    # Non-self
     if (x[["state1"]] != x[["state2"]]) {
       selfReference.angle <<- c(selfReference.angle, NA)
       hidden <<- c(hidden, FALSE)
@@ -72,9 +77,18 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       selfReference.angle <<- c(selfReference.angle, 2 * pi)
     }
   })
+  
+  # Determine the value of start and end (node params)
+  startbool <- sapply(node_names, 
+                     function(x) tolower(x) %in% tolower(starts), USE.NAMES = F)
+  endbool <- sapply(node_names, 
+                    function(x) tolower(x) %in% tolower(ends), USE.NAMES = F)
+
+  
 
   list(
-    nodes = data.frame(id = node_names, label = node_names, size = 40),
+    nodes = data.frame(id = node_names, label = node_names, size = 40,
+                       start = startbool, end = endbool),
     edges = data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
       label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,

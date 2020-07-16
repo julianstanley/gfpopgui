@@ -27,6 +27,7 @@ usethis::use_package( "rlang" )
 usethis::use_package( "shinyjs" )
 usethis::use_package( "shinyalert" )
 usethis::use_package( "htmlwidgets" )
+usethis::use_package( "plyr" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
