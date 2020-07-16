@@ -116,7 +116,7 @@ test_that(
           {
             testdata <- gfpop_data$graphdata_visNetwork
             test1 <- all(names(testdata) == c("nodes", "edges"))
-            test2 <- ncol(testdata$nodes) == 3
+            test2 <- ncol(testdata$nodes) == 5
             test3 <- ncol(testdata$edges) == 14
             test1 && test2 && test3
           },
@@ -159,7 +159,7 @@ test_that(
           {
             testdata <- gfpop_data$graphdata_visNetwork
             test1 <- all(names(testdata) == c("nodes", "edges"))
-            test2 <- ncol(testdata$nodes) == 3
+            test2 <- ncol(testdata$nodes) == 5
             test3 <- ncol(testdata$edges) == 14
             test1 && test2 && test3
           },

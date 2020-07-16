@@ -93,109 +93,117 @@ mod_analysis_ui <- function(id) {
 
             h3("More graph options"),
             hr(),
-            details(summary = "Generate a default graph", summary_multiplier = 1.5,
-            content = tagList(
-            inline_div(0.4, numericInput(
-              inputId = ns("pen"),
-              label = "Penalty",
-              value = 15
-            )),
-            inline_div(0.4, selectInput(
-              inputId = ns("graphType"),
-              label = "Graph Type",
-              choices = c("std", "isotonic", "updown", "relevant")
-            )),
-            br(),
-            # Generate graph
-            actionButton(inputId = ns("updateGraph"), label = "Update Graph")
-            )),
+            details(
+              summary = "Generate a default graph", summary_multiplier = 1.5,
+              content = tagList(
+                inline_div(0.4, numericInput(
+                  inputId = ns("pen"),
+                  label = "Penalty",
+                  value = 15
+                )),
+                inline_div(0.4, selectInput(
+                  inputId = ns("graphType"),
+                  label = "Graph Type",
+                  choices = c("std", "isotonic", "updown", "relevant")
+                )),
+                br(),
+                # Generate graph
+                actionButton(inputId = ns("updateGraph"), label = "Update Graph")
+              )
+            ),
 
             # Start and end
-            details(summary = "Set start and end nodes", summary_multiplier = 1.5,
-            content = tagList(
-            inline_div(0.4, uiOutput(ns("uiSetStart"))),
-            inline_div(0.4, uiOutput(ns("uiSetEnd"))),
-            actionButton(inputId = ns("setStartEnd_button"), label = "Apply Start/End Changes"),
-            h3("Add/remove nodes"),
-            tabsetPanel(
-              tabPanel(
-                "Add",
-                br(),
-                inline_div(0.4, textInput(
-                  inputId = ns("addNode_id"),
-                  label = "Provide a unique ID"
-                )),
-                br(),
-                actionButton(
-                  inputId = ns("addNode_button"),
-                  label = "Add New Node"
-                )
-              ),
-              tabPanel(
-                "Remove",
-                br(),
-                inline_div(0.4, uiOutput(ns("ui_setRemoveNode"))),
-                br(),
-                actionButton(
-                  inputId = ns("removeNode_button"),
-                  label = "Remove Node"
-                )
-              )
-            ))),
-            details(summary = "Add/remove edges", summary_multiplier = 1.5,
-            content = tagList(
-            tabsetPanel(
-              tabPanel(
-                "Add",
-                br(),
-                inline_div(0.3, textInput(
-                  inputId = ns("addEdge_id"),
-                  label = "Provide a unique ID"
-                )),
-                inline_div(0.3, textInput(
-                  inputId = ns("addEdge_from"),
-                  label = "From which node?"
-                )),
-                inline_div(0.3, textInput(
-                  inputId = ns("addEdge_to"),
-                  label = "To which node?"
-                )),
-                br(),
-                inline_div(0.3, selectInput(
-                  inputId = ns("addEdge_type"),
-                  label = "Select edge type",
-                  choices = c(
-                    "std", "null",
-                    "up", "down", "abs"
+            details(
+              summary = "Set start and end nodes", summary_multiplier = 1.5,
+              content = tagList(
+                inline_div(0.4, uiOutput(ns("uiSetStart"))),
+                inline_div(0.4, uiOutput(ns("uiSetEnd"))),
+                actionButton(inputId = ns("setStartEnd_button"), label = "Apply Start/End Changes"),
+                h3("Add/remove nodes"),
+                tabsetPanel(
+                  tabPanel(
+                    "Add",
+                    br(),
+                    inline_div(0.4, textInput(
+                      inputId = ns("addNode_id"),
+                      label = "Provide a unique ID"
+                    )),
+                    br(),
+                    actionButton(
+                      inputId = ns("addNode_button"),
+                      label = "Add New Node"
+                    )
+                  ),
+                  tabPanel(
+                    "Remove",
+                    br(),
+                    inline_div(0.4, uiOutput(ns("ui_setRemoveNode"))),
+                    br(),
+                    actionButton(
+                      inputId = ns("removeNode_button"),
+                      label = "Remove Node"
+                    )
                   )
-                )),
-                inline_div(0.3, numericInput(
-                  inputId = ns("addEdge_parameter"),
-                  label = "Parameter (e.g. gap)",
-                  value = 0, step = 0.5
-                )),
-                inline_div(0.3, numericInput(
-                  inputId = ns("addEdge_penalty"),
-                  label = "Penalty",
-                  value = 15, step = 1
-                )),
-
-                actionButton(
-                  inputId = ns("addEdge_button"),
-                  label = "Add Edge"
-                )
-              ),
-              tabPanel(
-                "Remove",
-                br(),
-                inline_div(0.4, uiOutput(ns("ui_setRemoveEdge"))),
-                br(),
-                actionButton(
-                  inputId = ns("removeEdge_button"),
-                  label = "Remove Edge"
                 )
               )
-            )))
+            ),
+            details(
+              summary = "Add/remove edges", summary_multiplier = 1.5,
+              content = tagList(
+                tabsetPanel(
+                  tabPanel(
+                    "Add",
+                    br(),
+                    inline_div(0.3, textInput(
+                      inputId = ns("addEdge_id"),
+                      label = "Provide a unique ID"
+                    )),
+                    inline_div(0.3, textInput(
+                      inputId = ns("addEdge_from"),
+                      label = "From which node?"
+                    )),
+                    inline_div(0.3, textInput(
+                      inputId = ns("addEdge_to"),
+                      label = "To which node?"
+                    )),
+                    br(),
+                    inline_div(0.3, selectInput(
+                      inputId = ns("addEdge_type"),
+                      label = "Select edge type",
+                      choices = c(
+                        "std", "null",
+                        "up", "down", "abs"
+                      )
+                    )),
+                    inline_div(0.3, numericInput(
+                      inputId = ns("addEdge_parameter"),
+                      label = "Parameter (e.g. gap)",
+                      value = 0, step = 0.5
+                    )),
+                    inline_div(0.3, numericInput(
+                      inputId = ns("addEdge_penalty"),
+                      label = "Penalty",
+                      value = 15, step = 1
+                    )),
+
+                    actionButton(
+                      inputId = ns("addEdge_button"),
+                      label = "Add Edge"
+                    )
+                  ),
+                  tabPanel(
+                    "Remove",
+                    br(),
+                    inline_div(0.4, uiOutput(ns("ui_setRemoveEdge"))),
+                    br(),
+                    actionButton(
+                      inputId = ns("removeEdge_button"),
+                      label = "Remove Edge"
+                    )
+                  )
+                )
+              )
+            )
           ),
           tabPanel(
             "GFPOP Graph",
@@ -261,7 +269,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         saved_full = list(),
         saved_descriptions = data.table()
       )
-      
+
       startEnd <- reactiveValues(
         start = "N/A",
         end = "N/A"
@@ -376,7 +384,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       })
 
       ### Graph Logistics: editing under "View/Edit" ---------------------------
-      
+
       # UI Components
       output$uiSetStart <- renderUI({
         selectInput(ns("setStart"), "Select a starting node",
@@ -409,38 +417,45 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           choices = c(gfpop_data$graphdata_visNetwork$edges$id)
         )
       })
-      
+
       # inline_div(0.4, uiOutput(ns("uiSetStart"))),
       # inline_div(0.4, uiOutput(ns("uiSetEnd"))),
       # actionButton(inputId = "setStartEnd_button", label = "Apply Start/End Changes"),
       # h3("Add/remove nodes"),
-      
+
       # Deal with adding a start node
       observeEvent(input$setStartEnd_button, {
 
         # new_val: the new start or new end
         # val_type: "start" or "end"
         set_startEnd <- function(new_val, val_type) {
-          if(new_val != "N/A") {
+          if (new_val != "N/A") {
             gfpop_data$graphdata <<- gfpop_data$graphdata %>%
               rbind.fill(data.frame(state1 = new_val, type = val_type))
           } else {
             gfpop_data$graphdata <<- gfpop::graph(
-              data.frame(gfpop_data$graphdata) %>% 
-              filter(type != val_type)
+              data.frame(gfpop_data$graphdata) %>%
+                filter(type != val_type)
             )
           }
         }
-        
+
         set_startEnd(input$setStart, "start")
-        startEnd$start <- input$setStart
         set_startEnd(input$setEnd, "end")
+
+        # Set these so that the "start" and "end" dropdown boxes, which are
+        # refreshed when graphdata updates, knows about the current start & end
+        startEnd$start <- input$setStart
         startEnd$end <- input$setEnd
-        gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+
+        # Update the visNetwork data to match the gfpop data
+        gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
+          gfpop_data$graphdata
+        )
       })
-      
-      
-      
+
+
+
 
       ### Graph Logistics: Output Data Tables & Code-----
       output$graphOutput_code <- renderUI({
@@ -452,8 +467,9 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           ),
           "<br><br>",
           "</code>"
-        ), 
-        summary_multiplier = 1.5)
+        ),
+        summary_multiplier = 1.5
+        )
       })
 
       output$graphOutput <- DT::renderDT(
