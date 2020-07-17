@@ -433,8 +433,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         # val_type: "start" or "end"
         set_startEnd <- function(new_val, val_type) {
           if (new_val != "N/A") {
-            gfpop_data$graphdata <<- gfpop_data$graphdata %>%
+            gfpop_data$graphdata <<- gfpop::graph(
+              gfpop_data$graphdata %>%
               rbind.fill(data.frame(state1 = new_val, type = val_type))
+            )
           } else {
             gfpop_data$graphdata <<- gfpop::graph(
               data.frame(gfpop_data$graphdata) %>%
