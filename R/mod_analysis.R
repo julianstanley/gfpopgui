@@ -119,7 +119,10 @@ mod_analysis_ui <- function(id) {
                 inline_div(0.4, uiOutput(ns("uiSetStart"))),
                 inline_div(0.4, uiOutput(ns("uiSetEnd"))),
                 actionButton(inputId = ns("setStartEnd_button"), label = "Apply Start/End Changes"),
-                h3("Add/remove nodes"),
+              )),
+            details(
+              summary = "Add/remove nodes", summary_multiplier = 1.5,
+              content = tagList(
                 tabsetPanel(
                   tabPanel(
                     "Add",
