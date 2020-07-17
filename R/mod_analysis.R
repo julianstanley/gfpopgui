@@ -421,11 +421,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         )
       })
 
-      # inline_div(0.4, uiOutput(ns("uiSetStart"))),
-      # inline_div(0.4, uiOutput(ns("uiSetEnd"))),
-      # actionButton(inputId = "setStartEnd_button", label = "Apply Start/End Changes"),
-      # h3("Add/remove nodes"),
-
       # Deal with adding a start node
       observeEvent(input$setStartEnd_button, {
 
