@@ -83,12 +83,23 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
                      function(x) tolower(x) %in% tolower(starts), USE.NAMES = F)
   endbool <- sapply(node_names, 
                     function(x) tolower(x) %in% tolower(ends), USE.NAMES = F)
+  shape <- mapply(function(start, end) {
+    if (start & end) {
+      "star"
+    } else if (start) {
+      "triangle"
+    } else if (end) {
+      "square"
+    } else {
+      NA
+    }
+  }, startbool, endbool)
 
   
 
   list(
     nodes = data.frame(id = node_names, label = node_names, size = 40,
-                       start = startbool, end = endbool),
+                       start = startbool, end = endbool, shape = shape),
     edges = data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
       label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
