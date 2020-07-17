@@ -91,7 +91,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
     } else if (end) {
       "square"
     } else {
-      NA
+      "dot"
     }
   }, startbool, endbool)
 
