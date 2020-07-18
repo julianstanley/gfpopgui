@@ -22,8 +22,26 @@ NonetoNA <- function(vec) {
 #' @param columns a character vector of columns to be included in the label.
 #' @param collapse A string to seperate each item
 #' @returns a character vector combining those columns as specified
+#' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
   apply(graphdf[, columns], 1, paste, collapse = collapse)
+}
+
+#' Add a new node to a visNetwork node dataframe
+#' @param nodedf a dataframe containing the nodes.
+#' @param id id of the new node.
+#' @param label label of the new node. default: ""
+#' @param size size of the new node. Default: 40
+#' @param start is this node a start node? Default: FALSE
+#' @param end is this node an end node? Default: FALSE
+#' @param shape the shape of this node. See visNetwork docs. Default: "dot"
+#' @returns a dataframe with one more row than nodedf
+add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, end = FALSE, shape = "dot") {
+  rbind(
+    nodedf,
+    data.frame(id = id, label = label, size = size, start = start, 
+               end = end, shape = shape)
+  )
 }
 
 #' Turns a graph dataframe (from gfpop) into a list that
@@ -242,14 +260,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
 
   ### Add Node ---------------------------------------------------------------
   if (event$cmd == "addNode") {
-    graphdata_visNetwork_return$nodes <- rbind(
-      graphdata_visNetwork_return$nodes,
-      data.frame(
-        id = event$id,
-        label = event$label,
-        size = 40
-      )
-    )
+    graphdata_visNetwork_return$nodes <- add_node(graphdata_visNetwork_return$nodes,
+                                                  id = event$id, label = event$label)
   }
 
   ### Edit Node --------------------------------------------------------------
@@ -272,4 +284,3 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
 
   graphdata_visNetwork_return
 }
-#'
