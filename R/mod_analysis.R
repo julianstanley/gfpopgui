@@ -119,7 +119,8 @@ mod_analysis_ui <- function(id) {
                 inline_div(0.4, uiOutput(ns("uiSetStart"))),
                 inline_div(0.4, uiOutput(ns("uiSetEnd"))),
                 actionButton(inputId = ns("setStartEnd_button"), label = "Apply Start/End Changes"),
-              )),
+              )
+            ),
             details(
               summary = "Add/remove nodes", summary_multiplier = 1.5,
               content = tagList(
@@ -285,9 +286,11 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         saveId <- input$saveId
 
         if (saveId %in% names(saved_analyses$saved_full)) {
-          shinyalert(title = "Duplicate ID",
-                     text = "Save IDs must be unique. Please provide a different ID.",
-                     type = "error")
+          shinyalert(
+            title = "Duplicate ID",
+            text = "Save IDs must be unique. Please provide a different ID.",
+            type = "error"
+          )
         } else {
           saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
           saved_analyses$saved_descriptions <- rbind(
@@ -413,17 +416,17 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           choices = c(gfpop_data$graphdata_visNetwork$edges$id)
         )
       })
-      
+
       output$ui_addEdge_to <- renderUI({
         selectInput(ns("addEdge_to"), "To which node?",
-                                          choices = c(gfpop_data$graphdata_visNetwork$nodes$id)
-      )
+          choices = c(gfpop_data$graphdata_visNetwork$nodes$id)
+        )
       })
-      
+
       output$ui_addEdge_from <- renderUI({
         selectInput(ns("addEdge_from"), "From which node?",
-                                          choices = c(gfpop_data$graphdata_visNetwork$nodes$id)
-      )
+          choices = c(gfpop_data$graphdata_visNetwork$nodes$id)
+        )
       })
 
       # Deal with adding a start node
@@ -435,7 +438,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           if (new_val != "N/A") {
             gfpop_data$graphdata <<- gfpop::graph(
               gfpop_data$graphdata %>%
-              rbind.fill(data.frame(state1 = new_val, type = val_type))
+                rbind.fill(data.frame(state1 = new_val, type = val_type))
             )
           } else {
             gfpop_data$graphdata <<- gfpop::graph(
@@ -458,42 +461,47 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           gfpop_data$graphdata
         )
       })
-      
+
       # Deal with adding nodes
       observeEvent(input$addNode_button, {
         if (input$addNode_id %notin% gfpop_data$graphdata_visNetwork$nodes$id) {
           gfpop_data$graphdata_visNetwork$nodes <- add_node(
-            gfpop_data$graphdata_visNetwork$nodes, id = input$addNode_id,
-            label = input$addNode_id)
+            gfpop_data$graphdata_visNetwork$nodes,
+            id = input$addNode_id,
+            label = input$addNode_id
+          )
         } else {
-          shinyalert(title = "Duplicate ID", 
-                                 text = "Node IDs must be unique. Please provide
-                                 a unique node ID", type = "error")
+          shinyalert(
+            title = "Duplicate ID",
+            text = "Node IDs must be unique. Please provide
+                                 a unique node ID", type = "error"
+          )
         }
-        
       })
-      
+
       # Deal with removing nodes
       observeEvent(input$removeNode_button, {
         gfpop_data$graphdata_visNetwork$nodes <- gfpop_data$graphdata_visNetwork$nodes %>%
           filter(id != input$setRemoveNode)
         gfpop_data$graphdata_visNetwork$edges <- gfpop_data$graphdata_visNetwork$edges %>%
           filter(to != input$setRemoveNode & from != input$setRemoveNode)
-        
+
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
       })
 
       # Deal with adding edges
       observeEvent(input$addEdge_button, {
         gfpop_data$graphdata_visNetwork$edges <- gfpop_data$graphdata_visNetwork$edges %>%
-          rbind.fill(id = input$addEdge_id, to = input$addEdge_to, from = input$addEdge_from,
-                     type = input$addEdge_type, parameter = input$addEdge_parameter,
-                     penalty = input$addEdge_penalty)
+          rbind.fill(data.frame(
+            id = input$addEdge_id, to = input$addEdge_to, from = input$addEdge_from,
+            type = input$addEdge_type, parameter = input$addEdge_parameter,
+            penalty = input$addEdge_penalty
+          ))
         gfpop_data$graphdata_visNetwork$edges$label <- gfpop_data$graphdata_visNetwork$edges %>%
           create_label()
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
       })
-      
+
 
 
 
@@ -603,12 +611,16 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
             )
           },
           error = function(e) {
-            shinyalert(title = "Failed to initalize changepoints", 
-                       text = e, type = "error")
+            shinyalert(
+              title = "Failed to initalize changepoints",
+              text = e, type = "error"
+            )
           },
           warning = function(w) {
-            shinyalert(title = "Changepoint warning", 
-                       w, type = "warning")
+            shinyalert(
+              title = "Changepoint warning",
+              w, type = "warning"
+            )
           }
         )
       })
