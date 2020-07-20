@@ -22,8 +22,26 @@ NonetoNA <- function(vec) {
 #' @param columns a character vector of columns to be included in the label.
 #' @param collapse A string to seperate each item
 #' @returns a character vector combining those columns as specified
+#' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
   apply(graphdf[, columns], 1, paste, collapse = collapse)
+}
+
+#' Add a new node to a visNetwork node dataframe
+#' @param nodedf a dataframe containing the nodes.
+#' @param id id of the new node.
+#' @param label label of the new node. default: ""
+#' @param size size of the new node. Default: 40
+#' @param start is this node a start node? Default: FALSE
+#' @param end is this node an end node? Default: FALSE
+#' @param shape the shape of this node. See visNetwork docs. Default: "dot"
+#' @returns a dataframe with one more row than nodedf
+add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, end = FALSE, shape = "dot") {
+  rbind(
+    nodedf,
+    data.frame(id = id, label = label, size = size, start = start, 
+               end = end, shape = shape)
+  )
 }
 
 #' Turns a graph dataframe (from gfpop) into a list that
@@ -53,14 +71,19 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
   class(graphdf) <- "data.frame"
 
+  # Keep track of starting and ending nodes, but seperate them from the rest
+  starts <- graphdf %>% filter(type == "start") %>% select(state1) %>% .$state1
+  ends <- graphdf %>% filter(type == "end") %>% select(state1) %>% .$state1
+  graphdf <- graphdf %>% filter(type != "start" & type != "end")
+  
+  # Set edge and node names
   edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
 
-  # Determine the value of selfReference.angle and hidden
+  # Determine the value of selfReference.angle and hidden (edge params)
   selfReference.angle <- c()
   hidden <- c()
   apply(graphdf, 1, function(x) {
-    # Non-self
     if (x[["state1"]] != x[["state2"]]) {
       selfReference.angle <<- c(selfReference.angle, NA)
       hidden <<- c(hidden, FALSE)
@@ -72,9 +95,29 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       selfReference.angle <<- c(selfReference.angle, 2 * pi)
     }
   })
+  
+  # Determine the value of start and end (node params)
+  startbool <- sapply(node_names, 
+                     function(x) tolower(x) %in% tolower(starts), USE.NAMES = F)
+  endbool <- sapply(node_names, 
+                    function(x) tolower(x) %in% tolower(ends), USE.NAMES = F)
+  shape <- mapply(function(start, end) {
+    if (start & end) {
+      "star"
+    } else if (start) {
+      "triangle"
+    } else if (end) {
+      "square"
+    } else {
+      "dot"
+    }
+  }, startbool, endbool)
+
+  
 
   list(
-    nodes = data.frame(id = node_names, label = node_names, size = 40),
+    nodes = data.frame(id = node_names, label = node_names, size = 40,
+                       start = startbool, end = endbool, shape = shape),
     edges = data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
       label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
@@ -217,14 +260,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
 
   ### Add Node ---------------------------------------------------------------
   if (event$cmd == "addNode") {
-    graphdata_visNetwork_return$nodes <- rbind(
-      graphdata_visNetwork_return$nodes,
-      data.frame(
-        id = event$id,
-        label = event$label,
-        size = 40
-      )
-    )
+    graphdata_visNetwork_return$nodes <- add_node(graphdata_visNetwork_return$nodes,
+                                                  id = event$id, label = event$label)
   }
 
   ### Edit Node --------------------------------------------------------------
@@ -247,4 +284,3 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
 
   graphdata_visNetwork_return
 }
-#'

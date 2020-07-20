@@ -79,7 +79,7 @@ test_that("visNetwork function generates a list with certain labels", {
 # Standard data produced by:
 # dput(gfpopgui::graphdf_to_visNetwork(gfpop::graph(type = "std", penalty = 15)))
 data <- list(
-  nodes = structure(list(id = "Std", label = "Std", size = 40), 
+  nodes = structure(list(id = "Std", label = "Std", size = 40, start = FALSE, end = FALSE, shape = "dot"), 
   class = "data.frame", row.names = c(NA,-1L)), 
   edges = structure(list(id = c("Std_Std_null", "Std_Std_std"), 
   label = c("null | 0", "std | 15"), to = c("Std", "Std"), 

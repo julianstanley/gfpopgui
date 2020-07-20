@@ -28,7 +28,8 @@ app_ui <- function(request) {
           mod_sharing_ui("sharing_ui_1")
         ),
         tabPanel("Help")
-      )
+      ),
+      includeHTML(system.file("app/www/footer.html", package = "gfpopgui"))
     )
   )
 }
