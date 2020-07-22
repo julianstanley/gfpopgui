@@ -116,13 +116,13 @@ test_that(
           {
             testdata <- gfpop_data$graphdata_visNetwork
             test1 <- all(names(testdata) == c("nodes", "edges"))
-            test2 <- ncol(testdata$nodes) == 6
-            test3 <- ncol(testdata$edges) == 14
+            test2 <- ncol(testdata$nodes) == 9
+            test3 <- ncol(testdata$edges) == 15
             test1 && test2 && test3
           },
           paste0(
             "failed, expected graphdata_visNetwork to have nodes and edges ",
-            "with 3 and 14 columns, respectively. Here's the failed data: ",
+            "with 7 and 15 columns, respectively. Here's the failed data: ",
             dplyr::tibble(gfpop_data$graphdata_visNetwork)
           )
         )
@@ -159,8 +159,8 @@ test_that(
           {
             testdata <- gfpop_data$graphdata_visNetwork
             test1 <- all(names(testdata) == c("nodes", "edges"))
-            test2 <- ncol(testdata$nodes) == 6
-            test3 <- ncol(testdata$edges) == 14
+            test2 <- ncol(testdata$nodes) == 9
+            test3 <- ncol(testdata$edges) == 15
             test1 && test2 && test3
           },
           list(

@@ -35,12 +35,18 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 #' @param start is this node a start node? Default: FALSE
 #' @param end is this node an end node? Default: FALSE
 #' @param shape the shape of this node. See visNetwork docs. Default: "dot"
+#' @param color.background the background color of the node. Default: "lightblue"
+#' @param color.border the border color of the node. Default: "lightblue"
+#' @param shadow Whether this node has a shadow. Default: false
 #' @returns a dataframe with one more row than nodedf
-add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, end = FALSE, shape = "dot") {
+add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, 
+                     end = FALSE, shape = "dot", color.background = "lightblue",
+                     color.border = "lightblue", shadow = FALSE) {
   rbind(
     nodedf,
     data.frame(id = id, label = label, size = size, start = start, 
-               end = end, shape = shape)
+               end = end, shape = shape,  color.background = color.background, 
+               color.border = color.border, shadow = shadow)
   )
 }
 
@@ -117,14 +123,17 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
 
   list(
     nodes = data.frame(id = node_names, label = node_names, size = 40,
-                       start = startbool, end = endbool, shape = shape),
+                       start = startbool, end = endbool, shape = shape, 
+                       color.background = "lightblue", color.border = "lightblue",
+                       shadow = FALSE),
     edges = data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
       label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
-      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden
+      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden,
+      color = "black"
     )
   )
 }
@@ -240,7 +249,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
       type = "null", parameter = "1",
       penalty = "0", K = "Inf", a = "0",
       min = "None", max = "None",
-      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE
+      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
+      color = "black"
     )
 
     graphdata_visNetwork_return$edges <- rbind(

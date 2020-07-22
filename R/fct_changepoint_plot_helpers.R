@@ -10,8 +10,13 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   return_plotly <- plotly_obj %>%
     hide_legend()
   
-  changepoint_annotations_regions = data.frame(x = c(), y = c(), text = c())
-  changepoint_annotations = data.frame(x = c(), y = c(), text = c())
+  # Changepoint_annotations describe actual (vertical) changepoints
+  # changepoints_annotations_regions describe the segments (horizontal)
+  # between each changepoint.
+  changepoint_annotations_regions = data.frame(x = c(), y = c(), text = c(),
+                                               state = c())
+  changepoint_annotations = data.frame(x = c(), y = c(), text = c(),
+                                       state = c())
 
   changepoints <- changepoint_data$changepoints
 
@@ -41,7 +46,8 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
                    "Region mean: ", round(changepoint_data$parameters[i], 2), "\n",
                    "Next changepoint: ", round(changepoint_ds, 2)
                  ),
-                 length(changeregion_ds)), NA)
+                 length(changeregion_ds)), NA),
+                 state = changepoint_data$states[i]
       )
     )
     # If this isn't the first region, connect this region with the last
@@ -55,7 +61,8 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
                                   length.out = 50
           ), NA),
           text = c(rep(paste0("Changepoint #", i-1, ": ", round(previous_changepoint_ds, 2)), 50),
-                   NA)
+                   NA),
+          state = paste0(changepoint_data$states[i - 1], ",TO,", changepoint_data$states[i]) 
         )
       )
     }
@@ -72,6 +79,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
               color = ~I("#40B0A6"),
               hoverinfo = "text", text = ~text,
               connectgaps = F,
+              key = ~state,
               line = list(width = 7)) 
   
   if(nrow(changepoint_annotations) > 0) {
@@ -81,6 +89,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
                 y = ~y, 
                 color = ~I("#E1BE6A"),
                 hoverinfo = "text", text = ~text,
+                key = ~state,
                 connectgaps = F,
                 line = list(width = 7)) 
   }

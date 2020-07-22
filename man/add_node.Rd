@@ -11,7 +11,10 @@ add_node(
   size = 40,
   start = FALSE,
   end = FALSE,
-  shape = "dot"
+  shape = "dot",
+  color.background = "lightblue",
+  color.border = "lightblue",
+  shadow = FALSE
 )
 }
 \arguments{
@@ -28,6 +31,12 @@ add_node(
 \item{end}{is this node an end node? Default: FALSE}
 
 \item{shape}{the shape of this node. See visNetwork docs. Default: "dot"}
+
+\item{color.background}{the background color of the node. Default: "lightblue"}
+
+\item{color.border}{the border color of the node. Default: "lightblue"}
+
+\item{shadow}{Whether this node has a shadow. Default: false}
 }
 \value{
 a dataframe with one more row than nodedf

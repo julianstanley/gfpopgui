@@ -13,8 +13,8 @@ test_that("add_changepoints produces reasonable plot asthetics",{
   expect_equal(test_plot$x$attrs[[3]][8]$mode, "lines")
   expect_equal(test_plot$x$attrs[[4]][8]$mode, "lines")
   
-  expect_equal(test_plot$x$attrs[[3]][12]$line$width, 7)
-  expect_equal(test_plot$x$attrs[[4]][12]$line$width, 7)
+  expect_equal(test_plot$x$attrs[[3]]$line$width, 7)
+  expect_equal(test_plot$x$attrs[[4]]$line$width, 7)
   
   expect_equal(test_plot$x$attrs[[3]]$connectgaps, FALSE)
   expect_equal(test_plot$x$attrs[[4]]$connectgaps, FALSE)

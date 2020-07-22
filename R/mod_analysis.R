@@ -235,7 +235,10 @@ mod_analysis_ui <- function(id) {
 
     # Buttons for debugging
     actionButton(ns("browser"), "browser"),
-    tags$script(paste0("$('#", ns("browser"), "').hide();"))
+    tags$script(paste0("$('#", ns("browser"), "').hide();")),
+    
+    # Test
+    verbatimTextOutput(ns("click"))
   )
 }
 
@@ -253,6 +256,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom rlang .data
 #' @importFrom shinyalert shinyalert
 #' @importFrom plyr rbind.fill
+#' @importFrom shinyjs onevent
 #' @import gfpop
 #' @export
 mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
@@ -271,6 +275,11 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       startEnd <- reactiveValues(
         start = "N/A",
         end = "N/A"
+      )
+      
+      selected <- reactiveValues(
+        nodes = c(),
+        edges = c()
       )
 
       ## Render the saved analyses
@@ -631,8 +640,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         req(gfpop_data$main_data)
 
         gfpop_data$base_plot <-
-          plot_ly(gfpop_data$main_data, x = ~X, y = ~Y, hoverinfo = "none") %>%
-          add_markers()
+          plot_ly(gfpop_data$main_data, x = ~X, y = ~Y, hoverinfo = "none", source = "gfpopPlot") %>%
+          add_markers() 
 
         gfpop_data$changepoint_plot <- gfpop_data$base_plot
       })
@@ -694,6 +703,50 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # For debugging --------------------------------------------------------------
       observeEvent(input$browser, {
         browser()
+      })
+      
+      hover_data <- reactive({
+        req(gfpop_data$base_plot)
+        event_data("plotly_hover", "gfpopPlot")
+      })
+      
+      observeEvent(hover_data(), {
+        event <- hover_data()
+        nevents <- dim(event)[1]
+        if(nevents > 1) {
+          # We are selecting a new thing! First, unselect anything that is 
+          # selected
+          if(length(selected$nodes) > 0) {
+            visNetworkProxy(ns("gfpopGraph")) %>%
+              visUpdateNodes(
+                gfpop_data$graphdata_visNetwork$nodes %>%
+                  mutate(color.border = "lightblue", shadow = FALSE)
+              )
+            selected$nodes <- c()
+          }
+          
+          # Now, make a selection!
+          selection <- event$key[2]
+          visNetworkProxy(ns("gfpopGraph")) %>%
+            visUpdateNodes(
+              gfpop_data$graphdata_visNetwork$nodes %>%
+                filter(label == selection) %>%
+                mutate(color.border = "green", shadow = TRUE)
+            )
+          selected$nodes <- c(selection)
+    
+        } else if(nevents > 2) {
+          # TODO: Allow for edge highlighting
+        }
+      })
+      
+      onevent("mouseleave", "gfpopPlot", {
+        if(length(selected$nodes) > 0) {
+          visNetworkProxy(ns("gfpopGraph")) %>%
+            visUpdateNodes(
+              gfpop_data$graphdata_visNetwork$nodes 
+            )
+        }
       })
     }
   )
