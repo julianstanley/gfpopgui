@@ -715,26 +715,32 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         event <- hover_data()
         nevents <- dim(event)[1]
         if(nevents > 1) {
+          selection <- event$key[2]
+          # If the current selection is different than the last one
+          if(event$key[2] %notin% selected$nodes) {
           # We are selecting a new thing! First, unselect anything that is 
           # selected
           if(length(selected$nodes) > 0) {
             visNetworkProxy(ns("gfpopGraph")) %>%
               visUpdateNodes(
                 gfpop_data$graphdata_visNetwork$nodes %>%
-                  mutate(color.border = "lightblue", shadow = FALSE)
+                  mutate(color.border = "lightblue", color.border = "lightblue",
+                         shadow = FALSE)
               )
             selected$nodes <- c()
           }
           
           # Now, make a selection!
-          selection <- event$key[2]
+          
           visNetworkProxy(ns("gfpopGraph")) %>%
             visUpdateNodes(
               gfpop_data$graphdata_visNetwork$nodes %>%
                 filter(label == selection) %>%
-                mutate(color.border = "green", shadow = TRUE)
+                mutate(color.background = "#D2E5FF", color.border = "#3F89EC",
+                       shadow = TRUE)
             )
           selected$nodes <- c(selection)
+          }
     
         } else if(nevents > 2) {
           # TODO: Allow for edge highlighting
