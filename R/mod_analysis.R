@@ -616,7 +616,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           expr = {
             # TODO: Allow user to add weights (what do those do?)
             gfpop_data$changepoints <<- gfpop::gfpop(gfpop_data$main_data$Y,
-              gfpop_data$graphdata,
+              gfpop_data$graphdata %>% select_graph_columns(),
               type = input$gfpopType
             )
           },
