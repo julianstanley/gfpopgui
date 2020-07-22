@@ -25,6 +25,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   previous_changepoint_ds <- original_data$X[1]
   i <- 1
   # Add each changepoint to the given plotly object
+  # TODO: carefully add support for 0 or 1 changepoints
   for (i in 1:length(changepoints)) {
     changepoint <- changepoints[i]
     changepoint_ds <- original_data$X[changepoint]

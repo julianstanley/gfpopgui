@@ -521,7 +521,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           "<code>",
           gsub(
             " ", "&nbsp;",
-            gsub(pattern = "\n", "<br>", graph_to_R_code(gfpop_data$graphdata))
+            gsub(pattern = "\n", "<br>", graph_to_R_code(gfpop_data$graphdata %>%
+                                                           select_graph_columns()))
           ),
           "<br><br>",
           "</code>"
@@ -532,7 +533,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       output$graphOutput <- DT::renderDT(
         {
-          gfpop_data$graphdata
+          gfpop_data$graphdata %>% select_graph_columns()
         },
         editable = TRUE,
         options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)

@@ -51,8 +51,8 @@ test_that("graphdf_to_visNetwork has 'nodes' and 'edges' as labels", {
 # visNetwork_to_graphdf
 test_that("visNetwork_to_graphdf is inverse of graphdf_to_visNetwork", {
   expect_equivalent(visNetwork_to_graphdf(
-    graphdf_to_visNetwork(gfpop::graph(type = "std"))
-  ), gfpop::graph(type = "std"))
+    graphdf_to_visNetwork(gfpop::graph(type = "std")) 
+  ) %>% select_graph_columns(), gfpop::graph(type = "std"))
 })
 
 # generate_visNetwork
