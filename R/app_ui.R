@@ -4,6 +4,7 @@
 #'     DO NOT REMOVE.
 #' @importFrom shiny tagList fluidPage navbarPage tabPanel
 #' @importFrom shinyjs useShinyjs
+#' @importFrom shinythemes shinytheme
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -11,6 +12,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     fluidPage(
+      theme = shinytheme("lumen"),
       navbarPage(id = "tabs",
         title = "gfpop",
         collapsible = TRUE,
