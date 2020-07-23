@@ -649,11 +649,12 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       observeEvent(input$runGfpop, {
         initialize_changepoints()
-        gfpop_data$changepoint_plot <- gfpop_data$base_plot %>%
+        gfpop_data$changepoint_plot <-
           add_changepoints(
+            gfpop_data$base_plot,
             isolate(gfpop_data$main_data),
             isolate(gfpop_data$changepoints)
-          )
+          )[["plot"]]
       })
 
       # Generate the visualization of the data with overlain changepoints
