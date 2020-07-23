@@ -223,8 +223,9 @@ generate_visNetwork <- function(graph_data) {
       editEdgeCols = c(
         "from", "to",
         "type", "parameter", "penalty", "K", "a", "min", "max"
-      )
-    )) %>%
+      )),
+      highlightNearest = list(enabled = T, degree = 0, hover = T)
+    ) %>%
     visLayout(randomSeed = 123) %>%
     onRender(additional_js)
 }
