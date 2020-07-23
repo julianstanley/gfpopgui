@@ -7,7 +7,7 @@ test_that("add_changepoints produces reasonable plot asthetics",{
   mygraph <- gfpop::graph(type = "updown", penalty = 15)
   changepoint_data <- gfpop::gfpop(data = data$Y, mygraph = mygraph,
                                    type = "mean")
-  test_plot <- add_changepoints(myplot, data, changepoint_data)
+  test_plot <- add_changepoints(myplot, data, changepoint_data)[["plot"]]
 
   expect_equal(test_plot$x$attrs[[2]][8]$mode, "markers")
   expect_equal(test_plot$x$attrs[[3]][8]$mode, "lines")
