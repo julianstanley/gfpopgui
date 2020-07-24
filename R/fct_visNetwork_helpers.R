@@ -35,12 +35,18 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 #' @param start is this node a start node? Default: FALSE
 #' @param end is this node an end node? Default: FALSE
 #' @param shape the shape of this node. See visNetwork docs. Default: "dot"
+#' @param color.background the background color of the node. Default: "lightblue"
+#' @param color.border the border color of the node. Default: "lightblue"
+#' @param shadow Whether this node has a shadow. Default: false
 #' @returns a dataframe with one more row than nodedf
-add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, end = FALSE, shape = "dot") {
+add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, 
+                     end = FALSE, shape = "dot", color.background = "lightblue",
+                     color.border = "lightblue", shadow = FALSE) {
   rbind(
     nodedf,
     data.frame(id = id, label = label, size = size, start = start, 
-               end = end, shape = shape)
+               end = end, shape = shape,  color.background = color.background, 
+               color.border = color.border, shadow = shadow)
   )
 }
 
@@ -112,20 +118,33 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       "dot"
     }
   }, startbool, endbool)
-
-  
-
-  list(
-    nodes = data.frame(id = node_names, label = node_names, size = 40,
-                       start = startbool, end = endbool, shape = shape),
-    edges = data.frame(
+  nodes <- data.frame(id = node_names, label = node_names, size = 40,
+                     start = startbool, end = endbool, shape = shape, 
+                     color.background = "lightblue", color.border = "lightblue",
+                     shadow = FALSE)
+  if("state1_id" %notin% graphdf) {
+    edges <- data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
       label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
-      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden
+      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden,
+      color = "black"
     )
+  } else {
+    edges <- data.frame(
+      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
+      label = create_label(graphdf), to = graphdf$state2_id, from = graphdf$state1_id,
+      type = graphdf$type, parameter = graphdf$parameter,
+      penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
+      min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
+      selfReference.angle = selfReference.angle, selfReference.size = 40, hidden = hidden,
+      color = "black"
+    )
+  }
+  list(
+    nodes = nodes, edges = edges
   )
 }
 
@@ -134,7 +153,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
 #' @param visNetwork_list A list object compatable with visNetwork
 #' See graphdf_to_visNetwork.
 #' @returns a dataframe/graph for gfpop
-#' @importFrom dplyr filter %>%
+#' @importFrom dplyr filter %>% 
 #' @importFrom rlang .data
 #' @import visNetwork
 #' @examples
@@ -142,15 +161,32 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
 #' @export
 visNetwork_to_graphdf <- function(visNetwork_list) {
   edges <- visNetwork_list$edges
-  edges$state1 <- edges$from
-  edges$state2 <- edges$to
-  edges$parameter <- as.numeric(edges$parameter)
-  edges$penalty <- as.numeric(edges$penalty)
-  edges$K <- as.numeric(edges$K)
-  edges$a <- as.numeric(edges$a)
-  edges$min <- as.numeric(NonetoNA(edges$min))
-  edges$max <- as.numeric(NonetoNA(edges$max))
-  gfpop::graph(select_graph_columns(edges))
+  nodes <- visNetwork_list$nodes
+
+  # State1 and State1 should actually be based on labels, not IDs,
+  # But we should also keep track of the IDs for when we convert back to 
+  # visNetwork
+  state1 <- unlist(
+    apply(edges, 1, 
+          function(x) nodes %>% filter(id == x[["from"]]) %>% select(label))
+  , use.names = F)
+  state1_id <- edges$from
+  
+  state2 <- unlist(
+    apply(edges, 1, 
+          function(x) nodes %>% filter(id == x[["to"]]) %>% select(label))
+  , use.names = F)
+  state2_id <- edges$to
+  type <- edges$type
+  parameter <- as.numeric(edges$parameter)
+  penalty <- as.numeric(edges$penalty)
+  K <- as.numeric(edges$K)
+  a <- as.numeric(edges$a)
+  min <- as.numeric(NonetoNA(edges$min))
+  max <- as.numeric(NonetoNA(edges$max))
+  data.frame(state1 = state1, state1_id = state1_id, state2 = state2, type = type,
+             state2_id = state2_id, parameter = parameter, penalty = penalty,
+             K = K, a = a, min = min, max = max)
 }
 
 additional_js <- "function(el, x) {
@@ -187,8 +223,9 @@ generate_visNetwork <- function(graph_data) {
       editEdgeCols = c(
         "from", "to",
         "type", "parameter", "penalty", "K", "a", "min", "max"
-      )
-    )) %>%
+      )),
+      highlightNearest = list(enabled = T, degree = 0, hover = F)
+    ) %>%
     visLayout(randomSeed = 123) %>%
     onRender(additional_js)
 }
@@ -240,7 +277,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
       type = "null", parameter = "1",
       penalty = "0", K = "Inf", a = "0",
       min = "None", max = "None",
-      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE
+      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
+      color = "black"
     )
 
     graphdata_visNetwork_return$edges <- rbind(

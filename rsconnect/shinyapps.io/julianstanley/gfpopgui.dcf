@@ -5,9 +5,9 @@ account: julianstanley
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2366586
-bundleId: 3320927
+bundleId: 3422655
 url: https://julianstanley.shinyapps.io/gfpopgui/
-when: 1593201703.45965
+when: 1595443585.18319
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: deploy.R|.vscode/settings.json|utils/run_app.sh|utils/watch_app.sh|docs|local_only|pkgdown_docs|tests|website
+ignoredFiles: deploy.R|.vscode/settings.json|utils/run_app.sh|utils/watch_app.sh|docs|local_only|man|pkgdown_docs|tests|website

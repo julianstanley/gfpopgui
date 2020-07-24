@@ -51,8 +51,8 @@ test_that("graphdf_to_visNetwork has 'nodes' and 'edges' as labels", {
 # visNetwork_to_graphdf
 test_that("visNetwork_to_graphdf is inverse of graphdf_to_visNetwork", {
   expect_equivalent(visNetwork_to_graphdf(
-    graphdf_to_visNetwork(gfpop::graph(type = "std"))
-  ), gfpop::graph(type = "std"))
+    graphdf_to_visNetwork(gfpop::graph(type = "std")) 
+  ) %>% select_graph_columns(), gfpop::graph(type = "std"))
 })
 
 # generate_visNetwork
@@ -79,15 +79,17 @@ test_that("visNetwork function generates a list with certain labels", {
 # Standard data produced by:
 # dput(gfpopgui::graphdf_to_visNetwork(gfpop::graph(type = "std", penalty = 15)))
 data <- list(
-  nodes = structure(list(id = "Std", label = "Std", size = 40, start = FALSE, end = FALSE, shape = "dot"), 
+  nodes = structure(list(id = "Std", label = "Std", size = 40, start = FALSE, 
+                         end = FALSE, shape = "dot", color.background = "lightblue",
+                         color.border = "lightblue", shadow = FALSE), 
   class = "data.frame", row.names = c(NA,-1L)), 
   edges = structure(list(id = c("Std_Std_null", "Std_Std_std"), 
   label = c("null | 0", "std | 15"), to = c("Std", "Std"), 
   from = c("Std","Std"), type = c("null", "std"), parameter = c(1, 0), 
   penalty = c(0,15), K = c("Inf", "Inf"), a = c(0, 0), min = c("None", "None"), 
   max = c("None", "None"), selfReference.angle = c(3.14159265358979,6.28318530717959), 
-  selfReference.size = c(40, 40), hidden = c(FALSE,FALSE)), class = "data.frame", 
-  row.names = c(NA, -2L)))
+  selfReference.size = c(40, 40), hidden = c(FALSE,FALSE), color = c("black", "black")),
+  class = "data.frame", row.names = c(NA, -2L)))
 
 
 test_that(
