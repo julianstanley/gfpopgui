@@ -14,7 +14,8 @@ add_changepoints(plotly_obj, original_data, changepoint_data)
 \item{changepoint_data}{The output of gfpop::gfpop() with original_data}
 }
 \value{
-a plotly_object with additional traces corresponding to changepoints
+A list of 3 objects: "plot" (the plotly plot with changepoints added),
+"changepoint_annotations", and "changepoint_annotations_regions"
 }
 \description{
 Adds changepoints annotations to a plotly plot.

@@ -224,7 +224,7 @@ generate_visNetwork <- function(graph_data) {
         "from", "to",
         "type", "parameter", "penalty", "K", "a", "min", "max"
       )),
-      highlightNearest = list(enabled = T, degree = 0, hover = T)
+      highlightNearest = list(enabled = T, degree = 0, hover = F)
     ) %>%
     visLayout(randomSeed = 123) %>%
     onRender(additional_js)
