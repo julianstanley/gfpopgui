@@ -86,7 +86,10 @@ test_that(
           is.null(gfpop_data$main_data)
         )
 
-        session$setInputs(ndata = 100, sigma = 1, genData = input$genData + 1)
+        session$setInputs(ndata = 100, sigma = 1, genData = input$genData + 1,
+                          nChangepoints = 5, eChangepoints = 1,
+                          meansChangepoints = "", typeChangepoints = "mean",
+                          gammaChangepoints = 1)
         assert_that(
           "The generate data reactive works",
           nrow(gfpop_data$main_data) == 100,
