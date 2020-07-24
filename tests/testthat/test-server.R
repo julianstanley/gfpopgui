@@ -146,8 +146,12 @@ test_that(
           (is.null(gfpop_data$graphdata) && is.null(gfpop_data$graphdata_visNetwork))
         )
 
+        print(input$updateGraph)
+        print(gfpop_data)
         session$setInputs(pen = 15, graphType = "std", showNull = TRUE, updateGraph = 1)
-
+        print(input$updateGraph)
+        print(gfpop_data)
+        print(gfpop_data$graphdata)
         assert_that(
           "graphdata is reasonable after  update_graph [analysis]",
           ncol(gfpop_data$graphdata) == 9,
