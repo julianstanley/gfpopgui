@@ -93,7 +93,7 @@ add_null_edge <- function(edgedf, nodeid) {
     label = "null | 0", to = nodeid, from = nodeid,
     type = "null", parameter = "1", penalty = "0", K = "Inf", a = "0",
     min = "None", max = "None",
-    selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
+    selfReference.angle = pi, selfReference.size = 40, hidden = FALSE,
     color = "black")
 }
 
@@ -324,7 +324,7 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
       label = "std | 10", to = event$to, from = event$from,
       type = "std", parameter = "0", penalty = "10", K = "Inf", a = "0",
       min = "None", max = "None",
-      selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
+      selfReference.angle = 2 * pi, selfReference.size = 40, hidden = FALSE,
       color = "black")
 
   }
