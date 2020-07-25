@@ -5,7 +5,12 @@
 \title{Turns a graph dataframe (from gfpop) into a list that
 can be read by visNetwork}
 \usage{
-graphdf_to_visNetwork(graphdf, edgeSep = "_", showNull = TRUE)
+graphdf_to_visNetwork(
+  graphdf,
+  edgeSep = "_",
+  showNull = TRUE,
+  label_columns = c("type", "penalty")
+)
 }
 \arguments{
 \item{graphdf}{A graph object (in the form of a dataframe) from gfpop
@@ -23,6 +28,8 @@ Must have the following columns:
 }}
 
 \item{edgeSep}{A character seperating the nodes in an edge label}
+
+\item{label_columns}{(character) An array of columns to use to make edge labels}
 
 \item{hideNull}{(Boolean) hide null edges?}
 }
