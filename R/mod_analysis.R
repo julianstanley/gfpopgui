@@ -31,8 +31,18 @@ mod_analysis_ui <- function(id) {
         ),
         checkboxInput(
           inputId = ns("showNull"),
-          label = "Show null nodes?",
+          label = "Show null edges?",
           value = TRUE
+        ),
+        selectInput(
+          inputId = ns("labels"),
+          label = "What info should edge labels contain?",
+          choices = c(
+            "state1", "state2", "type", "parameter", "penalty",
+            "K", "a", "min", "max"
+          ),
+          selected = c("type", "parameter", "penalty"),
+          multiple = TRUE
         ),
         actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
         hr(),
@@ -372,7 +382,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         # Update edge labels, if necessary
         if (isTruthy(gfpop_data$graphdata_visNetwork$edges)) {
           gfpop_data$graphdata_visNetwork$edges$label <- create_label(
-            gfpop_data$graphdata_visNetwork$edges
+            gfpop_data$graphdata_visNetwork$edges,
+            columns = input$labels
           )
         }
 
@@ -391,7 +402,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
           gfpop_data$graphdata,
-          showNull = input$showNull
+          showNull = input$showNull,
+          label_columns = input$labels
         )
 
         # Hard refresh the graph
@@ -449,7 +461,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         startEnd$end <- input$setEnd
 
         # Update the visNetwork data to match the gfpop data
-        gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+        gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata,
+          showNull = input$showNull,
+          label_columns = input$labels
+        )
       })
 
       # Add a new node
@@ -462,12 +477,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
             id = input$addNode_id,
             label = input$addNode_id
           )
-          
+
           # If addNull is true, add a recursive null edge
-          if(input$addNull) {
+          if (input$addNull) {
             gfpop_data$graphdata_visNetwork$edges <- add_null_edge(
-              edgedf = gfpop_data$graphdata_visNetwork$edges, 
-              nodeid = input$addNode_id)
+              edgedf = gfpop_data$graphdata_visNetwork$edges,
+              nodeid = input$addNode_id
+            )
           }
         } else {
           shinyalert(
@@ -529,7 +545,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Make sure visNetwork data stays up-to-date
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata,
-          showNull = input$showNull
+          showNull = input$showNull,
+          label_columns = input$labels
         )
       })
 

@@ -24,7 +24,37 @@ NonetoNA <- function(vec) {
 #' @returns a character vector combining those columns as specified
 #' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
-  apply(graphdf[, columns], 1, paste, collapse = collapse)
+  # For compatability with graphdf and visNetwork edges
+  if ("to" %in% colnames(graphdf)) {
+    columns <- sapply(columns, function(x) {
+      if (x == "state1") {
+        "from"
+      } else if (x == "state2") {
+        "to"
+      } else {
+        x
+      }
+    }, USE.NAMES = F)
+  }
+  if (length(columns) > 1) {
+    as.character(apply(graphdf[, columns], 1, paste, collapse = collapse))
+  } else if (length(columns) == 1) {
+    as.character(graphdf[, columns[1]])
+  } else {
+    as.character(rep(" ", dim(graphdf)[1]))
+  }
+}
+
+#' Creates an individual label for an individual edge
+create_label_individual <- function(state1, state2, type, parameter,
+                                    penalty, K, a, min, max,
+                                    columns = c("type", "penalty"), collapse = " | ") {
+  paste(sapply(columns,
+    function(x) eval(as.symbol(x)),
+    USE.NAMES = F
+  ),
+  collapse = collapse
+  )
 }
 
 #' Add a new node to a visNetwork node dataframe
@@ -39,14 +69,16 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 #' @param color.border the border color of the node. Default: "lightblue"
 #' @param shadow Whether this node has a shadow. Default: false
 #' @returns a dataframe with one more row than nodedf
-add_node <- function(nodedf, id, label = "", size = 40, start = FALSE, 
+add_node <- function(nodedf, id, label = "", size = 40, start = FALSE,
                      end = FALSE, shape = "dot", color.background = "lightblue",
                      color.border = "lightblue", shadow = FALSE) {
   rbind(
     nodedf,
-    data.frame(id = id, label = label, size = size, start = start, 
-               end = end, shape = shape,  color.background = color.background, 
-               color.border = color.border, shadow = shadow)
+    data.frame(
+      id = id, label = label, size = size, start = start,
+      end = end, shape = shape, color.background = color.background,
+      color.border = color.border, shadow = shadow
+    )
   )
 }
 
@@ -69,16 +101,15 @@ add_node <- function(nodedf, id, label = "", size = 40, start = FALSE,
 #' @param color edge color
 #' @returns a dataframe with one more row than edgedf
 add_edge <- function(edgedf, id, label, to, from, type, parameter,
-                     penalty, K, a, min, max, selfReference.angle = NA, 
+                     penalty, K, a, min, max, selfReference.angle = NA,
                      selfReference.size = 40, hidden = FALSE, color = "black") {
-
   new_row <- data.frame(
-    id = id, label = label, to = to, from = from, type = type, 
-    parameter = parameter, penalty = penalty, K = K, a = a, min = min, 
-    max = max, selfReference.angle = selfReference.angle, 
+    id = id, label = label, to = to, from = from, type = type,
+    parameter = parameter, penalty = penalty, K = K, a = a, min = min,
+    max = max, selfReference.angle = selfReference.angle,
     selfReference.size = selfReference.size, hidden = hidden, color = color
   )
-  
+
   rbind(edgedf, new_row)
 }
 
@@ -88,13 +119,14 @@ add_edge <- function(edgedf, id, label, to, from, type, parameter,
 #' @returns a dataframe with one more row than edgedf
 add_null_edge <- function(edgedf, nodeid) {
   add_edge(
-    edgedf = edgedf, 
+    edgedf = edgedf,
     id = paste0(nodeid, "_", nodeid, "_null"),
     label = "null | 0", to = nodeid, from = nodeid,
     type = "null", parameter = "1", penalty = "0", K = "Inf", a = "0",
     min = "None", max = "None",
     selfReference.angle = pi, selfReference.size = 40, hidden = FALSE,
-    color = "black")
+    color = "black"
+  )
 }
 
 
@@ -115,6 +147,7 @@ add_null_edge <- function(edgedf, nodeid) {
 #' }
 #' @param edgeSep A character seperating the nodes in an edge label
 #' @param hideNull (Boolean) hide null edges?
+#' @param label_columns (character) An array of columns to use to make edge labels
 #' @returns a list that can be read by visNetwork
 #' @importFrom dplyr filter %>%
 #' @importFrom rlang .data
@@ -122,14 +155,21 @@ add_null_edge <- function(edgedf, nodeid) {
 #' @examples
 #' graphdf_to_visNetwork(gfpop::graph(type = "std"))
 #' @export
-graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
+graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
+                                  label_columns = c("type", "penalty")) {
   class(graphdf) <- "data.frame"
 
   # Keep track of starting and ending nodes, but seperate them from the rest
-  starts <- graphdf %>% filter(type == "start") %>% select(state1) %>% .$state1
-  ends <- graphdf %>% filter(type == "end") %>% select(state1) %>% .$state1
+  starts <- graphdf %>%
+    filter(type == "start") %>%
+    select(state1) %>%
+    .$state1
+  ends <- graphdf %>%
+    filter(type == "end") %>%
+    select(state1) %>%
+    .$state1
   graphdf <- graphdf %>% filter(type != "start" & type != "end")
-  
+
   # Set edge and node names
   edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
@@ -149,12 +189,16 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       selfReference.angle <<- c(selfReference.angle, 2 * pi)
     }
   })
-  
+
   # Determine the value of start and end (node params)
-  startbool <- sapply(node_names, 
-                     function(x) tolower(x) %in% tolower(starts), USE.NAMES = F)
-  endbool <- sapply(node_names, 
-                    function(x) tolower(x) %in% tolower(ends), USE.NAMES = F)
+  startbool <- sapply(node_names,
+    function(x) tolower(x) %in% tolower(starts),
+    USE.NAMES = F
+  )
+  endbool <- sapply(node_names,
+    function(x) tolower(x) %in% tolower(ends),
+    USE.NAMES = F
+  )
   shape <- mapply(function(start, end) {
     if (start & end) {
       "star"
@@ -166,14 +210,17 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
       "dot"
     }
   }, startbool, endbool)
-  nodes <- data.frame(id = node_names, label = node_names, size = 40,
-                     start = startbool, end = endbool, shape = shape, 
-                     color.background = "lightblue", color.border = "lightblue",
-                     shadow = FALSE)
-  if("state1_id" %notin% graphdf) {
+  nodes <- data.frame(
+    id = node_names, label = node_names, size = 40,
+    start = startbool, end = endbool, shape = shape,
+    color.background = "lightblue", color.border = "lightblue",
+    shadow = FALSE
+  )
+
+  if ("state1_id" %notin% graphdf) {
     edges <- data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
-      label = create_label(graphdf), to = graphdf$state2, from = graphdf$state1,
+      label = create_label(graphdf, columns = label_columns), to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
@@ -183,7 +230,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
   } else {
     edges <- data.frame(
       id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
-      label = create_label(graphdf), to = graphdf$state2_id, from = graphdf$state1_id,
+      label = create_label(graphdf, columns = label_columns), to = graphdf$state2_id, from = graphdf$state1_id,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
@@ -201,7 +248,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE) {
 #' @param visNetwork_list A list object compatable with visNetwork
 #' See graphdf_to_visNetwork.
 #' @returns a dataframe/graph for gfpop
-#' @importFrom dplyr filter %>% 
+#' @importFrom dplyr filter %>%
 #' @importFrom rlang .data
 #' @import visNetwork
 #' @examples
@@ -212,18 +259,32 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   nodes <- visNetwork_list$nodes
 
   # State1 and State1 should actually be based on labels, not IDs,
-  # But we should also keep track of the IDs for when we convert back to 
+  # But we should also keep track of the IDs for when we convert back to
   # visNetwork
   state1 <- unlist(
-    apply(edges, 1, 
-          function(x) nodes %>% filter(id == x[["from"]]) %>% select(label))
-  , use.names = F)
+    apply(
+      edges, 1,
+      function(x) {
+        nodes %>%
+          filter(id == x[["from"]]) %>%
+          select(label)
+      }
+    ),
+    use.names = F
+  )
   state1_id <- edges$from
-  
+
   state2 <- unlist(
-    apply(edges, 1, 
-          function(x) nodes %>% filter(id == x[["to"]]) %>% select(label))
-  , use.names = F)
+    apply(
+      edges, 1,
+      function(x) {
+        nodes %>%
+          filter(id == x[["to"]]) %>%
+          select(label)
+      }
+    ),
+    use.names = F
+  )
   state2_id <- edges$to
   type <- edges$type
   parameter <- as.numeric(edges$parameter)
@@ -232,9 +293,11 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   a <- as.numeric(edges$a)
   min <- as.numeric(NonetoNA(edges$min))
   max <- as.numeric(NonetoNA(edges$max))
-  data.frame(state1 = state1, state1_id = state1_id, state2 = state2, type = type,
-             state2_id = state2_id, parameter = parameter, penalty = penalty,
-             K = K, a = a, min = min, max = max)
+  data.frame(
+    state1 = state1, state1_id = state1_id, state2 = state2, type = type,
+    state2_id = state2_id, parameter = parameter, penalty = penalty,
+    K = K, a = a, min = min, max = max
+  )
 }
 
 additional_js <- "function(el, x) {
@@ -266,12 +329,14 @@ generate_visNetwork <- function(graph_data) {
       ),
       font = list(align = "top")
     ) %>%
-    visOptions(manipulation = list(
-      enabled = TRUE,
-      editEdgeCols = c(
-        "from", "to",
-        "type", "parameter", "penalty", "K", "a", "min", "max"
-      )),
+    visOptions(
+      manipulation = list(
+        enabled = TRUE,
+        editEdgeCols = c(
+          "from", "to",
+          "type", "parameter", "penalty", "K", "a", "min", "max"
+        )
+      ),
       highlightNearest = list(enabled = T, degree = 0, hover = F)
     ) %>%
     visLayout(randomSeed = 123) %>%
@@ -314,7 +379,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
         min = event$min, max = event$max,
         selfReference.angle = angle, selfReference.size = 40,
       )
-
   }
 
   ### Add Edge ---------------------------------------------------------------
@@ -325,8 +389,8 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
       type = "std", parameter = "0", penalty = "10", K = "Inf", a = "0",
       min = "None", max = "None",
       selfReference.angle = 2 * pi, selfReference.size = 40, hidden = FALSE,
-      color = "black")
-
+      color = "black"
+    )
   }
 
   ### Delete Edge ------------------------------------------------------------
@@ -341,12 +405,14 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   ### Add Node ---------------------------------------------------------------
   if (event$cmd == "addNode") {
     graphdata_visNetwork_return$nodes <- add_node(graphdata_visNetwork_return$nodes,
-                                                  id = event$id, label = event$label)
-    
+      id = event$id, label = event$label
+    )
+
     # If addNull is true, add a recursive null edge
-    if(addNull) {
+    if (addNull) {
       graphdata_visNetwork_return$edges <- add_null_edge(
-        edgedf = graphdata_visNetwork_return$edges, nodeid = event$id)
+        edgedf = graphdata_visNetwork_return$edges, nodeid = event$id
+      )
     }
   }
   ### Edit Node --------------------------------------------------------------
