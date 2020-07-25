@@ -179,7 +179,7 @@ test_that("Can add an edge", {
   
   new_data <- modify_visNetwork(event, data)
   
-  expect_equal(new_data$edges$penalty, as.character(c(0, 15, 0)))
+  expect_equal(new_data$edges$penalty, as.character(c(0, 15, 10)))
 })
 
 test_that("Can delete node without deleting edge", {

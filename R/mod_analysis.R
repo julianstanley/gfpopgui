@@ -25,6 +25,11 @@ mod_analysis_ui <- function(id) {
 
         h4("other graph settings"),
         checkboxInput(
+          inputId = ns("addNull"),
+          label = "Automatically add recursive null edges?",
+          value = TRUE
+        ),
+        checkboxInput(
           inputId = ns("showNull"),
           label = "Show null nodes?",
           value = TRUE
@@ -408,7 +413,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         event <- input$gfpopGraph_graphChange
         gfpop_data$graphdata_visNetwork <- modify_visNetwork(
           event,
-          gfpop_data$graphdata_visNetwork
+          gfpop_data$graphdata_visNetwork,
+          addNull = input$addNull
         )
 
         # Ensure that graphdata stays in sync with visNetwork data
@@ -450,11 +456,19 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       observeEvent(input$addNode_button, {
         # New node must have a unique ID. TODO: Does this need to be edited?
         if (input$addNode_id %notin% gfpop_data$graphdata_visNetwork$nodes$id) {
+          # Add the node
           gfpop_data$graphdata_visNetwork$nodes <- add_node(
             gfpop_data$graphdata_visNetwork$nodes,
             id = input$addNode_id,
             label = input$addNode_id
           )
+          
+          # If addNull is true, add a recursive null edge
+          if(input$addNull) {
+            gfpop_data$graphdata_visNetwork$edges <- add_null_edge(
+              edgedf = gfpop_data$graphdata_visNetwork$edges, 
+              nodeid = input$addNode_id)
+          }
         } else {
           shinyalert(
             title = "Duplicate ID",

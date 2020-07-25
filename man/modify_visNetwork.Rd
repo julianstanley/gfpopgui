@@ -5,12 +5,14 @@
 \title{Edits a visNetwork data based on the given command, consistent with the format
 of commands passed to the _graphChange observers in visNetwork-shiny}
 \usage{
-modify_visNetwork(event, graphdata_visNetwork)
+modify_visNetwork(event, graphdata_visNetwork, addNull = FALSE)
 }
 \arguments{
 \item{event}{The event, with at least a $cmd entry, based on observer format}
 
 \item{graphdata_visNetwork}{A list of data to be passed to visNetwork}
+
+\item{addNull}{Whether to automatically add a null edge to a new node}
 }
 \value{
 the same format as graphdata_visNetwork, but edited according to event

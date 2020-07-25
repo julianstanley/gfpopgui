@@ -50,6 +50,54 @@ add_node <- function(nodedf, id, label = "", size = 40, start = FALSE,
   )
 }
 
+#' Add a new edge to a visNetwork edge dataframe
+#' @param edgedf a dataframe containing the edges.
+#' @param id edge id
+#' @param label edge label
+#' @param to Where does the edge go to?
+#' @param from Where does the edge come from?
+#' @param type What type of edge?
+#' @param parameter parameter: gap, etc.
+#' @param penalty edge penalty
+#' @param K K (see gfpop)
+#' @param a a (see gfpop)
+#' @param min min (see gfpop)
+#' @param max max (see gfpop)
+#' @param selfReference.angle The angle of this edge, if it's recursive
+#' @param selfReference.size The length of this edge, if it's recursive
+#' @param hidden Is this edge hidden?
+#' @param color edge color
+#' @returns a dataframe with one more row than edgedf
+add_edge <- function(edgedf, id, label, to, from, type, parameter,
+                     penalty, K, a, min, max, selfReference.angle = NA, 
+                     selfReference.size = 40, hidden = FALSE, color = "black") {
+
+  new_row <- data.frame(
+    id = id, label = label, to = to, from = from, type = type, 
+    parameter = parameter, penalty = penalty, K = K, a = a, min = min, 
+    max = max, selfReference.angle = selfReference.angle, 
+    selfReference.size = selfReference.size, hidden = hidden, color = color
+  )
+  
+  rbind(edgedf, new_row)
+}
+
+#' Adds a recursive null edge
+#' @param edgedf a dataframe containing the edges
+#' @param nodeid the id of the node on which to create this recursive edge
+#' @returns a dataframe with one more row than edgedf
+add_null_edge <- function(edgedf, nodeid) {
+  add_edge(
+    edgedf = edgedf, 
+    id = paste0(nodeid, "_", nodeid, "_null"),
+    label = "null | 0", to = nodeid, from = nodeid,
+    type = "null", parameter = "1", penalty = "0", K = "Inf", a = "0",
+    min = "None", max = "None",
+    selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
+    color = "black")
+}
+
+
 #' Turns a graph dataframe (from gfpop) into a list that
 #' can be read by visNetwork
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
@@ -234,10 +282,11 @@ generate_visNetwork <- function(graph_data) {
 #' of commands passed to the _graphChange observers in visNetwork-shiny
 #' @param event The event, with at least a $cmd entry, based on observer format
 #' @param graphdata_visNetwork A list of data to be passed to visNetwork
+#' @param addNull Whether to automatically add a null edge to a new node
 #' @returns the same format as graphdata_visNetwork, but edited according to event
 #' @import visNetwork
 #' @export
-modify_visNetwork <- function(event, graphdata_visNetwork) {
+modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   graphdata_visNetwork_return <- graphdata_visNetwork
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
@@ -270,21 +319,14 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
 
   ### Add Edge ---------------------------------------------------------------
   if (event$cmd == "addEdge") {
-    new_row <- data.frame(
-      id = event$id,
-      label = "null | 0",
-      to = event$to, from = event$from,
-      type = "null", parameter = "1",
-      penalty = "0", K = "Inf", a = "0",
+    graphdata_visNetwork_return$edges <- add_edge(
+      edgedf = graphdata_visNetwork_return$edges, id = event$id,
+      label = "std | 10", to = event$to, from = event$from,
+      type = "std", parameter = "0", penalty = "10", K = "Inf", a = "0",
       min = "None", max = "None",
       selfReference.angle = NA, selfReference.size = 40, hidden = FALSE,
-      color = "black"
-    )
+      color = "black")
 
-    graphdata_visNetwork_return$edges <- rbind(
-      graphdata_visNetwork_return$edges,
-      new_row
-    )
   }
 
   ### Delete Edge ------------------------------------------------------------
@@ -300,8 +342,13 @@ modify_visNetwork <- function(event, graphdata_visNetwork) {
   if (event$cmd == "addNode") {
     graphdata_visNetwork_return$nodes <- add_node(graphdata_visNetwork_return$nodes,
                                                   id = event$id, label = event$label)
+    
+    # If addNull is true, add a recursive null edge
+    if(addNull) {
+      graphdata_visNetwork_return$edges <- add_null_edge(
+        edgedf = graphdata_visNetwork_return$edges, nodeid = event$id)
+    }
   }
-
   ### Edit Node --------------------------------------------------------------
   if (event$cmd == "editNode") {
     graphdata_visNetwork_return$nodes <-
