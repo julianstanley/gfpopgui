@@ -6,9 +6,12 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList h2 downloadButton actionButton
+#' @importFrom shiny NS tagList h2 downloadButton actionButton htmlOutput 
+#' sidebarLayout sidebarPanel
+#' @importFrom plotly plotlyOutput
 #' @importFrom DT renderDataTable
 #' @importFrom shinyalert shinyalert
+#' @importFrom DT dataTableOutput
 mod_sharing_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -48,8 +51,9 @@ mod_sharing_ui <- function(id) {
 
 #' sharing Server Function
 #' @importFrom shiny downloadHandler reactiveValuesToList observeEvent
-#' reactiveValuesToList
+#' reactiveValuesToList renderUI
 #' @importFrom DT dataTableOutput
+#' @importFrom plotly renderPlotly
 #' @noRd
 mod_sharing_server <- function(id, gfpop_data) {
   moduleServer(
