@@ -40,6 +40,7 @@ format_edge <- function(edge_df) {
 #' @param graph A graph df, like that returned by gfpop::graph()
 #' @returns a string corresponding to the code that, when run, produces the
 #' given graph
+#' @importFrom dplyr %>% filter
 #' @examples 
 #' graph <- gfpop::graph(type = "std")
 #' graph_to_R_code(graph)
@@ -55,10 +56,34 @@ graph_to_R_code <- function(graph) {
   
   return_command <- "gfpop::graph(\n"
   
-  apply(graph, 1, function(x) {
+  graph_without_startEnd <- data.frame(graph) %>%
+    filter(type != "start" & type != "end")
+  
+  graph_with_start <- data.frame(graph) %>%
+    filter(type == "start")
+  hasStart <- dim(graph_with_start)[1] > 0
+  
+  graph_with_end <- data.frame(graph) %>%
+    filter(type == "end")
+  hasEnd <- dim(graph_with_end)[1] > 0
+
+  apply(graph_without_startEnd, 1, function(x) {
     return_command <<- paste0(return_command, paste0("    ", 
                                                      format_edge(x), ",\n"))
   })
+  
+  if(hasStart & hasEnd) {
+    return_command <- paste0(return_command, "    startEnd(start = ", 
+                             graph_with_start[["state1"]][1], ", end = ",
+                             graph_with_end[["state1"]][1], "),\n")
+  } else if(hasStart) {
+    return_command <- paste0(return_command, "    startEnd(start = ", 
+                             graph_with_start[["state1"]][1], "),\n")
+  } else if(hasEnd) {
+    return_command <- paste0(return_command, "    startEnd(end = ",
+                             graph_with_end[["state1"]][1], "),\n")
+  }
+  
   
   paste0(substr(return_command, 1, nchar(return_command) - 2), "\n)")
 }
