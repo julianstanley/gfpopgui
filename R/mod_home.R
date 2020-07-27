@@ -15,7 +15,8 @@ mod_home_ui <- function(id) {
     fluidRow(
       column(
         8,
-        h1("Welcome to gfpop", align = "center"),
+        HTML("<h1 align='center'><br>Welcome to gfpop<br><br>
+        <img src='assets/gfpopgui_logo.png' width='200'>"),
         HTML("<h4 style='text-align: center'> An analysis tool for graph-constrained <br> changepoint detection </h4>"),
         br(), br(),
         h3("Getting started: overview and instructions"),
