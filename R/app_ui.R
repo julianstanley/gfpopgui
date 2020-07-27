@@ -50,7 +50,7 @@ golem_add_external_resources <- function() {
     "www", app_sys("app/www")
   )
 
-  addResourcePath(
+  add_resource_path(
     "img", system.file("app/img", package = "gfpopgui")
   )
 
