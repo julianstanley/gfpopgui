@@ -13,7 +13,8 @@ app_ui <- function(request) {
     # List the first level UI elements here
     fluidPage(
       theme = shinytheme("lumen"),
-      navbarPage(id = "tabs",
+      navbarPage(
+        id = "tabs",
         title = "gfpop",
         collapsible = TRUE,
         # include the UI for each tab
@@ -47,6 +48,10 @@ app_ui <- function(request) {
 golem_add_external_resources <- function() {
   add_resource_path(
     "www", app_sys("app/www")
+  )
+
+  addResourcePath(
+    "img", system.file("app/img", package = "gfpopgui")
   )
 
   tags$head(
