@@ -41,7 +41,7 @@ mod_analysis_ui <- function(id) {
             "state1", "state2", "type", "parameter", "penalty",
             "K", "a", "min", "max"
           ),
-          selected = c("type", "parameter", "penalty"),
+          selected = c("type", "parameter"),
           multiple = TRUE
         ),
         actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
