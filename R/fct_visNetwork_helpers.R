@@ -251,10 +251,15 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
 #' @importFrom dplyr filter %>%
 #' @importFrom rlang .data
 #' @import visNetwork
+#' @importFrom gfpop gfpop
 #' @examples
 #' visNetwork_to_graphdf(graphdf_to_visNetwork(gfpop::graph(type = "std")))
 #' @export
 visNetwork_to_graphdf <- function(visNetwork_list) {
+  if (nrow(visNetwork_list$edges) == 0) {
+    return(data.frame())
+  }
+
   edges <- visNetwork_list$edges
   nodes <- visNetwork_list$nodes
 
