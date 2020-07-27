@@ -9,14 +9,34 @@
 <h4 align="center">An interactive shiny-based application for exploring graph-
 constrained changepoint detection with the <a href="https://github.com/vrunge/gfpop" target="_blank">gfpop</a> package.</h4>
 
-  <!-- badges: start -->
+
 <div align="center">
-  [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpopgui)
-  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-   [![Travis build status](https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master)](https://travis-ci.com/julianstanley/gfpopgui)
-   [![Codecov test coverage](https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg)](https://codecov.io/gh/julianstanley/gfpopgui?branch=master)
-   [![Sauce Test Status](https://saucelabs.com/buildstatus/julianstanley?dummy=unused)](https://app.saucelabs.com/u/julianstanley)
-   <hr>
+  <!-- badges: start -->
+  <div id="banner" style="overflow: hidden;justify-content:space-around;">
+  <a href="https://julianstanley.github.io/gfpopgui">
+  <img src="https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue" 
+    alt="Documentation vis Docusarus"></img>
+  </a>
+  <a href="https://www.tidyverse.org/lifecycle/#experimental">
+  <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" 
+    alt="Lifecycle: experimental"></img>
+  </a>
+  <a href="https://travis-ci.com/julianstanley/gfpopgui">
+  <img src="https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master" 
+    alt="Travis build status"></img>
+  </a>
+  <a href="https://codecov.io/gh/julianstanley/gfpopgui?branch=master">
+  <img src="https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg" 
+    alt="Codecov test coverage"></img>
+  </a>
+  <a href="https://app.saucelabs.com/u/julianstanley">
+  <img src="https://saucelabs.com/buildstatus/julianstanley?dummy=unused" 
+    alt="Sauce Test Status"></img>
+  </a>
+  </div>
+  <hr>
+  <!-- badges: end -->
+   
   <p>
     <a href="#overview">Overview</a> •
     <a href="#installation">Installation</a> •
