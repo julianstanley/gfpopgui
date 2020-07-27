@@ -121,9 +121,28 @@ mod_home_server <- function(id) {
       })
 
       observeEvent(input$primary_input, {
-        primary_input <- fread(input$primary_input$datapath, header = F, stringsAsFactors = FALSE)
-        colnames(primary_input) <- c("X", "Y")
-        gfpop_data$main_data <- primary_input
+        primary_input <- fread(input$primary_input$datapath, stringsAsFactors = FALSE)
+        if (ncol(primary_input) == 2) {
+          tryCatch(
+            expr = {
+              colnames(primary_input) <- c("X", "Y")
+              gfpop_data$main_data <- primary_input
+            },
+            error = function(e) {
+              shinyalert(
+                title = "Unknown error",
+                text = paste0("Some unknown error occured while,
+                                     trying to process your input data: ", e)
+              )
+            }
+          )
+        } else {
+          shinyalert(
+            title = "Incorrect input shape",
+            text = "Input does not have two columns. 
+                                     Please upload data with two columns."
+          )
+        }
       })
 
       # Parse the primary input data and return back a DataTable
@@ -153,28 +172,30 @@ mod_home_server <- function(id) {
             }
           )
         }
-        
-        if(length(parameters) != input$nChangepoints) {
+
+        if (length(parameters) != input$nChangepoints) {
           shinyalert(
             title = "Parameters do not match.",
             text = paste0("You asked for ", input$nChangepoints, " changepoints,
                           but only provided ", length(parameters), " parameters."),
-          type = "error"
-      )
+            type = "error"
+          )
           return(1)
         }
-        seq_unnorm <- seq(0, 1, 
-                          length.out = ((input$nChangepoints)+1))^(input$eChangepoints)
+        seq_unnorm <- seq(0, 1,
+          length.out = ((input$nChangepoints) + 1)
+        )^(input$eChangepoints)
         relative_changepoint_loc <- (seq_unnorm / max(seq_unnorm))[2:length(seq_unnorm)]
 
         tryCatch(
           expr = {
             primary_input <- data.frame(
               X = 1:input$ndata,
-              Y = dataGenerator(input$ndata, changepoints = relative_changepoint_loc,
-                                parameters = parameters, type = input$typeChangepoints,
-                                sigma = input$sigma, gamma = input$gammaChangepoints)
-              
+              Y = dataGenerator(input$ndata,
+                changepoints = relative_changepoint_loc,
+                parameters = parameters, type = input$typeChangepoints,
+                sigma = input$sigma, gamma = input$gammaChangepoints
+              )
             )
             gfpop_data$main_data <- primary_input
           },
@@ -186,7 +207,6 @@ mod_home_server <- function(id) {
             )
           }
         )
-        
       })
 
 
@@ -194,10 +214,22 @@ mod_home_server <- function(id) {
 
       set_graph_data <- reactive({
         if (isTruthy(input$constraint_graph)) {
-          graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
-          gfpop_data$graph_input <- graph_input
-          gfpop_data$graphdata <- gfpop::graph(gfpop_data$graph_input)
-          gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+          tryCatch(
+            expr = {
+              graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
+              gfpop_data$graph_input <- graph_input
+              gfpop_data$graphdata <- gfpop::graph(gfpop_data$graph_input)
+              gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+            },
+            error = function(e) {
+              shinyalert(
+                title = "Unknown error",
+                text = paste0("Some unknown error occured
+                                                   while trying to upload your
+                                                   data: ", e)
+              )
+            }
+          )
         }
       })
 
