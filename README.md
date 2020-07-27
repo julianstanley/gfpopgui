@@ -1,10 +1,29 @@
-# gfpop GUI
+<h1 align = "center">
+  <br>
+  <img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="300">
+  <br>
+  gfpop gui
+  <br>
+</h1>
+
+<h4 align="center">An interactive shiny-based application for exploring graph-
+constrained changepoint detection with the <a href="https://github.com/vrunge/gfpop" target="_blank">gfpop</a> package.</h4>
+
   <!-- badges: start -->
+<div align="center">
   [![Documentation via Docusaurus](https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue)](https://julianstanley.github.io/gfpopgui)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
    [![Travis build status](https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master)](https://travis-ci.com/julianstanley/gfpopgui)
    [![Codecov test coverage](https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg)](https://codecov.io/gh/julianstanley/gfpopgui?branch=master)
    [![Sauce Test Status](https://saucelabs.com/buildstatus/julianstanley?dummy=unused)](https://app.saucelabs.com/u/julianstanley)
+   <hr>
+  <p>
+    <a href="#overview">Overview</a> •
+    <a href="#installation">Installation</a> •
+    <a href="#testing">Testing</a> •
+    <a href="#attributions">Attributions</a>
+  </p>
+</div>
   <!-- badges: end -->
 
 ## Overview
@@ -24,7 +43,7 @@ run the `gfpop` algorithm and let you interactively see changepoint differences.
 
 This is an in-progress summer project. See the project description at [Google Summer of Code 2020](https://summerofcode.withgoogle.com/projects/#6502959753461760).
 
-## Installation and Use
+## Installation
 
 To install:
 ```R
