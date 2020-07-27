@@ -73,15 +73,15 @@ graph_to_R_code <- function(graph) {
   })
   
   if(hasStart & hasEnd) {
-    return_command <- paste0(return_command, "    startEnd(start = ", 
-                             graph_with_start[["state1"]][1], ", end = ",
-                             graph_with_end[["state1"]][1], "),\n")
+    return_command <- paste0(return_command, "    startEnd(start = '", 
+                             graph_with_start[["state1"]][1], "', end = '",
+                             graph_with_end[["state1"]][1], "'),\n")
   } else if(hasStart) {
-    return_command <- paste0(return_command, "    startEnd(start = ", 
-                             graph_with_start[["state1"]][1], "),\n")
+    return_command <- paste0(return_command, "    startEnd(start = '", 
+                             graph_with_start[["state1"]][1], "'),\n")
   } else if(hasEnd) {
-    return_command <- paste0(return_command, "    startEnd(end = ",
-                             graph_with_end[["state1"]][1], "),\n")
+    return_command <- paste0(return_command, "    startEnd(end = '",
+                             graph_with_end[["state1"]][1], "'),\n")
   }
   
   
