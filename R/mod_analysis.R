@@ -781,11 +781,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update this function when changepoints update
         gfpop_data$changepoints
-
         tryCatch(
           expr = {
             # TODO: Allow user to add weights (what do those do?)
-            gfpop_data$changepoints <<- gfpop::gfpop(gfpop_data$main_data$Y,
+            gfpop_data$changepoints <<- gfpop::gfpop(as.numeric(gfpop_data$main_data$Y),
               gfpop_data$graphdata %>% select_graph_columns(),
               type = input$gfpopType
             )
