@@ -9,7 +9,7 @@
 // site configuration options.
 
 const siteConfig = {
-  title: 'gfpopgui docs', // Title for your website.
+  title: 'gfpopgui extras', // Title for your website.
   tagline: 'In development',
   url: 'https://julianstanley.github.io', // Your website URL
   baseUrl: '/gfpopgui/', // Base URL for your project */
@@ -27,6 +27,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     { doc: 'welcome', label: 'Home' },
+    { doc: 'tutorials/intro_tutorials', label: 'Tutorials' },
     { doc: 'timeline/intro_timeline', label: 'Project Timeline' },
     { href: 'https://github.com/julianstanley/gfpopgui', label: 'GitHub' },
     // {doc: 'doc4', label: 'API'},
@@ -38,14 +39,14 @@ const siteConfig = {
   //  users,
 
   /* path to images for header/footer */
-  // headerIcon: 'img/favicon.ico',
-  //  footerIcon: 'img/favicon.ico',
-  //favicon: 'img/favicon.ico',
+  headerIcon: 'img/gfpopgui_favicon.ico',
+  footerIcon: 'img/gfpopgui_favicon.ico',
+  favicon: 'img/gfpopgui_favicon.ico',
 
   /* Colors for website */
   colors: {
-    primaryColor: '#2E8555',
-    secondaryColor: '#205C3B',
+    primaryColor: '#1b7837',
+    secondaryColor: '#f7f7f7',
   },
 
   /* Custom fonts for website */

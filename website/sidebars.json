@@ -29,10 +29,10 @@
       "timeline/Phase3/aug24_aug31"
     ]
   },
-  "docs-other": {
-    "First Category": [
-      "doc4",
-      "doc5"
+  "tutorial": {
+    "Tutorial Posts": [
+      "tutorials/intro_tutorials",
+      "tutorials/rselenium"
     ]
   }
 }
