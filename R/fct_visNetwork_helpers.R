@@ -340,6 +340,12 @@ generate_visNetwork <- function(graph_data) {
         editEdgeCols = c(
           "from", "to",
           "type", "parameter", "penalty", "K", "a", "min", "max"
+        ),
+        editNodeCols = c(
+          "label"
+        ),
+        addNodeCols = c(
+          "label"
         )
       ),
       highlightNearest = list(enabled = T, degree = 0, hover = F)
