@@ -539,12 +539,16 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         j <- info$col
         v <- info$value
 
+        # Account for the "state1_id" and "state2_id" columns:
+        j <- if(j>3) j+2 else if(j >1) j+1 else j
+  
         # Update graphdata via proxy
         gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
 
         # Make sure visNetwork data stays up-to-date
-        gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata,
+        gfpop_data$graphdata_visNetwork$edges <- update_visNetwork_edges(
+          gfpop_data$graphdata_visNetwork$edges, gfpop_data$graphdata,
           showNull = input$showNull,
           label_columns = input$labels
         )

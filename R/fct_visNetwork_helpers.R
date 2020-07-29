@@ -338,7 +338,6 @@ generate_visNetwork <- function(graph_data) {
       manipulation = list(
         enabled = TRUE,
         editEdgeCols = c(
-          "from", "to",
           "type", "parameter", "penalty", "K", "a", "min", "max"
         ),
         editNodeCols = c(
@@ -374,17 +373,12 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   ### Edit Edge --------------------------------------------------------------
   if (event$cmd == "editEdge") {
     changed_id <- event$id
-    # Decide whether we need to add selfReference.angle
-    if (event$to == event$from) {
-      angle <- if (event$type == "null") pi else 2 * pi
-    } else {
-      angle <- "NA"
-    }
+
+    angle <- if (event$type == "null") pi else 2 * pi
 
     graphdata_visNetwork_return$edges <- graphdata_visNetwork_return$edges %>%
       mutate_cond(id == changed_id,
         label = paste0(event$type, " | ", event$penalty),
-        to = event$to, from = event$from,
         type = event$type, parameter = event$parameter,
         penalty = event$penalty, K = event$K, a = event$a,
         min = event$min, max = event$max,
@@ -445,4 +439,28 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   }
 
   graphdata_visNetwork_return
+}
+
+#' Updates the given visNetwork edges, based on a new graphdf,
+#' excluding updates to certain columns. This is useful as to not mess up
+#' visNetwork edge IDs, which are important to keeping visNetwork happy.
+#' @param old_edges A dataframe in visNetwork edges format
+#' @param graphdf A graph object (in the form of a dataframe) from gfpop
+#' @param edgeSep A character seperating the nodes in an edge label
+#' @param hideNull (Boolean) hide null edges?
+#' @param label_columns (character) An array of columns to use to make edge labels
+#' @param columns_to_exclude (character) An array of columns not to include in the update
+#' @export
+update_visNetwork_edges <- function(old_edges, graphdf, edgeSep = "_", showNull = TRUE,
+                                    label_columns = c("type", "penalty"),
+                                    columns_to_exclude = c("id", "to", "from")) {
+  return_edges <- old_edges
+  new_edges <- graphdf_to_visNetwork(graphdf, edgeSep, showNull, label_columns)$edges
+  for (column in colnames(old_edges)) {
+    if (column %notin% columns_to_exclude) {
+      return_edges[[column]] <- new_edges[[column]]
+    }
+  }
+
+  return_edges
 }

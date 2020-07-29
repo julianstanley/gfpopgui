@@ -86,10 +86,12 @@ test_that(
           is.null(gfpop_data$main_data)
         )
 
-        session$setInputs(ndata = 100, sigma = 1, genData = input$genData + 1,
-                          nChangepoints = 5, eChangepoints = 1,
-                          meansChangepoints = "", typeChangepoints = "mean",
-                          gammaChangepoints = 1)
+        session$setInputs(
+          ndata = 100, sigma = 1, genData = input$genData + 1,
+          nChangepoints = 5, eChangepoints = 1,
+          meansChangepoints = "", typeChangepoints = "mean",
+          gammaChangepoints = 1
+        )
         assert_that(
           "The generate data reactive works",
           nrow(gfpop_data$main_data) == 100,
@@ -376,7 +378,12 @@ test_that(
           )
         )
 
+        # Run through the switch-a-roo once
+        gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
+
         session$setInputs(graphOutput_cell_edit = list(row = 2, col = 5, value = 20))
+
+
 
         assert_that(
           "Can edit penalty from graphOutput",
