@@ -320,6 +320,11 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         segments = c()
       )
 
+      # Keep track of the mapping between a node ID and the node's label
+      node_id_to_label <- reactiveValues(
+        main = list()
+      )
+
       # When i is edited, the the constraint graph undergoes a hard refresh
       dummy_graph_refresh <- reactiveValues(i = 0)
 
@@ -391,6 +396,12 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         visNetworkProxy(ns("gfpopGraph")) %>%
           visUpdateNodes(nodes = gfpop_data$graphdata_visNetwork$nodes) %>%
           visUpdateEdges(edges = gfpop_data$graphdata_visNetwork$edges)
+
+        # Update the mapping between node ids and labels
+        node_ids <- gfpop_data$graphdata_visNetwork$nodes$id
+        node_labels <- gfpop_data$graphdata_visNetwork$nodes$label
+        names(node_labels) <- node_ids
+        node_id_to_label$main <- node_labels
       })
 
       # Generate a default graph, when the appropriate button is pressed
@@ -697,9 +708,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
             # Figure out what region to highlight
             highlighted_id <- input$gfpopGraph_highlight_color_id
+
+            # Highlight based on node label
+            highlighted_label <- node_id_to_label$main[[highlighted_id]]
+
             segments_to_highlight <-
               gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]] %>%
-              filter(state == highlighted_id)
+              filter(state == highlighted_label)
 
             # Highlight the appropriate region by adding a new red trace
             plotlyProxy("gfpopPlot", session) %>%
