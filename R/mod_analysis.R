@@ -34,6 +34,11 @@ mod_analysis_ui <- function(id) {
           label = "Show null edges?",
           value = TRUE
         ),
+        checkboxInput(
+          inputId = ns("crosstalk"),
+          label = "Enable Crosstalk?",
+          value = TRUE
+        ),
         selectInput(
           inputId = ns("labels"),
           label = "What info should edge labels contain?",
@@ -689,57 +694,59 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Communication from visNetwork to Plotly --------------------------------
 
       # When the user highlights a node, update the plotly plot
-      observe({
-        # Only add traces if a node is highlighted
-        if (!is.null(input$gfpopGraph_highlight_color_id)
-        & isTruthy(gfpop_data$changepoint_annotations_list)) {
+      observeEvent(input$gfpopGraph_highlight_color_id, {
+        if (input$crosstalk) {
+          # Only add traces if a node is highlighted
+          if (!is.null(input$gfpopGraph_highlight_color_id)
+          & isTruthy(gfpop_data$changepoint_annotations_list)) {
 
-          # Be lazy: only highlight if not already highlighted
-          if (input$gfpopGraph_highlight_color_id %notin% selected$segments) {
+            # Be lazy: only highlight if not already highlighted
+            if (input$gfpopGraph_highlight_color_id %notin% selected$segments) {
 
-            # First, delete existing highlight
+              # First, delete existing highlight
+              if (length(selected$segments) > 0) {
+                plotlyProxy("gfpopPlot", session) %>%
+                  plotlyProxyInvoke(
+                    "deleteTraces", 3
+                  )
+                selected$segments <- c()
+              }
+
+              # Figure out what region to highlight
+              highlighted_id <- input$gfpopGraph_highlight_color_id
+
+              # Highlight based on node label
+              highlighted_label <- node_id_to_label$main[[highlighted_id]]
+
+              segments_to_highlight <-
+                gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]] %>%
+                filter(state == highlighted_label)
+
+              # Highlight the appropriate region by adding a new red trace
+              plotlyProxy("gfpopPlot", session) %>%
+                plotlyProxyInvoke(
+                  "addTraces",
+                  list(
+                    x = segments_to_highlight$x,
+                    y = segments_to_highlight$y,
+                    text = segments_to_highlight$text,
+                    line = list(color = "red", width = 10)
+                  )
+                )
+
+              # Remember what region we've highlighted
+              selected$segments <- c(input$gfpopGraph_highlight_color_id)
+            }
+          } else {
+            # If a segment is highlighted, but a node isn't, remove segment highlight
             if (length(selected$segments) > 0) {
               plotlyProxy("gfpopPlot", session) %>%
                 plotlyProxyInvoke(
                   "deleteTraces", 3
                 )
+
               selected$segments <- c()
             }
-
-            # Figure out what region to highlight
-            highlighted_id <- input$gfpopGraph_highlight_color_id
-
-            # Highlight based on node label
-            highlighted_label <- node_id_to_label$main[[highlighted_id]]
-
-            segments_to_highlight <-
-              gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]] %>%
-              filter(state == highlighted_label)
-
-            # Highlight the appropriate region by adding a new red trace
-            plotlyProxy("gfpopPlot", session) %>%
-              plotlyProxyInvoke(
-                "addTraces",
-                list(
-                  x = segments_to_highlight$x,
-                  y = segments_to_highlight$y,
-                  text = segments_to_highlight$text,
-                  line = list(color = "red", width = 10)
-                )
-              )
-
-            # Remember what region we've highlighted
-            selected$segments <- c(input$gfpopGraph_highlight_color_id)
-          }
-        } else {
-          # If a segment is highlighted, but a node isn't, remove segment highlight
-          if (length(selected$segments) > 0) {
-            plotlyProxy("gfpopPlot", session) %>%
-              plotlyProxyInvoke(
-                "deleteTraces", 3
-              )
-
-            selected$segments <- c()
           }
         }
       })
@@ -875,45 +882,47 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # When the user hovers on Plotly, highlight nodes in visNetwork
       observeEvent(hover_data(), {
-        event <- hover_data()
-        nevents <- dim(event)[1]
+        if (input$crosstalk) {
+          event <- hover_data()
+          nevents <- dim(event)[1]
 
-        # Ignore data from the first row of event (that's for the scatter layer)
-        if (nevents > 1) {
+          # Ignore data from the first row of event (that's for the scatter layer)
+          if (nevents > 1) {
 
-          # The second row contains the key of the selected changeregion
-          selection <- event$key[2]
+            # The second row contains the key of the selected changeregion
+            selection <- event$key[2]
 
-          # Only make a change a _different_ changeregion is selected than before
-          if (event$key[2] %notin% selected$nodes) {
+            # Only make a change a _different_ changeregion is selected than before
+            if (event$key[2] %notin% selected$nodes) {
 
-            # First, un-select existing selections
-            if (length(selected$nodes) > 0) {
+              # First, un-select existing selections
+              if (length(selected$nodes) > 0) {
+                visNetworkProxy(ns("gfpopGraph")) %>%
+                  visUpdateNodes(
+                    gfpop_data$graphdata_visNetwork$nodes %>%
+                      mutate(
+                        color.border = "lightblue", color.border = "lightblue",
+                        shadow = FALSE
+                      )
+                  )
+
+                selected$nodes <- c()
+              }
+
+              # Now, update the visNetwork graph with a new color.
               visNetworkProxy(ns("gfpopGraph")) %>%
                 visUpdateNodes(
                   gfpop_data$graphdata_visNetwork$nodes %>%
+                    filter(label == selection) %>%
                     mutate(
-                      color.border = "lightblue", color.border = "lightblue",
-                      shadow = FALSE
+                      color.background = "#D2E5FF", color.border = "red",
+                      shadow = TRUE
                     )
                 )
 
-              selected$nodes <- c()
+              # Remember the selected node
+              selected$nodes <- c(selection)
             }
-
-            # Now, update the visNetwork graph with a new color.
-            visNetworkProxy(ns("gfpopGraph")) %>%
-              visUpdateNodes(
-                gfpop_data$graphdata_visNetwork$nodes %>%
-                  filter(label == selection) %>%
-                  mutate(
-                    color.background = "#D2E5FF", color.border = "red",
-                    shadow = TRUE
-                  )
-              )
-
-            # Remember the selected node
-            selected$nodes <- c(selection)
           }
         }
       })
