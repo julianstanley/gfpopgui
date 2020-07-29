@@ -540,8 +540,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         v <- info$value
 
         # Account for the "state1_id" and "state2_id" columns:
-        j <- if(j>3) j+2 else if(j >1) j+1 else j
-  
+        j <- if (j > 3) j + 2 else if (j > 1) j + 1 else j
+
         # Update graphdata via proxy
         gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
