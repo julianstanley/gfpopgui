@@ -1,3 +1,4 @@
+library(data.table)
 test_that("select_graph_columns does its job", {
   graph <- gfpop::graph(type = "std")
   newgraph <- graph
@@ -5,5 +6,5 @@ test_that("select_graph_columns does its job", {
   
   expect_equal(all.equal(graph, newgraph), 
                "Length mismatch: comparison on first 9 components")
-  expect_true(all.equal(graph, select_graph_columns(newgraph)))
+  expect_true(all.equal(data.table(graph), select_graph_columns(newgraph)))
 })

@@ -8,7 +8,7 @@ want to include in the label and the seperator}
 create_label(graphdf, columns = c("type", "penalty"), collapse = " | ")
 }
 \arguments{
-\item{graphdf}{A graph object (in the form of a dataframe) from gfpop
+\item{graphdf}{A graph object (in the form of a data.table) from gfpop
 or the "edges" from a visNetwork list.}
 
 \item{columns}{a character vector of columns to be included in the label.}

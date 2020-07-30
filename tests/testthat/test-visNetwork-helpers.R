@@ -102,7 +102,7 @@ test_that(
       K = "Inf", a = "0", min = "None", max = "None", hidden = "FALSE"
     )
     new_data <- modify_visNetwork(event, data)
-    expect_equal(new_data$edges$penalty, as.character(c(0, 200)))
+    expect_equal(new_data$edges$penalty, c(0, 200))
   }
 )
 
@@ -208,3 +208,16 @@ test_that("Can delete edge without deleting node", {
   expect_equal(new_data$edges$penalty, c(15))
 })
 
+test_that("Create label works with data.tables", {
+  expect_equal(
+    create_label(data.table(gfpop::graph(type = "updown"))),
+    c("null | 0", "null | 0","up | 0", "down | 0")
+  )
+})
+
+test_that("Create label works the same with graphdfs and visNetwork lists", {
+  expect_equal(
+    create_label(data.table(gfpop::graph(type = "updown"))),
+    create_label(graphdf_to_visNetwork(data.table(gfpop::graph(type = "updown")))$edges)
+  )
+})

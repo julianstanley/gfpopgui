@@ -288,7 +288,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
 #' @importFrom visNetwork renderVisNetwork visNetworkProxy visUpdateNodes visUpdateEdges
 #' @importFrom DT renderDataTable renderDT dataTableProxy replaceData
-#' @importFrom data.table data.table
+#' @importFrom data.table data.table rbindlist
 #' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
 #' @importFrom rlang .data
@@ -458,12 +458,14 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         set_startEnd <- function(new_val, val_type) {
           if (new_val != "N/A") {
             gfpop_data$graphdata <<- gfpop::graph(
-              gfpop_data$graphdata %>%
-                rbind.fill(data.frame(state1 = new_val, type = val_type))
+              rbindlist(list(
+                gfpop_data$graphdata,
+                list(state1 = new_val, type = val_type)
+              ), use.names=T, fill =T)
             )
           } else {
             gfpop_data$graphdata <<- gfpop::graph(
-              data.frame(gfpop_data$graphdata) %>%
+              data.table(gfpop_data$graphdata) %>%
                 filter(type != val_type)
             )
           }
@@ -530,13 +532,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       observeEvent(input$addEdge_button, {
         edges <- gfpop_data$graphdata_visNetwork$edges
 
-        # Add new edge with the given inputs. TODO: Add default columns? Need a func?
-        gfpop_data$graphdata_visNetwork$edges <- edges %>%
-          rbind.fill(data.frame(
-            id = input$addEdge_id, to = input$addEdge_to, from = input$addEdge_from,
-            type = input$addEdge_type, parameter = input$addEdge_parameter,
-            penalty = input$addEdge_penalty
-          ))
+        # Add new edge with the given inputs
+        gfpop_data$graphdata_visNetwork$edges <- edges %>% add_edge(
+          label = create_label(edges,input$labels),
+          id = input$addEdge_id, to = input$addEdge_to, from = input$addEdge_from,
+          type = input$addEdge_type, parameter = input$addEdge_parameter,
+          penalty = input$addEdge_penalty
+        )
 
         # Update edge labels appropriately
         gfpop_data$graphdata_visNetwork$edges$label <- gfpop_data$graphdata_visNetwork$edges %>%
@@ -556,10 +558,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         v <- info$value
 
         # Account for the "state1_id" and "state2_id" columns:
-        j <- if (j > 3) j + 2 else if (j > 1) j + 1 else j
-
+        if(ncol(gfpop_data$graphdata) > 9) {
+          j <- if (j > 3) j + 2 else if (j > 1) j + 1 else j
+        }
+        
         # Update graphdata via proxy
-        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j])
+        gfpop_data$graphdata <- data.table(gfpop_data$graphdata)
+        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, ..j])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
 
         # Make sure visNetwork data stays up-to-date
@@ -580,7 +585,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$edges[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$edges[i, j]
+          v, gfpop_data$graphdata_visNetwork$edges[i, ..j]
         )
         replaceData(proxy_visEdges, gfpop_data$graphdata_visNetwork$edges, resetPaging = FALSE)
 
@@ -598,7 +603,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$nodes[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$nodes[i, j]
+          v, gfpop_data$graphdata_visNetwork$nodes[i, ..j]
         )
         replaceData(proxy_visNodes, gfpop_data$graphdata_visNetwork$nodes, resetPaging = FALSE)
 
@@ -811,7 +816,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           expr = {
             # TODO: Allow user to add weights (what do those do?)
             gfpop_data$changepoints <<- gfpop::gfpop(as.numeric(gfpop_data$main_data$Y),
-              gfpop_data$graphdata %>% select_graph_columns(),
+              gfpop_data$graphdata %>% select_graph_columns() %>% gfpop::graph(),
               type = input$gfpopType
             )
           },
@@ -842,7 +847,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         {
           input$loadButton
           changepoints <- req(gfpop_data$changepoints)
-          data.frame(
+          data.table(
             "State" = changepoints$states,
             "X Location" = changepoints$changepoints,
             "Y Mean Before CP" = changepoints$parameters

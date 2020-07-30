@@ -14,11 +14,11 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   # Changepoint_annotations describe actual (vertical) changepoints
   # changepoints_annotations_regions describe the segments (horizontal)
   # between each changepoint.
-  changepoint_annotations_regions <- data.frame(
+  changepoint_annotations_regions <- data.table(
     x = c(), y = c(), text = c(),
     state = c()
   )
-  changepoint_annotations <- data.frame(
+  changepoint_annotations <- data.table(
     x = c(), y = c(), text = c(),
     state = c()
   )
@@ -45,7 +45,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
 
       changepoint_annotations_regions <- rbind(
         changepoint_annotations_regions,
-        data.frame(
+        data.table(
           x = c(changeregion_ds, NA),
           y = c(rep(changepoint_data$parameters[i], length(changeregion_ds)), NA),
           text = c(rep(
@@ -63,7 +63,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
       if (i > 1) {
         changepoint_annotations <- rbind(
           changepoint_annotations,
-          data.frame(
+          data.table(
             x = c(rep(previous_changepoint_ds, 5), NA),
             y = c(seq(changepoint_data$parameters[i - 1],
               changepoint_data$parameters[i],
@@ -85,7 +85,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     }
   } else {
     changepoint_annotations_regions <-
-      data.frame(
+      data.table(
         x = seq(min(original_data$X), max(original_data$X), length.out = 3),
         y = changepoint_data$parameters[1],
         text =

@@ -417,6 +417,18 @@ test_that(
           all(gfpop_data$graphdata_visNetwork$nodes$size == c(100)),
           list(gfpop_data$graphdata_visNetwork$nodes)
         )
+      
+        # Start/end node testing
+        session$setInputs(setStart = "Std", setEnd = "Std",
+                          setStartEnd_button = 0)
+        assert_that(
+          "Can set a start and end nodes",
+          gfpop_data$graphdata$type[3] == "start" &
+            gfpop_data$graphdata$state1[3] == "Std" &
+            gfpop_data$graphdata$type[4] == "end" &
+            gfpop_data$graphdata$state1[4] == "Std",
+          list(gfpop_data)
+        )
       })
     )
   }

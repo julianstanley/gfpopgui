@@ -10,11 +10,9 @@
 #' select_graph_columns(graph)
 #' @export
 select_graph_columns <- function(graph_df) {
-  class(graph_df) <- "data.frame"
-  gfpop::graph(
-    dplyr::select(graph_df, .data$state1, .data$state2, .data$type, .data$parameter,
-                           .data$penalty, .data$K, .data$a, .data$min, .data$max)
-  )
+  graph_df <- data.table(graph_df)
+  graph_df[, .SD, .SDcols = c("state1", "state2", "type", "parameter",
+                             "penalty", "K", "a", "min", "max")]
 }
 
 #' Takes in a row from a graph dataframe, returns that row formatted as R code
@@ -56,14 +54,14 @@ graph_to_R_code <- function(graph) {
   
   return_command <- "gfpop::graph(\n"
   
-  graph_without_startEnd <- data.frame(graph) %>%
+  graph_without_startEnd <- data.table(graph) %>%
     filter(type != "start" & type != "end")
   
-  graph_with_start <- data.frame(graph) %>%
+  graph_with_start <- data.table(graph) %>%
     filter(type == "start")
   hasStart <- dim(graph_with_start)[1] > 0
   
-  graph_with_end <- data.frame(graph) %>%
+  graph_with_end <- data.table(graph) %>%
     filter(type == "end")
   hasEnd <- dim(graph_with_end)[1] > 0
 

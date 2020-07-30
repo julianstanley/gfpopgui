@@ -190,7 +190,7 @@ mod_home_server <- function(id) {
 
         tryCatch(
           expr = {
-            primary_input <- data.frame(
+            primary_input <- data.table(
               X = 1:input$ndata,
               Y = dataGenerator(input$ndata,
                 changepoints = relative_changepoint_loc,
