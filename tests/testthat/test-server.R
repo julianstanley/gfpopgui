@@ -64,7 +64,7 @@ test_that(
         # Set some sample data from an external source
         session$setInputs(primary_input = list(
           datapath =
-            "https://raw.githubusercontent.com/julianstanley/gfpop-gui/master/data/datatest.csv"
+            "https://raw.githubusercontent.com/julianstanley/gfpopgui/master/data/datatest.csv"
         ))
 
         assert_that(
@@ -107,7 +107,7 @@ test_that(
 
         session$setInputs(constraint_graph = list(
           datapath =
-            "https://raw.githubusercontent.com/julianstanley/gfpop-gui/master/data/graphtest.csv"
+            "https://raw.githubusercontent.com/julianstanley/gfpopgui/master/data/graphtest.csv"
         ))
 
         assert_that(
