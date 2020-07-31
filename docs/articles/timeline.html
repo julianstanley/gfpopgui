@@ -187,28 +187,28 @@
 <h5 class="hasAnchor">
 <a href="#welcome-tab" class="anchor"></a>Welcome Tab</h5>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_1.JPG" alt=""><p class="caption">picture of welcome tab layout sketch</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_1.JPG" alt=""><p class="caption">picture of welcome tab layout sketch</p>
 </div>
 </div>
 <div id="analysis-tab" class="section level5">
 <h5 class="hasAnchor">
 <a href="#analysis-tab" class="anchor"></a>Analysis Tab</h5>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_2.JPG" alt=""><p class="caption">picture of analysis tab layout sketch</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_2.JPG" alt=""><p class="caption">picture of analysis tab layout sketch</p>
 </div>
 </div>
 <div id="sharing-tab" class="section level5">
 <h5 class="hasAnchor">
 <a href="#sharing-tab" class="anchor"></a>Sharing Tab</h5>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_3.JPG" alt=""><p class="caption">picture of sharing tab layout sketch</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_3.JPG" alt=""><p class="caption">picture of sharing tab layout sketch</p>
 </div>
 </div>
 <div id="help-tab" class="section level5">
 <h5 class="hasAnchor">
 <a href="#help-tab" class="anchor"></a>Help Tab</h5>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_4.JPG" alt=""><p class="caption">picture of help tab layout sketch</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_4.JPG" alt=""><p class="caption">picture of help tab layout sketch</p>
 </div>
 </div>
 </div>
@@ -365,7 +365,7 @@
 <p>For more information, see <a href="https://github.com/julianstanley/gfpopgui/issues/3">issue #3</a>.</p>
 <p>Just needed to revise the analysis tab:</p>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may18_may24/analysis_revised.JPG" alt=""><p class="caption">revised analysis tab layout</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may18_may24/analysis_revised.JPG" alt=""><p class="caption">revised analysis tab layout</p>
 </div>
 </div>
 <div id="visnetwork-reading" class="section level3">
@@ -615,7 +615,7 @@
 <h3 class="hasAnchor">
 <a href="#overlaying-segment-markers-on-a-plotly-visualization" class="anchor"></a>Overlaying segment markers on a plotly visualization</h3>
 <p>The <a href="https://arxiv.org/abs/2002.03646">2020 gfpop paper</a> provided me two different examples of what a changepoint plot should look like:</p>
-<p><img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_1.png" alt="changeplot plot 1"><img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_2.png" alt="changeplot plot 2"></p>
+<p><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_1.png" alt="changeplot plot 1"><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_2.png" alt="changeplot plot 2"></p>
 <p>So, it was clear that I needed to have a base plot of the main data, and overlain bars to indicate the changepoints.</p>
 <p>The main data was easy enough. The user provides that data in <code>gfpop_data$main_data</code>, so I can just plot the X and Y columns of that data.</p>
 <p>Importantly, I want to disable tooltips with <code>hoverinfo = 'none'</code> so that they don’t interfere when the user tries to hover over a changepoint bar:</p>
@@ -703,7 +703,7 @@
 }</pre></body></html></div>
 <p>And, in the app, it generates plots like this:</p>
 <div class="figure">
-<img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_3.png" alt=""><p class="caption">changeplot plot 3</p>
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_3.png" alt=""><p class="caption">changeplot plot 3</p>
 </div>
 <p>For the time being, this accomplishes what I need it to do–but I should come back to this later in the project.</p>
 <p>In the meantime, I <a href="https://community.rstudio.com/t/tooltip-for-geom-segment-add-segments-in-plotly/69910">posted this on RStudio community</a>.</p>

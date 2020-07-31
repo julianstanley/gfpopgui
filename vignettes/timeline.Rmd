@@ -100,19 +100,19 @@ I want to make sure that my base knowledge of Shiny is up to par. I've never bee
 
 ##### Welcome Tab
 
-![picture of welcome tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_1.JPG)
+![picture of welcome tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_1.JPG)
 
 ##### Analysis Tab
 
-![picture of analysis tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_2.JPG)
+![picture of analysis tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_2.JPG)
 
 ##### Sharing Tab
 
-![picture of sharing tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_3.JPG)
+![picture of sharing tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_3.JPG)
 
 ##### Help Tab
 
-![picture of help tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_4.JPG)
+![picture of help tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may11_may17/layout_4.JPG)
 
 #### Components List
 
@@ -242,7 +242,7 @@ For more information, see [issue #3](https://github.com/julianstanley/gfpopgui/i
 
 Just needed to revise the analysis tab:
 
-![revised analysis tab layout](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may18_may24/analysis_revised.JPG)
+![revised analysis tab layout](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/may18_may24/analysis_revised.JPG)
 
 ### visNetwork reading
 
@@ -555,8 +555,8 @@ This week, in contrast, felt like I was making a lot of progress because I was d
 
 The [2020 gfpop paper](https://arxiv.org/abs/2002.03646) provided me two different examples of what a changepoint plot should look like:
 
-![changeplot plot 1](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_1.png)
-![changeplot plot 2](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_2.png)
+![changeplot plot 1](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_1.png)
+![changeplot plot 2](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_2.png)
 
 So, it was clear that I needed to have a base plot of the main data, and overlain bars to indicate the changepoints.
 
@@ -658,7 +658,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
 
 And, in the app, it generates plots like this:
 
-![changeplot plot 3](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_3.png)
+![changeplot plot 3](https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/june08_june14/changepoints_3.png)
 
 For the time being, this accomplishes what I need it to do--but I should come back to this later in the project.
 
