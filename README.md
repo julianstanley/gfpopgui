@@ -90,7 +90,7 @@ Other functionality is tested on the most recent version of Chrome on OSX Catali
 
 Project supported by the R Project for Statistical Computing            |  With funding provided by Google Summer of Code
 :-------------------------:|:-------------------------:
-<img src="inst/img/rlogo.png" alt="alt text" height="200px"> |  <img src="inst/img/gsoc-icon.png" alt="alt text" height="200px">
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/img/rlogo.png" alt="alt text" height="200px"> |  <img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/img/gsoc-icon.png" alt="alt text" height="200px">
 
 Open Source testing license generously provided by SauceLabs.com
 :-------------------------:
