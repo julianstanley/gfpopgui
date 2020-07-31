@@ -291,9 +291,7 @@ mod_analysis_ui <- function(id) {
 #' @importFrom data.table data.table rbindlist
 #' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
-#' @importFrom rlang .data
 #' @importFrom shinyalert shinyalert
-#' @importFrom plyr rbind.fill
 #' @importFrom shinyjs onevent
 #' @import gfpop
 #' @export

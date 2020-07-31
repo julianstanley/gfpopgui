@@ -156,7 +156,6 @@ add_null_edge <- function(edgedf, nodeid) {
 #' @param label_columns (character) An array of columns to use to make edge labels
 #' @returns a list that can be read by visNetwork
 #' @importFrom dplyr filter %>%
-#' @importFrom rlang .data
 #' @import visNetwork
 #' @examples
 #' graphdf_to_visNetwork(gfpop::graph(type = "std"))
@@ -252,7 +251,6 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
 #' See graphdf_to_visNetwork.
 #' @returns a dataframe/graph for gfpop
 #' @importFrom dplyr filter %>%
-#' @importFrom rlang .data
 #' @import visNetwork
 #' @importFrom gfpop gfpop
 #' @examples
@@ -416,10 +414,9 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
 
   ### Delete Edge ------------------------------------------------------------
   if (event$cmd == "deleteElements" && (length(event$edges) > 0)) {
+    edges <- data.table(graphdata_visNetwork_return$edges)
     for (del_edge in event$edges) {
-      graphdata_visNetwork_return$edges <-
-        graphdata_visNetwork_return$edges %>%
-        dplyr::filter(.data$id != del_edge)
+      graphdata_visNetwork_return$edges <- edges[id != del_edge]
     }
   }
 
@@ -446,10 +443,9 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
 
   ### Delete Node ------------------------------------------------------------
   if (event$cmd == "deleteElements" && (length(event$nodes) > 0)) {
+    nodes <- data.table(graphdata_visNetwork_return$nodes)
     for (del_node in event$nodes) {
-      graphdata_visNetwork_return$nodes <-
-        graphdata_visNetwork_return$nodes %>%
-        dplyr::filter(.data$id != del_node)
+      graphdata_visNetwork_return$nodes <- nodes[id != del_node]
     }
   }
 
