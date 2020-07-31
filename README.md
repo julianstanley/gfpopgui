@@ -1,6 +1,6 @@
 <h1 align = "center">
   <br>
-  <img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="300">
+  <img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="300">
   <br>
   gfpop gui
   <br>
