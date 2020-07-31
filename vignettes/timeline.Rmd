@@ -137,7 +137,7 @@ I want to make sure that my base knowledge of Shiny is up to par. I've never bee
     * Export input data and graph (.zip of .csv)
     * Export graph data (.csv)
 
-## Coding environment notes
+### Coding environment notes
 
 * Developing on this GitHub repository, just working off of the `master` branch.
 
@@ -145,7 +145,7 @@ I want to make sure that my base knowledge of Shiny is up to par. I've never bee
 
 * Extra feature: could use [shinymeta](https://github.com/rstudio/shinymeta) to produce PDF/Rmd files based on current Shiny session, which is handy. Like a "download report".
 
-## Questions/Notes about `gfpop`
+### Questions/Notes about `gfpop`
 
 * Node names need to be unique, right? So, only one node may be named `Up`, etc.
 
@@ -153,7 +153,7 @@ I want to make sure that my base knowledge of Shiny is up to par. I've never bee
 
 * Can you force a certain number of changepoints? (in the copy number example, you say that you set a beta such that they get 13 segments--did you have to do that iteratively?)
 
-## Log/notes (meta)
+### Log/notes (meta)
 
 05/10:
 
@@ -189,7 +189,7 @@ I want to make sure that my base knowledge of Shiny is up to par. I've never bee
 
 * I added some questions about the `gfpop` paper and package, but I think I still need a bit more time to read the manuscript through a few more times and get a better feel for the aspects of the work that will be practical in designing a good GUI.
 
-### Notes from morning meeting
+#### Notes from morning meeting
 
 * Calls can be around once per week, but skipping weeks is okay. Maybe next meeting should be around the first week of coding. Meetings can be with just Toby or Guillem, don't need to be with both.
 
@@ -327,11 +327,11 @@ Instead, I needed to use `system.file` to source the file:
 includeHTML(system.file("app/www/lorem.html", package = "gfpopgui"))
 ```
 
-## Travis CI, and automated shinyapp.io builds
+### Travis CI, and automated shinyapp.io builds
 
 This week, I setup my package to build/test through TravisCI, check through `covr`, and auto-deploy to shinyapps.io.
 
-### cache:packages and r_github_packages:
+#### cache:packages and r_github_packages:
 
 This is worth its own header. In my last R project, I didn't have the `cache:packages` option set. However, caching packages speeds up the build _so, so much_.
 
@@ -447,12 +447,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-# Introduction
-
-Hi! I will update this section of the website as I progress through Google Summer of Code (GSOC) 2020. It will include my goals and progress for each week in the program, as well as notes about any observations or surprises.
-
-This page specifically contains updates for Phase 1.
 
 # Phase 1
 

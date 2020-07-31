@@ -263,29 +263,28 @@
 </ol>
 </div>
 </div>
-</div>
-<div id="coding-environment-notes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#coding-environment-notes" class="anchor"></a>Coding environment notes</h2>
+<div id="coding-environment-notes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#coding-environment-notes" class="anchor"></a>Coding environment notes</h3>
 <ul>
 <li><p>Developing on this GitHub repository, just working off of the <code>master</code> branch.</p></li>
 <li><p>Use <a href="https://rstudio.github.io/renv/">renv</a> for dependency management/reproducibility OR, for even more, maybe use <a href="https://thinkr-open.github.io/golem/">golem</a>.</p></li>
 <li><p>Extra feature: could use <a href="https://github.com/rstudio/shinymeta">shinymeta</a> to produce PDF/Rmd files based on current Shiny session, which is handy. Like a “download report”.</p></li>
 </ul>
 </div>
-<div id="questionsnotes-about-gfpop" class="section level2">
-<h2 class="hasAnchor">
+<div id="questionsnotes-about-gfpop" class="section level3">
+<h3 class="hasAnchor">
 <a href="#questionsnotes-about-gfpop" class="anchor"></a>Questions/Notes about <code>gfpop</code>
-</h2>
+</h3>
 <ul>
 <li><p>Node names need to be unique, right? So, only one node may be named <code>Up</code>, etc.</p></li>
 <li><p>In Figure 11: (Side note: typo in legend: you say <code>in absolute vale</code> instead of <code>in absolute value</code>) You set a constraint that the absolute value of each change must be 1, but the absolute value of the means in the blue model around ~8 (pos in chr2) seems to be a lot smaller–closer to 0.5. What am I missing?</p></li>
 <li><p>Can you force a certain number of changepoints? (in the copy number example, you say that you set a beta such that they get 13 segments–did you have to do that iteratively?)</p></li>
 </ul>
 </div>
-<div id="lognotes-meta" class="section level2">
-<h2 class="hasAnchor">
-<a href="#lognotes-meta" class="anchor"></a>Log/notes (meta)</h2>
+<div id="lognotes-meta" class="section level3">
+<h3 class="hasAnchor">
+<a href="#lognotes-meta" class="anchor"></a>Log/notes (meta)</h3>
 <p>05/10:</p>
 <ul>
 <li>Sketched out basic components.</li>
@@ -313,9 +312,9 @@
 <li><p>Note: The idea of using plotly instead of base D3 seems to be gaining more traction in my mind. You can customize tooltips with plotly, and add custom event handlers. Carson did a fantastic job documenting the package <a href="https://plotly-r.com/">here</a>. I bet I can do the main interactive changepoint visualization with it. But, the graph-making visualization may still need to be base D3–meaning those graphs would need to be seperated.</p></li>
 <li><p>I added some questions about the <code>gfpop</code> paper and package, but I think I still need a bit more time to read the manuscript through a few more times and get a better feel for the aspects of the work that will be practical in designing a good GUI.</p></li>
 </ul>
-<div id="notes-from-morning-meeting" class="section level3">
-<h3 class="hasAnchor">
-<a href="#notes-from-morning-meeting" class="anchor"></a>Notes from morning meeting</h3>
+<div id="notes-from-morning-meeting" class="section level4">
+<h4 class="hasAnchor">
+<a href="#notes-from-morning-meeting" class="anchor"></a>Notes from morning meeting</h4>
 <ul>
 <li>Calls can be around once per week, but skipping weeks is okay. Maybe next meeting should be around the first week of coding. Meetings can be with just Toby or Guillem, don’t need to be with both.</li>
 </ul>
@@ -335,6 +334,7 @@
 <ul>
 <li>Testing! You should be thinking about testing. Look at shinytest and rselenium to get an idea of how that works. It will fireup a headless browser, navigate to the webpage, and automatically test interactive components–e.g. draw on the screen and make sure that a certain number of datapoints appear. Is this compatible with Shiny? You should take a look.</li>
 </ul>
+</div>
 <div id="misc" class="section level4">
 <h4 class="hasAnchor">
 <a href="#misc" class="anchor"></a>Misc</h4>
@@ -434,14 +434,13 @@
 <p>Instead, I needed to use <code>system.file</code> to source the file:</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">includeHTML</span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"app/www/lorem.html"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"gfpopgui"</span>))</pre></body></html></div>
 </div>
-</div>
-<div id="travis-ci-and-automated-shinyapp-io-builds" class="section level2">
-<h2 class="hasAnchor">
-<a href="#travis-ci-and-automated-shinyapp-io-builds" class="anchor"></a>Travis CI, and automated shinyapp.io builds</h2>
-<p>This week, I setup my package to build/test through TravisCI, check through <code>covr</code>, and auto-deploy to shinyapps.io.</p>
-<div id="cachepackages-and-r_github_packages" class="section level3">
+<div id="travis-ci-and-automated-shinyapp-io-builds" class="section level3">
 <h3 class="hasAnchor">
-<a href="#cachepackages-and-r_github_packages" class="anchor"></a>cache:packages and r_github_packages:</h3>
+<a href="#travis-ci-and-automated-shinyapp-io-builds" class="anchor"></a>Travis CI, and automated shinyapp.io builds</h3>
+<p>This week, I setup my package to build/test through TravisCI, check through <code>covr</code>, and auto-deploy to shinyapps.io.</p>
+<div id="cachepackages-and-r_github_packages" class="section level4">
+<h4 class="hasAnchor">
+<a href="#cachepackages-and-r_github_packages" class="anchor"></a>cache:packages and r_github_packages:</h4>
 <p>This is worth its own header. In my last R project, I didn’t have the <code>cache:packages</code> option set. However, caching packages speeds up the build <em>so, so much</em>.</p>
 <p>e.g.:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">language</span><span class="kw">:</span><span class="at"> R</span></span>
@@ -450,6 +449,7 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">r_github_packages</span><span class="kw">:</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="at">  </span><span class="kw">-</span><span class="at"> julianstanley/gfpopgui</span></span></code></pre></div>
 <p>However, my auto-deploy to shinyapps.io had some weird problems.</p>
+</div>
 </div>
 <div id="visnetwork-works" class="section level3">
 <h3 class="hasAnchor">
@@ -514,12 +514,6 @@
 <p>I’m still working on testing. But, in short, <code>shinytest</code> seems awesome for most testing purposes. However, it fails when you need your tests to include client-side interactions, like panning/zooming in a plotly plot. For those interactions, RSelenium seems like the best option. I’m going to work more on getting RSelenium set up, and hopefully will write more about that in the timeline blog next week!</p>
 </div>
 </div>
-</div>
-<div id="introduction-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction-1" class="anchor"></a>Introduction</h1>
-<p>Hi! I will update this section of the website as I progress through Google Summer of Code (GSOC) 2020. It will include my goals and progress for each week in the program, as well as notes about any observations or surprises.</p>
-<p>This page specifically contains updates for Phase 1.</p>
 </div>
 <div id="phase-1" class="section level1">
 <h1 class="hasAnchor">
