@@ -1,0 +1,1523 @@
+---
+title: "GSOC 2020 Timeline Updates"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GSOC 2020 Timeline Updates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Hi! I will update this section of the website as I progress through Google Summer of Code (GSOC) 2020. It will include my goals and progress for each week in the program, as well as notes about any observations or surprises.
+
+In my GSOC application, I mentioned keeping a log of my progress in a "progress.md" file. This webpage will hopefully serve as a more easily-accessible version of that idea.
+
+# Community Bonding Period
+
+## May 04 - May 10
+
+Goals:
+
+* Research existing applications with similar features to what we want with the gfpopgui.
+* Sketch the layout of the gfpopgui in more detail. This should include an itemized checklist of desired features.
+
+### Existing Applications
+
+#### shinyDAG
+
+[GitHub link](https://github.com/GerkeLab/shinyDAG)
+
+A web application that uses R and LaTeX to create publication-quality images of directed acyclic graphs (DAGs).
+
+They allow users to create directed graphs, but I think the interface is a little bit clunky. They preview graphs with Plotly, but I don't think all of the Plolty features are necessary.
+
+However, I really like how they add nodes: you click "Add New Node" and then you enter properties of the node (in this case, just the name) into a text box. I may want to do something similar with the gfpopgui.
+
+They represent nodes as a list with a name, x cord, and y cord. Seems to identify edges by the IDs of the nodes which they connect, so breaks when nodes have the same name.
+
+Conclusion: Great reference for an interface for creating nodes and interacting between javascript and R.
+
+#### D3 Dynamic Report
+
+[GitHub link](https://github.com/jienagu/D3_folded_charts)
+
+Just an example of integrating D3 and Shiny. Besides that, not useful in this context, I don't think.
+
+#### Interactive tool for creating directed graphs using d3.js
+
+[bl.cks link](https://bl.ocks.org/cjrd/6863459)
+
+This block is central to and will probably be the basis of the gfpopgui application.
+
+It describes making an editable directed graph with D3 (just javascript, no Shiny).
+
+#### rstudio::conf shiny app
+
+[Shinyapp.io link](https://gadenbuie.shinyapps.io/tweet-conf-dash/)
+
+This app isn't remotely related to gfpopgui, but I really like the layout. It uses the same basic shiny dashboard that people use all the time, but it just feels very nice and clean. It would be great to emulate parts of the design.
+
+#### thinkr TidyTuesday 2019-10-15
+
+[Application link](https://connect.thinkr.fr/tidytuesday201942/)
+
+Or maybe this sort of layout would be nicer? It's definitely simplier, and maybe more intuititive?
+
+#### More?
+
+I'm really surprised that I'm having this much trouble finding more applications that are similar to what we would like to do. It's exciting--since it means that we're doing something somewhat unique--but also a bit scary.
+
+I'll keep casually looking for more model applications, and make a note to ask about this in my first meeting with Guillem and Toby next week.
+
+### Layout
+
+I was off to a slow start this week, so I'm going to move the layout goal to early next week (starting tomorrow!).
+
+### Future Directions
+
+I want to make sure that my base knowledge of Shiny is up to par. I've never been super satisifed with the available books, but Hadley Wickham is writing one now! It's not nearly done yet, but I'll run through what's already written. [Link](https://mastering-shiny.org/).
+
+
+## May 11 - May 17
+
+### Goals
+
+* (Carry-over from last week): app layout sketch, itemized checklist of features we want in the app.
+* Read the gfpop paper and package documentation in more detail, and make sure to write down questions to ask Guillem and Toby in meeting on Friday.
+* Think about setting up coding environment: make notes about how you are going to do that, review those with Guillem and Toby on Friday, and then implement them on Friday/Saturday.
+
+### App Layout
+
+#### Sketches
+
+##### Welcome Tab
+
+![picture of welcome tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_1.JPG)
+
+##### Analysis Tab
+
+![picture of analysis tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_2.JPG)
+
+##### Sharing Tab
+
+![picture of sharing tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_3.JPG)
+
+##### Help Tab
+
+![picture of help tab layout sketch](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may11_may17/layout_4.JPG)
+
+#### Components List
+
+1. Welcome page
+    * Title and subtitle
+    * Overview and instructions
+    * Data upload area
+        1. Upload option: .Rdata file with completed analysis
+        2. Upload option: .csv file with input data
+        3. Upload option: .csv file with directed graph
+2. Analysis page
+    * Main analysis plot (one large D3 plot)
+        1. User data plot
+            * Overlain: changepoint predictions
+        2. Directed graph constraint
+    * Post-hoc analysis
+        * One large D3 plot, just with user data plot
+            * Option to draw where the user expects to see changepoints
+        * Quality metrics associated with those expectations (how close to expected are the predicted changepoints?)
+3. Sharing/download page
+    * Export all results (.Rdata)
+    * Export input data and graph (.zip of .csv)
+    * Export graph data (.csv)
+
+## Coding environment notes
+
+* Developing on this GitHub repository, just working off of the `master` branch.
+
+* Use [renv](https://rstudio.github.io/renv/) for dependency management/reproducibility OR, for even more, maybe use [golem](https://thinkr-open.github.io/golem/).
+
+* Extra feature: could use [shinymeta](https://github.com/rstudio/shinymeta) to produce PDF/Rmd files based on current Shiny session, which is handy. Like a "download report".
+
+## Questions/Notes about `gfpop`
+
+* Node names need to be unique, right? So, only one node may be named `Up`, etc.
+
+* In Figure 11: (Side note: typo in legend: you say `in absolute vale` instead of `in absolute value`) You set a constraint that the absolute value of each change must be 1, but the absolute value of the means in the blue model around ~8 (pos in chr2) seems to be a lot smaller--closer to 0.5. What am I missing?
+
+* Can you force a certain number of changepoints? (in the copy number example, you say that you set a beta such that they get 13 segments--did you have to do that iteratively?)
+
+## Log/notes (meta)
+
+05/10:
+
+* Sketched out basic components.
+
+05/11:
+
+* Drew out the "home" page, but noticed that just sketching might not be the idea way to plan out the app. Just the components list does that well enough. Would be nice to go ahead and build a skeleton as an example UI. Had some trouble with that at first, so reviewing the mastering-shiny book.
+
+* First, sitting down and giving the gfpop arxiv paper a read-through.
+
+05/12:
+
+* Maybe the graph/data plots don't need to be written in D3 entirely from scratch? It looks like plotly may have some event handling, and I may be able to leverage that: [stackoverflow answer](https://stackoverflow.com/a/47407363/8290926).
+
+* Reviewed the gfpop paper yesterday, need to read through that again and ask questions.
+
+* Also finished reading and doing all exercises for "mastering shiny" chapters 2 and 3, plus Chapter 4.1-4.3. Keeping track of progress in a [personal repo](https://github.com/julianstanley/mastering-shiny-solutions).
+
+05/13:
+
+* Mostly focused on improving Shiny skills. Attended a Shiny workshop hosted by the Harvard Bioinformatics Core 1PM-4PM, but it was a bit too introductory. Finished reading and completing exerciese for "mastering shiny" chapters 4, 5, 6, and 13.
+
+* I'm going to need some more tangible outputs before Friday's meeting. Tomorrow, I need to wrap up my main goals for the week. I have a couple basic sketches of the UI: I should finish those up and load them. I also need to re-read the gfpop paper one more time and write down questions. I've been thinking about the environment, so I should write down a few notes on that and also read more (Chapters 15 and 16) to make sure I have a plan for using best practices for modules and testing.
+
+* Another note: take a closer look at the [Tabler](tabler.io) package.
+
+05/14:
+
+* Off to a good start, finished up initial UI sketches. Also added some coding environment nodes.
+
+* Note: The idea of using plotly instead of base D3 seems to be gaining more traction in my mind. You can customize tooltips with plotly, and add custom event handlers. Carson did a fantastic job documenting the package [here](https://plotly-r.com/). I bet I can do the main interactive changepoint visualization with it. But, the graph-making visualization may still need to be base D3--meaning those graphs would need to be seperated.
+
+* I added some questions about the `gfpop` paper and package, but I think I still need a bit more time to read the manuscript through a few more times and get a better feel for the aspects of the work that will be practical in designing a good GUI.
+
+### Notes from morning meeting
+
+* Calls can be around once per week, but skipping weeks is okay. Maybe next meeting should be around the first week of coding. Meetings can be with just Toby or Guillem, don't need to be with both.
+
+Goals:
+
+* Get comfortable with project integration and package management best practices.
+
+* Can also get in touch with the broader shiny community.
+
+* Generally, focus on keeping comments and records in the open: e.g. make issues on the shiny repo.
+
+* First order of business: put an issue on the visNetwork repo explaining what we would like to do. Are our goals reasonable with visNetwork?
+
+* Carefully read the plotly book, especially the data visualization chapters, especially bits about client-side interactivity (this is how we keep things running quickly!)
+
+* On analysis page: add a dropbox to change the penalty score
+
+* Would also be nice to keep track of previously-run analyses to make them easy to re-run/refer to.
+
+* Would also be nice to have a button to get the R code corresponding to the current graph constraint (this corresponds to a common use case where you have the R code with a current graph, and just want to modify that).
+
+* Analysis and annotation should be the same plot, but should maybe have a button to hide the gfpop results and just add annotation.
+
+Additional things to look into:
+
+* Testing! You should be thinking about testing. Look at shinytest and rselenium to get an idea of how that works. It will fireup a headless browser, navigate to the webpage, and automatically test interactive components--e.g. draw on the screen and make sure that a certain number of datapoints appear. Is this compatible with Shiny? You should take a look.
+
+#### Misc
+
+* For the rest of the day and tomorrow, will focus on just doing some general reading. Then, on Sunday (05/17), I'll get started formulating next week's goals. That's a wrap for the week!
+
+05/17:
+
+Focused on learning more about Plotly. Started a datacamp course that seems helpful, keeping track of progress [in a GitHub repo](https://github.com/julianstanley/intermediate-interactive-dataviz-plotly). Tomorrow: think more about this week's goals, and then learn more!
+
+
+## May 18 - May 24
+
+### Goals
+
+This is mostly a learning week. In my original proposal, I thought that the coding period would begin this week. Since I have another two weeks, I'm going to focus on developing a good base.
+
+* Incorporate Friday's feedback into GUI layout sketches.
+* Read more closely into the visNetwork package, potentially post an issue on the GitHub repo.
+* Learn more about Plotly and Shiny.
+
+### Revised sketches
+
+For more information, see [issue #3](https://github.com/julianstanley/gfpopgui/issues/3).
+
+Just needed to revise the analysis tab:
+
+![revised analysis tab layout](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/may18_may24/analysis_revised.JPG)
+
+### visNetwork reading
+
+For more information, see [issue #2](https://github.com/julianstanley/gfpopgui/issues/2).
+
+I've made some progress on visNetwork. I'm now able to record changes to the visNetwork graph, based on [this stackoverflow post](https://stackoverflow.com/questions/54846529/how-to-extract-and-save-visnetwork-manipulation-changes-in-shiny),
+
+### Plotly and Shiny Reading
+
+Mostly focused on Plotly, namely following an intermediate course on datacamp. The course helped me a lot in getting more comfortable with plotly syntax and client-side interactivity. My notes [are here](https://github.com/julianstanley/intermediate-interactive-dataviz-plotly).
+
+### Log/notes (meta)
+
+No need for day-by-day updates this week. Lots of reading and notetaking, but nothing especially noteworthy.
+
+I'm also moving some of this commentary to the "issues" tab of the main repository, even though I will keep documenting progress here. This progress log may evolve into more of a blog, unsure.
+
+Note to self: on May 24th, post on the RStudio community forum asking for help picking a tool to make the constraint graph visualization. The folks over there seem exceptionally helpful.
+
+## May 25 - May 31
+
+---
+id: may25_may31
+title: 25 May 2020 - 31 May 2020
+---
+
+This is the last week in the community bonding period! From now on, these timeline posts will be more like a reflective blog than a day-by-day update. Those updates [have now moved to the issues tab of the repo](https://github.com/julianstanley/gfpopgui/issues).
+
+So, I'll write these posts at the end of the week and highlight some of the things that I learned.
+
+### Goals
+
+* Hone in on whether plotly or visNetwork are best for making the constraint graph visualization.
+* Make a shell application
+* Start on testing
+
+### Quick Reflection
+
+Although this is a community bonding period week, I felt that I needed to get started coding to get a feel for what additional things I needed to learn from the community.
+
+As a result, I think this week was very productive: I built a semi-functional shiny application and feel that I have a very clear direction for this project.
+
+### `golem` and Shiny project structure
+
+`golem` is a fantastic package, and [the documentation](https://thinkr-open.github.io/golem/articles/a_start.html) by itself was basically all I needed to get started.
+
+It's been useful to me mostly as just a guideline for `shiny` best practices. For example, it encouraged me to use `usethat` functions to setup things like `covr`, which was much faster and less problematic than setting it up on my own.
+
+It also convinced me to use a proper package structure for my shiny app. So far, that has been great to keep track of dependencies and use build tools.
+
+There were a few things that I struggled with this week that I should share:
+
+#### Organizing tabs
+
+When working on an application with multiple tabs, I don't think the typical module structure is the best way to organize the tabs.
+
+Instead, just put the ui and server components of each tab in a separate file and folder--for example, the ui for the home tab goes in `R/ui/tab_home.R`. Then, in your main `app_ui.R` file, just call:
+
+```R
+source(file.path("R", "ui", "tab_home.R"), local = TRUE)$value
+```
+
+to source the file. Nothing fancy, just keeping different tabs in different files.
+
+### Sourcing seperate HTML files
+
+My home tab has a big block of HTML that I wanted to move to a separate file.
+
+`golem` creates a shortcut from `/inst/app/www` to just `www`, so I sourced my HTML file like:
+
+```R
+includeHTML("www/lorem.html")
+```
+
+That worked! But, one of the `golem` recommended tests failed.
+
+That's because sourcing the file like that was visible from the web browser, but not to the R interpreter.
+
+Instead, I needed to use `system.file` to source the file:
+
+```R
+includeHTML(system.file("app/www/lorem.html", package = "gfpopgui"))
+```
+
+## Travis CI, and automated shinyapp.io builds
+
+This week, I setup my package to build/test through TravisCI, check through `covr`, and auto-deploy to shinyapps.io.
+
+### cache:packages and r_github_packages:
+
+This is worth its own header. In my last R project, I didn't have the `cache:packages` option set. However, caching packages speeds up the build _so, so much_.
+
+e.g.:
+
+```YAML
+language: R
+cache: packages
+```
+
+I also learned about the `r_github_packages` option, which lets you install an R package from GitHub on the Travis node, e.g.:
+
+```YAML
+r_github_packages:
+  - julianstanley/gfpopgui
+```
+
+However, my auto-deploy to shinyapps.io had some weird problems.
+
+### visNetwork works!
+
+For the past few weeks, I've been trying to figure out how to make a proper, interactive, editable plot for the constraint graph.
+
+This week, thanks to some updates on the visNetwork package, I have that!
+
+It's still not perfect, and there's a small bug in the ability to edit edges, but it's good enough for now.
+
+The new features is the ability to add custom edit attributes to graphs--and to be able to edit edge attributes at all.
+
+So, for example, let's say I wanted users to be able to edit a nodeParam in nodes and an edgeParam in edges, I could add the `editNodeCols` and `editEdgeCols` parameters in `visOptions` like this:
+
+```R
+visNetwork(nodes = nodes, edges = edges) %>%
+  visOptions(manipulation = list(
+    enabled = TRUE,
+    editEdgeCols = c("label", "to", "from", "edgeParam"),
+    editNodeCols = c("label", "nodeParam")
+  ))
+```
+
+But, even though this feature allows users to edit nodes, it doesn't provide any straightforward functionality to update the node and edge data after the user edits it in a shiny app. That's where the `input$[graph_name]_graphChange` element comes in!
+
+If my graph is named `input$mygraph`, then user edit events to that graph will show up in `input$mygraph_graphChange`! `input$mygraph_graphChange` will be a list, where the `cmd` parameter of that list specifies the user event, and other parameters specify changes to the node/edge.
+
+So, to respond to a user event editing an edge, I can use `observeEvent` from shiny as follows:
+
+```R
+observeEvent(input$mygraph_graphChange, {
+  event <- input$mygraph_graphChange
+  cmd <- event$cmd
+
+  if (cmd == "editEdge") {
+    mygraph_edges <- mygraph_edges %>%
+      mutate_cond(id == event$id,
+        to = event$to, from = event$from,
+        label = event$label) # etc with other parameters
+  }
+})
+```
+
+Where `mutate_cond` is a nice fancy custom modification on `dplyr::mutate` that edits rows based on a parameter, instead of columns. You can define it like this:
+
+```R
+mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
+  condition <- eval(substitute(condition), .data, envir)
+  .data[condition, ] <- .data[condition, ] %>% mutate(...)
+  .data
+}
+```
+
+So, thanks to these features, our editable graph is now feasible! I'll need to read up a bit more on visNetworkProxy to make the graph updates more efficient, and work on making the graph prettier and more user-friendly (and implement it in the first place)!
+
+While I haven't put the graph into production yet, I wrote a quick [proof-of-concept gist](https://gist.github.com/julianstanley/74321b6b75584e9e17cd68666b2177c2), if you want to take a look!
+
+### Issues, branches, and pull requests
+
+#### Issues
+
+Finally, this week has really increased my appreciation for using issues, branches, and pull requests. In fact, I think I've been using them a lot more than most users (hopefully not too much!)
+
+Just this week, I opened 12 issues in gfpopgui, as well as [one in gfpop](https://github.com/vrunge/gfpop/issues/11), [one in shinytest](https://github.com/rstudio/shinytest/issues/312), and one in [visNetwork](https://github.com/datastorm-open/visNetwork/issues/377), and also [commented on some in golem](https://github.com/ThinkR-open/golem/issues/263).
+
+I think that creating issues for my own repository has been a fantastic way to keep track of my progress and thoughts, which has helped me be more focused and productive. And creating issues in other repositories, as well as participating in conversations in the [RStudio community forums](https://community.rstudio.com) has really helped me to connect with the open-source community, and think more critically about how to ask good questions and contribute thoughtfully.
+
+Finally, just seeing public comments on issues tabs and forums has had a big impact on the way that I code and think. There are so many good suggestions and helpful tidbits out there in the public!
+
+#### Branches and Pull Requests
+
+I think I had previously underestimated the utility of creating branches and pull requesting on repositories where I am the primary contributor.
+
+While branches _are_ most helpful for projects with a group of simultaneous contributors, I have found them really helpful for myself this week.
+
+In previous projects, I often found myself panicking when I made build-breaking changes to the master branch. Then, in that panic, I would revert some commits or have a long string of commits as I tried to fix the repo.
+
+With branches that build independently, I can work through problems like that in an isolated environment, and then delete changes and/or rebase before merging that branch into master, being confident that I'm pushing polished changes.
+
+### Testing
+
+I'm still working on testing. But, in short, `shinytest` seems awesome for most testing purposes. However, it fails when you need your tests to include client-side interactions, like panning/zooming in a plotly plot. For those interactions, RSelenium seems like the best option. I'm going to work more on getting RSelenium set up, and hopefully will write more about that in the timeline blog next week!
+
+---
+title: "GSOC 2020 Timeline Updates: Phase 1"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GSOC 2020 Timeline Updates: Phase 1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Hi! I will update this section of the website as I progress through Google Summer of Code (GSOC) 2020. It will include my goals and progress for each week in the program, as well as notes about any observations or surprises.
+
+This page specifically contains updates for Phase 1.
+
+# Phase 1
+
+## June 01 - June 07
+
+### Goals
+
+* Set up an RSelenium testing framework
+* Further modularize code
+
+### Quick Reflection
+
+This week was mostly about debugging testing. Although I did not have as much visible output of my work this week, I still think it was productive overall. I think that moving forward with this project will be much easier now that I've established a strong base of support.
+
+### In Shiny development, modules are important and useful
+
+Last week, I talked about using `source(file.path("R", "ui", "tab_home.R"), local = TRUE)$value`, etc. to seperate the different tabs of my application.
+
+This week, that decision came back to bite me. The problem is that, in many shiny applications, all components of the application are stored in `inst/`, so all of those files are preserved when the package is built and distributed.
+
+However, when building an app with `golem` (like I am), shiny logic is kept in the `R/` directory, which is modified when a package is built and distributed. 
+
+So, all that to say that the `source` approach was making my application break at weird times.
+
+I should have built the different parts of my application as shiny modules in the first place. The [modules section in the mastering-shiny book](https://mastering-shiny.org/scaling-modules.html) was very useful in learning more about how to make modules, and the reading was well worth the effort.
+
+### RSelenium is finicky, but potentially worth-it
+
+Here's a guide to setting up RSelenium with Shiny:
+
+1. Install the RSelenium R package: `install.packages("RSelenium")
+2. Install Docker (on Ubuntu: `sudo apt install docker`)
+3. Run a docker Selenium instance, making sure to set `--net=host`: docker run -d --net=host selenium/standalone-firefox&
+4. Open a Selenium instance from R:
+
+```r
+remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4444, browser = "firefox") 
+remDr$open(silent = TRUE)
+```
+
+At this point, if you navigate to `http://localhost:4444/wd/hub/static/resource/hub.html` in a browser, you should see a helpful Selenium interface.
+
+5. Run an instance of your shiny app in the background on a known port:
+
+```r
+system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &", 
+       ignore.stdout = TRUE,
+       ignore.stderr = TRUE)
+```
+
+6. Use the `remDr` object to open the shiny app in a headless Selenium browser: `remDr$navigate(url = "http://127.0.0.1:15123")`.
+7. Use the `remDr` object to interact with the app, or get information from it (e.g.: `appTitle <- remDr$getTitle()[[1]]`). You can now use this information in tests.
+
+I personally put sets 4-7 within a testthat script. So, that script just requires that a Selenium instance is running. That means that my tests can run locally and also on Travis by including:
+
+```yaml
+services:
+  - docker
+
+before_install:
+  - docker pull selenium/standalone-firefox
+  - docker run -d --net=host -p 127.0.0.1:4444:4444 selenium/standalone-firefox
+```
+
+in my `.travis.yml`.
+
+The only caveat is that running the shiny app in the background often takes a few seconds, so I include a `Sys.sleep(10)` statement before running `remDr$navigate` to give the app time to reload.
+
+We'll see in the coming weeks if the effort to get this debugged was worth it!
+
+### Use DT::renderDataTable, not shiny::renderDataTable
+
+While modularizing my code this week, I noticed that I had some errors through Travis that I could not reproduce locally. If you're reading this and are interested, [here's a link to my community.rstudio post about the problem](https://community.rstudio.com/t/x-must-be-a-vector-travis-but-not-local/68717).
+
+Ultimately, I was able to fix the problem by upgrading my R version, which was a few months out of date.
+
+When I updated, I got errors in my `shiny::renderDataTable` calls. Evidently [others were also having the same problems in newer R versions](https://community.rstudio.com/t/shiny-1-3-2-renderdatatable-cant-work-now/41935/2) and the developers are moving from `shiny::renderDataTable` to `DT::renderDataTable`, and switching those functions (and having to tweak a bit to get them to work) fixed things up.
+
+But, this episode convinced me that I needed to be more explicit about where my functions come from. So, I've completely removed `@import` statements in my ROxygen documentation comments and replaced them with `@importFrom` statements. This way, I am being explicit about the packages from which each of my function calls come.
+
+
+## June 08 - June 14
+
+### Goals
+
+This week is a feature development-heavy week. I would like to:
+
+* Create a working, interactive graph
+* Improve the plotly visualization (namely: tooltip should only work on the segments/changepoints and give useful info)
+
+### Quick Reflection
+
+I'm writing this on June 15th (I'm late this week!), but last week went very well.
+
+June 01-07 was difficult for me because it was mostly getting testing initially setup and debugged, which was frustrating because it felt like I wasn't making significant progress.
+
+This week, in contrast, felt like I was making a lot of progress because I was directly working on new app features. This short timeline post will cover a couple things that I learned while making two of those features.
+
+### Overlaying segment markers on a plotly visualization
+
+The [2020 gfpop paper](https://arxiv.org/abs/2002.03646) provided me two different examples of what a changepoint plot should look like:
+
+![changeplot plot 1](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_1.png)
+![changeplot plot 2](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_2.png)
+
+So, it was clear that I needed to have a base plot of the main data, and overlain bars to indicate the changepoints.
+
+The main data was easy enough. The user provides that data in `gfpop_data$main_data`, so I can just plot the X and Y columns of that data.
+
+Importantly, I want to disable tooltips with `hoverinfo = 'none'` so that they don't interfere when the user tries to hover over a changepoint bar:
+
+```R
+base_plot <- plot_ly(gfpop_data$main_data, x = ~X, y = ~Y, hoverinfo = 'none')
+```
+
+Then comes the harder part. I have changepoint data (from running `gfpop::gfpop()` on `gfpop_data$main_data` and the user-provided graph), and I need to overlay that data on the plot.
+
+Originally, I overlayed that data using the `geom_segment` layer, or the plotly equivalent `add_segments()`. That works well, but has a big downside: segments cannot have their own tooltips. I should post an issue on the plotly GitHub page to make sure that's the case.
+
+So, instead, I need to create many points along where the changepoint regions are supposed to go, and then connect them with a line, since a line can have a tooltip. I also will need a separate trace for segments (e.g. spans along the X axis without changepoints) and for the changepoints themselves, since they need to be two different colors.
+
+I ended up writing a function that I am not super proud of called `add_changepoints`. It loops through each of the changepoints returned by `gfpop::gfpop` and creates a dataframe that includes many points and a description for each changepoint, adds that to an accumulator dataframe, and then uses that accumulator dataframe to draw lines. This just seems unnecessarily resource intensive and verbose for what I want to do, but here's the code:
+
+```R
+add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
+  # Initialize plotly object to return
+  return_plotly <- plotly_obj %>%
+    hide_legend()
+  
+  changepoint_annotations_regions = data.frame(x = c(), y = c(), text = c())
+  changepoint_annotations = data.frame(x = c(), y = c(), text = c())
+
+  changepoints <- changepoint_data$changepoints
+
+  # Note: ds = dataspace, since changepoint data refers to indicates, not in dataspace
+  previous_changepoint <- 1
+  previous_changepoint_ds <- original_data$X[1]
+  i <- 1
+  # Add each changepoint to the given plotly object
+  for (i in 1:length(changepoints)) {
+    changepoint <- changepoints[i]
+    changepoint_ds <- original_data$X[changepoint]
+
+    # The region preceeding a changepoint, or between two changepoints
+    changeregion <- seq(previous_changepoint, changepoint)
+    changeregion_ds <- seq(previous_changepoint_ds,
+      changepoint_ds,
+      length.out = length(changeregion)
+    )
+
+    changepoint_annotations_regions <- rbind(
+      changepoint_annotations_regions,
+      data.frame(x = c(changeregion_ds, NA),
+                 y = c(rep(changepoint_data$parameters[i], length(changeregion_ds)), NA),
+                 text = c(rep(
+                   paste0(
+                   "State: ", changepoint_data$states[i], "\n",
+                   "Region mean: ", round(changepoint_data$parameters[i], 2), "\n",
+                   "Next changepoint: ", round(changepoint_ds, 2)
+                 ),
+                 length(changeregion_ds)), NA)
+      )
+    )
+    # If this isn't the first region, connect this region with the last
+    if (i > 1) {
+      changepoint_annotations <- rbind(
+        changepoint_annotations,
+        data.frame(
+          x = c(rep(previous_changepoint_ds, 50), NA), 
+          y = c(seq(changepoint_data$parameters[i - 1],
+                                  changepoint_data$parameters[i],
+                                  length.out = 50
+          ), NA),
+          text = c(rep(paste0("Changepoint #", i-1, ": ", round(previous_changepoint_ds, 2)), 50),
+                   NA)
+        )
+      )
+    }
+
+    # Update the previous changepoints
+    previous_changepoint <- changepoint
+    previous_changepoint_ds <- changepoint_ds
+  }
+
+  return_plotly %>%
+    add_lines(data = changepoint_annotations_regions,
+              x = ~x,
+              y = ~y, 
+              color = ~I("#40B0A6"),
+              hoverinfo = "text", text = ~text,
+              connectgaps = F,
+              line = list(width = 7)) %>%
+    add_lines(data = changepoint_annotations,
+              x = ~x,
+              y = ~y, 
+              color = ~I("#E1BE6A"),
+              hoverinfo = "text", text = ~text,
+              connectgaps = F,
+              line = list(width = 7)) %>%
+    layout(hovermode = "x unified")
+}
+```
+
+And, in the app, it generates plots like this:
+
+![changeplot plot 3](https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/june08_june14/changepoints_3.png)
+
+For the time being, this accomplishes what I need it to do--but I should come back to this later in the project.
+
+In the meantime, I [posted this on RStudio community](https://community.rstudio.com/t/tooltip-for-geom-segment-add-segments-in-plotly/69910).
+
+### Monitoring user changes in visNetwork
+
+When a user edits a visNetwork plot, the data underlying the plot remains unchanged.
+
+So, in the case of gfpopgui, where I want to take user's visNetwork graph edits and use the resulting graph to estimate changepoints, I need additional code to watch for graph edits and edit the underlying graph data.
+
+visNetwork provides that functionality by passing user edits in an object contained in `input${graph name}_graphChange`. So, in the case of gfpopgui, the graph name is `gfpopGraph`, so the input to observe is `input$gfpopGraph_graphChange`.
+
+The `input$gfpopGraph_graphChange` object has a `cmd` entry that specifies the type of change. Then, in response to those different graphChange commands, I can edit the data:
+
+```R
+event <- input$gfpopGraph_graphChange
+if (event$cmd == "editEdge") {
+    # What happens when the user edits an edge?
+    # In this case, I used `mutate_cond`
+}
+
+### Add Edge ---------------------------------------------------------------
+if (event$cmd == "addEdge") {
+    # Add edge response
+}
+
+### Delete Edge ------------------------------------------------------------
+if (event$cmd == "deleteElements" && (length(event$edges) > 0)) {
+    # When the user deletes elements, the resulting event has $edges and $nodes 
+    # that are changed
+}
+
+### Add Node ---------------------------------------------------------------
+if (event$cmd == "addNode") {
+    # Add node response
+}
+
+### Edit Node --------------------------------------------------------------
+if (event$cmd == "editNode") {
+    # Edit node response
+}
+
+### Delete Node ------------------------------------------------------------
+if (event$cmd == "deleteElements" && (length(event$nodes) > 0)) {
+    # Delete node response
+}
+```
+
+## June 15 - June 21
+
+### Goals
+
+While last week was a feature-heavy week, this one is more about stepping back, cleaning up, and testing.
+
+My goals are to:
+
+* Abstract and clean up code
+* Implement some more testing
+
+### Quick Reflection
+
+This week felt slower than last, but I learned a lot. First, the new `testServer` functionality in Shiny is really helpful--I'll talk about that more below. Second, I have read more carefully about the `gfpop` package itself, and can work next week to put what I learned into the application.
+
+### testServer
+
+The new `testServer` functionality relies on a particular module structure that is implemented in the current Shiny version, 1.4, and will be recommended after 1.5 is released.
+
+#### Background: new module structure
+
+In the old module structure, server modules were written as follows:
+
+```R
+# In the module.R file
+example_module_server <- function(input, output, session) {
+    # Server code here
+}
+```
+
+```R
+# In the server.R file
+app_server <- function(input, output, session) {
+    callModule(example_module_server, "unique-id")
+}
+```
+
+In the new module structure, server modules are written a bit differently: 
+
+```R
+# In the module.R file
+example_module_server <- function(id) {
+    moduleServer(
+        id,
+        function(input, output, session) {
+    # Server code here
+    })
+}
+```
+
+```R
+# In the server.R file
+app_server <- function(input, output, session) {
+    example_module_server("unique-id")
+}
+```
+
+This new format is helpful because the `callModule` part of the old format is built-in to the module function--so, essentially, you have a **single, self-contained** server function, rather than a function that can only be called through `callModule`.
+
+`golem` still recommends/uses the old module format, so I submitted an [issue on their repo](https://github.com/ThinkR-open/golem/issues/455) to remind them to update their recommendations once Shiny 1.5 is released.
+
+#### Testing Overview
+
+The new `testModule` functionality relies on the new module structure, since it expects a single function to contain the whole server module.
+
+It's really great because it allows you to access all of the inputs inside of your reactive shiny objects. For example,
+
+```R
+library(shiny)
+example_module_server <- function(id) {
+  moduleServer(
+    id,
+    function(input, output, session) {
+      myvals <- reactiveValues(example = "Hello, world!")
+    }
+  )
+}
+
+testServer(example_module_server, {
+  print(myvals$example)
+})
+```
+
+```R
+[1] "Hello, world!"
+```
+
+It also allows you to set inputs:
+
+```R
+library(shiny)
+example_module_server <- function(id) {
+  moduleServer(
+    id,
+    function(input, output, session) {
+      my_func <- reactive({
+        print(input$my_input)
+      })
+    }
+  )
+}
+
+testServer(example_module_server, {
+  session$setInputs(my_input = "This is my input!")
+  my_func()
+})
+```
+
+#### Problems Testing
+
+One problem I've had is that I can't use `testServer` to trigger click events directly:
+
+This testServer code should print "Button was pressed", but it doesn't.]
+
+```R
+library(shiny)
+example_module_server <- function(id) {
+  moduleServer(
+    id,
+    function(input, output, session) {
+      eventReactive(input$my_button, {
+        print("Button was pressed")
+      })
+    }
+  )
+}
+
+testServer(example_module_server, {
+  # my_button should already be NULL, but for good measure:
+  session$setInputs(my_button = NULL)
+  # This should be what happens when the button is pressed
+  session$setInputs(my_button = 0)
+})
+```
+
+Has no output. So, I commented on an [existing shiny issue](https://github.com/rstudio/shiny/issues/2745) to hopefully have that fixed.
+
+### Further features
+
+That's it for this week, but more information about this week's progress is located in [the issues tab of the gfpopgui repo](https://github.com/julianstanley/gfpopgui/issues).
+
+## June 22 - June 28
+
+### Goals
+
+This week is mostly about testing
+
+My goals are to:
+
+* Better understand Selenium/SauceLabs testing
+* Finish off little feature issues
+
+### Quick Reflection
+
+I felt much less productive this week than in previous weeks. A lot of the Selenium/web testing concepts are difficult and I got stuck/unmotivated at multiple points throughout the week. Still, I made some progress. I'll plan to write a more extensive blog post about setting up RSelenium/SauceLabs towards the end of this internship period, so these are mostly notes to refresh my memory with that time comes.
+
+### Using XPath in Selenium
+
+Especially in a ShinyApp, many elements in the DOM can be difficult to find. For example: how do I access elements in a table from DataTables?
+
+To make it easier to find elements in the DOM, Selenium allows elements to be specified by an "XML path", or XPath.
+
+XPath is super helpful and, luckily, RSelenium can take XPath parameters as arguments.
+
+For more information on XPath, [this tutorial is really helpful](https://www.guru99.com/xpath-selenium.html).
+
+But, in practice, I can generate the XPath I need using [Katalon Recorder Chrome extension](https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid?hl=en-US).
+
+Katalon can recognize most of the elements in gfpopgui and give me the associated id or, if a simple id doesn't exist, an XPath.
+
+For example, the XPath of the first element in the first DataTable in gfpop gui is:
+
+`//table[@id='DataTables_Table_0']/tbody/tr/td[0]`
+
+So, to access that element with RSelenium, I can write:
+
+```R
+remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[0]")
+```
+
+Or, if I want to recreate the entire DataTable:
+
+```R
+data.table(
+    matrix(
+        lapply(
+            remDr$findElements("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td"),
+            function(x) unlist(x$getElementAttribute("innerHTML"))
+            ),
+        ncol = 10,
+        byrow = TRUE)
+)
+```
+
+### Reporting build status with RSelenium
+
+SauceLabs keeps track of all Selenium tests, but it doesn't by default know whether these tests passed or failed.
+
+To report pass/fail status, you need to explicitly send pass/fail flags through Selenium.
+
+I couldn't find any RSelenium-specific examples on how to send those flags, but I noticed that I could by sending Javascript snippets through RSelenium. For example, here's a helper function that I made for annotating Selenium jobs:
+
+```R
+submit_job_info <- function(remDr, build, name, result) {
+  if (!(result %in% c("passed", "failed", "true", "false"))) {
+    stop("Invalid result. Please use: passed, failed, true, or false")
+  }
+  
+  remDr$executeScript(paste0("sauce:job-build=", build))
+  remDr$executeScript(paste0("sauce:job-name=", name))
+  remDr$executeScript(paste0("sauce:job-result=", result))
+  
+}
+```
+
+Here's how I would use that function in a testthat script:
+
+```R
+build_name <- buildName <- paste0("my-test-build",
+                    format(Sys.time(), "%m-%d-%Y_%s"))
+
+test_that("1 equals 1", {
+    remDr$open(silent=T)
+    test_case <- 1==1
+    submit_job_info(remDr = remDr, build = build_name,
+        name = "1 equals 1", result = test_case)
+    expect_equal(1, 1)
+    # I could also do `expect_true(test_case)`, but that gives less
+    # informative error messages
+})
+```
+
+That way, SauceLabs will bundle together all tests that come from `build_name` (so, the current run of the tests)
+and it will let me know whether those tests passed or failed.
+
+### Local testing with SauceLabs
+
+Right now, all of my testing is done through the online shinyapps.io server.
+
+Maybe that is the way I'll end up doing all the testing, but I'm worried that testing will drain
+the alloted time on the free-tier shinyapps.io.
+
+But, SauceLabs does have a mechanism to test locally-running applications. And it also supports running applications in the background on Travis, and then running SauceLabs/Selenium tests within Travis. That would be super nifty (this way, for example, I could test whether new functionality in the app passes integration tests _before_ pushing deploying that new functionality).
+
+The [RSelenium docs](https://docs.ropensci.org/RSelenium/articles/saucelabs.html) have a guide to running tests like that. On my local computer, I installed the [Sauce Connect Proxy](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy), followed the setup instructions, and ran the proxy.
+
+The RSelenium docs were a bit unclear on how to connect, but you create remoteDriver on port 80 pointing to `ondemand.saucelabs.com` with your normal account credentials. Since the Sauce Connect Proxy is also connected to your account, Saucelabs knows to connect any `localhost` URL requests to your local computer via the Sauce Connect Proxy tunnel. And, if you're running through Travis, you need a seperate tunnel id that corresponds to the travis build id.
+
+This seemed to connect appropriately, but I had a big problem interacting with the Shiny app this way: I would get a WebSocket-related error that prevented me from accessing the application. Evidently WebSocket compatability was a problem in the past (~2014), but those issues have been fixed. So, I put in a SauceLabs support ticket to see if they can help.
+
+<details>
+    <summary> Here's the ticket that I submitted: </summary>
+
+Hi SauceLabs support,
+
+I'm hoping to get some help connecting to a local application. I'm still very new to this, so hopefully I'm just overlooking something.
+
+I'm running my app locally on port 3000. I'm also running Sauce Connect with `-B all` (see output below).
+
+My application works as-expected locally. SauceLabs is also able to connect to the publicly-hosted version of the application.
+
+However, SauceLabs cannot load the localhost:3000-hosted version of the application through the SauceConnect tunnel. The app loads briefly, then greys out.
+
+In the JS Console, the application complains that a WebSocket connection to ws://localhost:3000/websocket had a 404 failure.
+
+My application is made with R Shiny. John Harrison, who wrote the main R package for connecting to Selenium, had a similar WebSocket error in 2014. His issue seemed to have been resolved by `--vm-version dev-varnish` and/or `-B all`. But neither of those options resolve my issue.
+
+A live test showing my issue can be found here: https://app.saucelabs.com/tests/394fa9bf14f24ddf8e50214ae91dd7b3#1
+
+SauceConnect seems to be working well. Output:
+
+```bash
+julian-ThinkPad-T460:bin$ ./sc -u $SAUCE_USERNAME -k $SAUCE_SECRET_KEY -B all
+26 Jun 10:10:37 - Sauce Connect 4.6.2, build 5183 ad61662
+26 Jun 10:10:37 - REST: Using CA certificate bundle /etc/ssl/certs/ca-certificates.crt.
+26 Jun 10:10:37 - REST: Using CA certificate verify path /etc/ssl/certs.
+26 Jun 10:10:37 - TUNNEL: Using CA certificate bundle /etc/ssl/certs/ca-certificates.crt.
+26 Jun 10:10:37 - TUNNEL: Using CA certificate verify path /etc/ssl/certs.
+26 Jun 10:10:37 - Starting up; pid 1516379
+26 Jun 10:10:37 - Command line arguments: ./sc -u julianstanley -k **** -B all
+26 Jun 10:10:37 - Log file: /tmp/sc.log
+26 Jun 10:10:37 - Pid file: /tmp/sc_client.pid
+26 Jun 10:10:37 - Timezone: EDT GMT offset: -4h
+26 Jun 10:10:37 - Using no proxy for connecting to Sauce Labs REST API.
+26 Jun 10:10:37 - Started scproxy on port 40155.
+26 Jun 10:10:37 - Please wait for 'you may start your tests' to start your tests.
+26 Jun 10:10:50 - Secure remote tunnel VM provisioned.
+26 Jun 10:10:50 - Tunnel ID: 4fbe703952fc48ac88e601734020edcb
+26 Jun 10:10:51 - Starting OCSP certificate check.
+26 Jun 10:10:51 - Using no proxy for connecting to http://status.geotrust.com.
+26 Jun 10:10:51 - Using no proxy for connecting to http://ocsp.digicert.com.
+26 Jun 10:10:51 - Reached a trusted CA. Certificate chain is verified.
+26 Jun 10:10:51 - Using no proxy for connecting to tunnel VM.
+26 Jun 10:10:51 - Selenium listener disabled.
+26 Jun 10:10:51 - Establishing secure TLS connection to tunnel...
+26 Jun 10:10:53 - Sauce Connect is up, you may start your tests.
+```
+
+And the log seems to be showing the same as the console:
+
+```R
+julian-ThinkPad-T460:~$ tail -100 /tmp/sc.log | grep localhost:3000 | grep socket -A10
+2020-06-26 10:11:45.331 [1516379] PROXY 127.0.0.1:34558 (10.100.29.249) -> GET http://localhost:3000/websocket/ (655 bytes)
+2020-06-26 10:11:45.335 [1516379] PROXY 127.0.0.1:34558 (10.100.29.249) <- 404 localhost:3000 (176 bytes)
+2020-06-26 10:11:50.058 [1516379] PROXY 127.0.0.1:34568 (10.100.29.249) -> GET http://localhost:3000/shared/shiny.min.js.map (548 bytes)
+2020-06-26 10:11:50.071 [1516379] PROXY 127.0.0.1:34570 (10.100.29.249) -> GET http://localhost:3000/shared/bootstrap/css/bootstrap.min.css.map (567 bytes)
+2020-06-26 10:11:50.078 [1516379] PROXY 127.0.0.1:34568 (10.100.29.249) <- 200 localhost:3000 (115012 bytes)
+2020-06-26 10:11:50.087 [1516379] PROXY 127.0.0.1:34576 (10.100.29.249) -> GET http://localhost:3000/crosstalk-1.1.0.1/js/crosstalk.min.js.map (566 bytes)
+2020-06-26 10:11:50.097 [1516379] PROXY 127.0.0.1:34578 (10.100.29.249) -> GET http://localhost:3000/vis-7.5.2/vis-network.min.js.map (557 bytes)
+2020-06-26 10:11:50.102 [1516379] PROXY 127.0.0.1:34578 (10.100.29.249) <- 404 localhost:3000 (116 bytes)
+2020-06-26 10:11:50.107 [1516379] PROXY 127.0.0.1:34576 (10.100.29.249) <- 200 localhost:3000 (50557 bytes)
+2020-06-26 10:11:50.117 [1516379] PROXY 127.0.0.1:34570 (10.100.29.249) <- 200 localhost:3000 (540654 bytes)
+```
+
+</details>
+
+### Autodeployment to shinyapps.io
+
+On my todo list for a while has been continuously deploying the app to shinyapps.io via travis.
+
+There were some weird things happening before. I think I've fixed those by just using `install_github('julianstanley/gfpop-gui')` _before_ deploying, but after testing. Since the deployment only happens if the tests of the current build pass (and only on the master branch), then I can assume that the most up-to-date master branch is functional, install that, and use that up-to-date installation in the deployment.
+
+Previously, I think I was using outdated versions of `gfpop-gui` in the deployment, which was causing the problems.
+
+Right now deploying that way is putting the app at julianstanley.shinyapps.io/gfpop-gui instead of julianstanley.shinyapps.io/gfpopgui and I think that's just because the github repository is `gfpop-gui` but the package name is `gfpopgui`. I need to pick one of these (the discrepency is there because `gfpop-gui` is not a valid R package name--they can't have dashes).
+
+## June 29 - July 03
+
+### Goals
+
+* Clean up basic app functionality for the end of Phase 1.
+
+### Adding 'Save' and 'Load' buttons
+
+In `gfpop`, users should be able to save and load their analyses, complete with their graphical constraint and main `gfpop` parameters.
+
+Implementing this at a basic level was fairly straightforward: when a user presses "save", all inputs that are necessary to reproduce the analysis should be saved in a `reactiveValues()` list, with some user-supplied identifier.
+
+Then, users can choose from saved identifiers to re-load saved analyses.
+
+Practically, it looks something like this:
+
+#### Initalize reactive values list
+
+```r
+saved_analyses <- reactiveValues(
+    saved_full = list(),
+    saved_descriptions = data.table()
+)
+```
+
+The idea here is that this data structure allows for more complex saving implemtations as well, if we end up wanting that. `saved_full` saves _all_ data associated with a given save point, whereas `saved_descriptions` is a table that describes each entry in `saved_full`. 
+
+In this implementation, `saved_descriptions` just has identifiers, but we could also add more identifying information if that ends up being useful.
+
+#### Add button to save
+
+Here, I need to use `reactiveValuesToList` because, if I literally saved gfpop_data in its reactiveValue form, it would continue to update as inputs change. But I want to save a snapshot, so I save it as a list.
+
+```r
+# In UI
+h2("Save"),
+textInput(
+    inputId = ns("saveId"),
+    label = "Unique Save Name"
+),
+actionButton(
+    inputId = ns("saveButton"),
+    label = "Save Analysis"
+)
+
+# In Server
+observeEvent(input$saveButton, 
+    req(input$saveId)
+    saveId <- input$saveId
+
+    # Make sure the save id is unique!
+    if (saveId %in% names(saved_analyses$saved_full)) {
+        shinyalert(paste0(
+        "Error: '", saveId,
+        "' already exists.\nIDs must be unique."
+        ))
+
+    # The saveId should be the key for the saved_full list.
+    # And, for now (as mentioned in text above), `saved_descriptions`
+    # is just the id, but could be built up later if necessary
+    } else {
+        saved_analyses$saved_full[[saveId]] <- reactiveValuesToList(gfpop_data)
+        saved_analyses$saved_descriptions <- rbind(
+        saved_analyses$saved_descriptions,
+        data.table(id = input$saveId)
+        )
+    }
+
+    # Clear the text input after saving
+    updateTextInput(session, "saveId", value = "")
+    })
+```
+
+#### Add UI element with a list of saved environments
+
+```r
+# In UI
+h2("Load"),
+uiOutput(ns("uiLoadId"))
+
+# In Server
+output$uiLoadId <- renderUI({
+selectInput(ns("loadId"), "Select a previous analysis",
+    choices = saved_analyses$saved_descriptions$id
+)
+})
+```
+
+#### Add a loading button
+
+This part was a little tricky. First, to load the saved analyses, I need to coerce them into a reactive object, since I used `reactiveValuesToList` when saving. Then, I need to use a `<<-` to assign `gfpop_data` globally, not just within the observeEvent. Then, I use `do.call` to make each component of the saved list reactive.
+
+In addition, overwriting `gfpop_data` does not update the graph (since there's a manual button to update that graph). So, I use `updateNumericInput` to manually refresh the graph.
+
+```r
+# In UI
+actionButton(
+        inputId = ns("loadButton"),
+        label = "Load Analysis"
+    )
+
+# In Server
+observeEvent(input$loadButton, {
+req(input$loadId)
+gfpop_data <<- do.call("reactiveValues", saved_analyses$saved_full[[input$loadId]])
+
+updateNumericInput(
+    session = session, inputId = "graph_refresh_helper",
+    value = input$graph_refresh_helper + 1
+)
+})
+```
+
+Now, all together, users can load and save data!
+
+### Downloading and loading .Rdata
+
+This is simple, but was tricky to figure out how to do in the first place.
+
+I wanted users to be able to download and upload .Rdata files with complete analyses.
+
+To upload:
+
+```r
+# input$completed_analysis is defined above, that's the input 
+# where users can upload their .Rdata file
+rdata_name <- load(input$completed_analysis$datapath)
+
+# Use mget to load rdata_name into a variable
+gfpop_data_list <- mget(rdata_name, environment())
+
+# The .Rdata contains a list, so go over each element in that list
+# and add it to `gfpop_data`
+# Since gfpop_data is already defined as a reactiveValues object, no
+# need to coerse list items into reactive values: shiny takes care of that.
+lapply(names(gfpop_data_list[[1]]), 
+           function(x) gfpop_data[[x]] <- gfpop_data_list[[1]][[x]])
+  })
+```
+
+To download:
+
+```r
+# Just save gfpop_data as a list
+output$downloadData <- downloadHandler(
+    filename = function() "gfpopgui_data.Rdata",
+    content = function(file) {
+        gfpop_data_list <- reactiveValuesToList(gfpop_data, all.names=T)
+        save(gfpop_data_list, file = file)
+    }
+)
+```
+
+### Converting a graph dataframe to R code
+
+I still need to work on this more. For now, I just take each column in a gfpop graph dataframe and make it into an argument in the `gfpop::Edge()` function.
+
+This method works for most simple graphs, but doesn't consider things like "Node" columns, etc.
+
+So, to format an individual row in a graph dataframe:
+
+```r
+#' Takes in a row from a graph dataframe, returns that row formatted as R code
+#' @param edge_df One row from a gfpop::graph() graph df, with column names
+#' @returns a string corresponding to the code that, when run, produces the 
+#' given edge
+#' @examples 
+#' graph <- gfpop::graph(type = "std")
+#' format_edge(graph[1,])
+#' @export
+format_edge <- function(edge_df) {
+  paste0("gfpop::Edge(state1 = '", edge_df[["state1"]], "'",
+         ", state2 = '", edge_df[["state2"]], "'",
+         ", type = '", edge_df[["type"]], "'",
+         ", gap = ", edge_df[["parameter"]],
+         ", penalty = ", edge_df[["penalty"]],
+         ", K = ", edge_df[["K"]],
+         ", a = ", edge_df[["a"]], 
+         ")")
+}
+```
+
+And then, to wrap each row together:
+
+```r
+#' Takes in a graph dataframe, returns the graph formatted as R code
+#' @param graph A graph df, like that returned by gfpop::graph()
+#' @returns a string corresponding to the code that, when run, produces the
+#' given graph
+#' @examples 
+#' graph <- gfpop::graph(type = "std")
+#' graph_to_R_code(graph)
+#' @export
+graph_to_R_code <- function(graph) {
+  valid_colnames <- c("state1", "state2",
+                      "type", "parameter",
+                      "penalty", "K", "a", 
+                      "min", "max")
+  if(!all(colnames(graph) == valid_colnames)) {
+    stop("Invalid column names. Is this a dataframe returned from gfpop::graph?")
+  }
+  
+  return_command <- "gfpop::graph(\n"
+  
+  apply(graph, 1, function(x) {
+    return_command <<- paste0(return_command, paste0("    ", 
+                                                     format_edge(x), ",\n"))
+  })
+  
+  paste0(substr(return_command, 1, nchar(return_command) - 2), "\n)")
+}
+```
+
+# Phase 2
+
+## July 04 - July 12 
+
+### Goals
+
+* Move more functionality to client-side
+* Continue moving forward with testing
+
+### Using custom JavaScript in ShinyApps
+
+You can run custom JavaScript in a ShinyApp. This is fairly straightforward and there are some great resources available to learn more, such as [ThinkR's JS4Shiny Field Notes](http://connect.thinkr.fr/js4shinyfieldnotes) and the slides from the [2020 RStudio conf JS For Shiny Workshop](https://rstudio-conf-2020.github.io/js-for-shiny/).
+
+#### The Problem
+
+Things get a little more complicated with htmlwidgets, the platform on which `visNetwork` is built.
+
+JS code supplied to shiny runs when the DOM is first rendered. However, visNetwork is widget that doesn't appear in the DOM until _after_ the Shiny server renders it. Because of that, I couldn't figure out how to add custom JS to the visNetwork widget.
+
+#### Progress Towards Solution
+
+I posted related questions on [RStudio Community](https://community.rstudio.com/t/wait-for-an-object-to-be-rendered-before-adding-a-js-event-listener/72246) and on [StackOverflow](https://stackoverflow.com/questions/62794827/r-shiny-run-js-after-htmlwidget-renders/62796035#62796035).
+
+Stéphane Laurent gave a great answer where they introduced me to the `htmlwidgets::onRender()` function that is essentially designed for just this purpose: to add new javascript onto an existing HTMLwidget object.
+
+So, I just add `%>% onRender(additional_js)` to the visNetwork call, and then I can put custom javascript in an `additional_js` string.
+
+I would like to learn how to move `additional_js` to a seperate file. This is straightforward when using a JS file in Shiny generally, but I'm not sure how to do that with `onRender()`.
+
+`onRender()` may help me implement a variety of features. In the meantime, I can use it to validate the entries that a user passes when editing an edge:
+
+```javascript
+additional_js <-"function(el, x) {
+    // Validate edge type when the save button is pressed
+    $('#editedge-saveButton').on('click', function() {
+        let type = $('#editedge-type').val();
+        if (!['null', 'std', 'up', 'down', 'abs'].includes(type.toLowerCase())) {
+            alert(`${type} is not a valid type. Defaulting to null`);
+            $('#editedge-type').val('null');
+        }
+    })
+}
+"
+```
+
+### Follow-up on the SauceLabs local testing issue
+
+After some back-and-forth with the SauceLabs folks, they figured out why I was [having this problem that I described in more detail a few weeks ago](https://julianstanley.github.io/gfpopgui/docs/timeline/Phase1/june22_june28#local-testing-with-saucelabs). Basically, it was because of the way that they proxy localhost requests. Their proxy makes it easier for people to connect on certain ports but, in this case, was blocking that WebSocket handshake.
+
+So it ended up being an easy fix: I just added 127.0.0.1 julian.local to my /etc/hosts and then pointed Selenium to julian.local:3000 instead of localhost:3000. Bam, problem gone.
+
+The problem I experienced seems to happen with every Shiny app, since they all rely on that handshake, but there's no info about that anywhere. Later this week, I'm going to work on a blog post explaining using SauceLabs and Selenium with Shiny, so I'll include more information about this there.
+
+
+## July 13 - July 19
+
+### Goals
+
+* Fix visNetwork refresh problem
+* Allow users to use start/end nodes
+* Fix bugs, build on existing features
+
+### Fixing the visNetwork graph refresh problem
+
+This was deceptively easy. I just needed to use the `visNetworkProxy` functionality. I had tried to do this before, but thought I was on the wrong path because of some small code bugs.
+
+In short, if anyone is reading this and trying to resolve a similar problem, just look at the visNetwork example shiny application:
+
+```r
+shiny::runApp(system.file("shiny", package = "visNetwork"))
+```
+
+Essentially, I previously re-generated the visNetwork plot at certain times. Now, instead of re-generating the visNetwork plot, I just call:
+
+```r
+visNetworkProxy(ns("gfpopGraph")) %>%
+    visUpdateNodes(nodes = gfpop_data$graphdata_visNetwork$nodes) %>%
+    visUpdateEdges(edges = gfpop_data$graphdata_visNetwork$edges)
+```
+
+And visNetwork will update the graph without moving the nodes.
+
+### Setting starting/ending nodes
+
+Users need to be able to pick _one_  starting node, and one ending node.
+
+They also need to be able to not pick a node at all. By default, all nodes should be able to be starting or ending nodes.
+
+So, I created dropdown boxes with all current nodes, plus the string "N/A" that users can choose between to set the starting and ending nodes. For example:
+
+```r
+output$uiSetStart <- renderUI({
+selectInput(ns("setStart"), "Select a starting node",
+    choices = c(
+    "N/A",
+    gfpop_data$graphdata_visNetwork$nodes$label
+    ),
+    selected = startEnd$start
+)
+})
+```
+
+Notice that I set `selected = startEnd$start`. What was that about? The problem is that, each time the graphdata updates, the `setStart` selectInput will be refreshed. But, we want, for example, the starting node dropdown should have the current start node selected. So, I had to create a reactive value that holds the _current_ starting node, and then have that value be the one that is selected in the dropdown.
+
+Then, I use the value from the dropdown to set the starting node in the gfpop data:
+
+```r
+observeEvent(input$setStartEnd_button, {
+
+    # new_val: the new start or new end
+    # val_type: "start" or "end"
+    set_startEnd <- function(new_val, val_type) {
+        if (new_val != "N/A") {
+        gfpop_data$graphdata <<- gfpop::graph(
+            gfpop_data$graphdata %>%
+            rbind.fill(data.frame(state1 = new_val, type = val_type))
+        )
+        } else {
+        gfpop_data$graphdata <<- gfpop::graph(
+            data.frame(gfpop_data$graphdata) %>%
+            filter(type != val_type)
+        )
+        }
+    }
+
+    set_startEnd(input$setStart, "start")
+    set_startEnd(input$setEnd, "end")
+
+    # Set these so that the "start" and "end" dropdown boxes, which are
+    # refreshed when graphdata updates, knows about the current start & end
+    startEnd$start <- input$setStart
+    startEnd$end <- input$setEnd
+
+    # Update the visNetwork data to match the gfpop data
+    gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
+        gfpop_data$graphdata
+    )
+})
+```
+
+So, modifying the 'start' node means adding a row to the gfpop dataframe. Once I do that, I need to (1) set the reactiveValues that indicate which node is start/end, and (2) update the visNetwork data to be consistent with the gfpop dataframe.
+
+### Common error: over-isolating inputs
+
+Lots of errors have popped up while developing this application. One common error is that I tend to overuse the `shiny::isolate()` function.
+
+The `isolate()` function removes data from shiny's reactive structure. So, for example, in this function:
+
+```R
+output$myOut <- renderPlot(x <- 1:isolate(input$xmax))
+```
+
+The `myOut` plot will only update if I update it manually--unlike it's counterpart without `isolate()`, which would update each time `input$xmax` is updated.
+
+This can be really handy for when outputs are computationally intensive to calculate. For example, I have the user press a "run gfpop" button whenever they want to run gfpop. Without `isolate()`, the gfpop results would update each time an input was changed. And, if a user were changing lots of inputs, that might bog down the app unnecessarily.
+
+But I have to be careful about using `isolate()`. For example, when building the function that generates some data for gfpop, I initally used it in such a way that isolate was necessary, and it looked a bit like this:
+
+```R
+primary_input <- data.frame(
+    X = 1:isolate(input$ndata)
+    Y = dataGenerator(isolate(input$ndata),
+    c(0.1, 0.3, 0.5, 0.8, 1), c(1, 2, 1, 3, 1), sigma = isolate(input$sigma))
+    )
+
+gfpop_data$main_data <- primary_input
+```
+
+I initally meant for this to be very temporary but, increasingly, I think a version of this generate data function needs to be in the final app for demonstration purposes.
+
+So, when I put this into an observeEvent() call, it no longer needed the isolate calls, but I left them there anyways:
+
+```R
+observeEvent(input$genData, {
+primary_input <- data.frame(
+    X = 1:isolate(input$ndata)
+    Y = dataGenerator(isolate(input$ndata),
+    c(0.1, 0.3, 0.5, 0.8, 1), c(1, 2, 1, 3, 1), sigma = isolate(input$sigma))
+    )
+
+gfpop_data$main_data <- primary_input
+})
+```
+
+But, the `isolate()` calls here will prevent this expression from being run more than once! So, when I noticed that I couldn't generate data more than once this week, I had to remove the isolate calls:
+
+```R
+observeEvent(input$genData, {
+primary_input <- data.frame(
+    X = 1:input$ndata
+    Y = dataGenerator(input$ndata,
+    c(0.1, 0.3, 0.5, 0.8, 1), c(1, 2, 1, 3, 1), sigma = input$sigma)
+    )
+
+gfpop_data$main_data <- primary_input
+})
+```
+
+
+## July 20 - July 26
+
+### Goals
+
+* Implement crosstalk between visNetwork and plotly visualizations
+* Finish up smaller issues that have come up over the weeks
+
+### Cross-talk from plotly to visNetwork
+
+When the user hovers over a changepoint segment in the plotly visualization, the associated node should be highlighted in the visNetwork (constraint graph) visualization.
+
+If a plotly visualization includes a `key` attribute (e.g. `plot_ly(key = ~info)`), then that attribute is passed through the browser when the user hovers over a datapoint with that attribute.
+
+That information can be observed through shiny via the `event_data()` plotly function.
+
+For example, in my case, I observed `event_data("plotly_hover", "gfpopPlot")`, which returns a data table.
+
+The return value from that observation is a table, and, when I gave each changeregion a `key` attribute with the id of of the changeregion's state, that id is present in the "key" column of the data table, in the second row.
+
+So, under certain conditions, I used `visNetworkProxy` to change the color of nodes that have the same id as the `key` of the selected change region.
+
+For more information, see [the associated commit](https://github.com/julianstanley/gfpopgui/commit/f1cc6204c5d03c8aa3d69c33377bf18fc50a4786).
+
+### Cross-talk from visNetwork to plotly
+
+This was a little more difficult to me. The big problem here is that each changeregion is _not_ a separate plotly trace, so I can't change their colors individually.
+
+I can make each changeregion a separate trace, but that makes the application a lot slower for many changeregions.
+
+So, instead, I decided to "highlight" a changeregion by just drawing a _new_ trace over the location of the associated changeregion.
+
+This is definitely not fast, but I think it may be fast _enough_ for our purposes. 
+
+To accomplish this, first I observe the `input$gfpopGraph_highlight_color_id` input. This comes from visNetwork (`gfpopGraph` is the id of the visNetwork visualization) and changes each time a node in the visNetwork plot is highlighted (which can happen on hover or on click). For now, I set this to on-click.
+
+So, from that variable I know the ID of the node being highlighted. Then, I subset the changepoint information (on which the plotly graph was built) to only contain changeregions associated with the highlighted ID. Then, I use `plotlyProxy()` and `plotlyProxyInvoke("addTraces")` to make a new plotly trace. That trace can be later deleted with the `plotlyProxyInvoke("deleteTraces")` command.
+
+For example:
+
+```R
+highlighted_id <- input$gfpopGraph_highlight_color_id
+segments_to_highlight <- gfpop_data$changepoints %>% filter(state == highlighted_id)
+
+plotlyProxy("gfpopPlot", session) %>%
+    plotlyProxyInvoke(
+        "addTraces",
+        list(
+            x = segments_to_highlight$x,
+            y = segments_to_highlight$y,
+            text = segments_to_highlight$text,
+            line = list(color = "red", width = 10)
+        )
+    )
+```
+
+For more information, see the [associated commit](https://github.com/julianstanley/gfpopgui/commit/fe75aad7c0123c6b2bae9298adaf12aefab0a5f3).
+
+## July 27 - July 31
+
+### Goals
+
+* Write some more documentation
+* Test and optimize Phase 2 features
+
+# Phase 3
+
+## August 01 - August 09
+
+## August 10 - August 16
+
+## August 17 - August 23
+
+## August 24 - August 31
+
+

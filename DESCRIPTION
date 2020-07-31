@@ -37,9 +37,12 @@ Suggests:
     testthat,
     covr,
     RSelenium,
-    vdiffr
+    vdiffr,
+    knitr,
+    rmarkdown
 Remotes: 
     vrunge/gfpop,
     rstudio/shiny,
     datastorm-open/visNetwork,
     ThinkR-open/golem
+VignetteBuilder: knitr

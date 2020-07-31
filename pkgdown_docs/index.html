@@ -46,13 +46,25 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/timeline.html">GSOC 2020 Timeline Updates</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/julianstanley/gfpop-gui/">
+  <a href="https://github.com/julianstanley/gfpopgui/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -69,22 +81,74 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="gfpop-gui" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#gfpop-gui" class="anchor"></a>gfpop-gui</h1></div>
-<p><!-- badges: start --> <a href="https://julianstanley.github.io/gfpop-gui"><img src="https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue" alt="Documentation via Docusaurus"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <a href="https://travis-ci.com/julianstanley/gfpop-gui"><img src="https://travis-ci.com/julianstanley/gfpop-gui.svg?branch=master" alt="Travis build status"></a> <a href="https://codecov.io/gh/julianstanley/gfpop-gui?branch=master"><img src="https://codecov.io/gh/julianstanley/gfpop-gui/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <!-- badges: end --></p>
-<p>A Shiny-based graphical user interface for GFPOP.</p>
-<p>A work in progress, a <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> 2020 <a href="https://summerofcode.withgoogle.com/projects/#6502959753461760">project</a> with the <a href="https://www.r-project.org/">R Project for Statistical Computing</a>.</p>
+
+<div class="page-header"><h1 align="center">
+<br><img src="https://github.com/julianstanley/gfpopgui/raw/master/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="300"><br> gfpop gui <br>
+</h1></div>
+<h4 align="center">
+An interactive shiny-based application for exploring graph- constrained changepoint detection with the <a href="https://github.com/vrunge/gfpop" target="_blank">gfpop</a> package.
+</h4>
+<div align="center">
+<!-- badges: start -->
+
+<!-- badges: end --><p>
+<a href="#overview">Overview</a> • <a href="#installation">Installation</a> • <a href="#testing">Testing</a> • <a href="#attributions">Attributions</a>
+</p>
 </div>
+<!-- badges: end -->
+<div id="overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>This is a graphical user interface (GUI) for the <a href="https://github.com/vrunge/gfpop">gfpop</a> package.</p>
+<p>Generally, <code>gfpop</code> is an R package implementing an algorithm that lets users detect changepoints in their data. Unlike related packages (e.g. <code>changepoint</code>), <code>gfpop</code> works under the assumption that its users have some general idea about the patterns of their changepoints. For example, you might expect that your data alternates between “up” and “down” changepoints, each with a mean change of at least 1. If you can represent your assumptions about your changepoints as a directed graph, <code>gfpop</code> can take that constraint graph as an input and very efficiently predict changepoints in your data.</p>
+<p>This GUI for gfpop lets you draw a constraint graph and edit its parameters interactively. Then, it will run the <code>gfpop</code> algorithm and let you interactively see changepoint differences.</p>
+<p>This is an in-progress summer project. See the project description at <a href="https://summerofcode.withgoogle.com/projects/#6502959753461760">Google Summer of Code 2020</a>.</p>
+</div>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>To install:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"julianstanley/gfpopgui"</span>)</pre></div>
+<p>To run, you can either <a href="https://julianstanley.shinyapps.io/gfpopgui/">visit the web application</a>, or run:</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">gfpopgui</span><span class="kw ns">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span>()</pre></div>
+<p>See the application for more detailed usage information. <a href="https://julianstanley.github.io/gfpopgui">Documentation</a> is still in progress.</p>
+</div>
+<div id="testing" class="section level2">
+<h2 class="hasAnchor">
+<a href="#testing" class="anchor"></a>Testing</h2>
+<p>Uses a combination of testing frameworks. <code>testthat</code> and <code><a href="https://rdrr.io/pkg/shiny/man/testServer.html">shiny::testServer</a></code> are used for most functionality and run via CI.</p>
+<p>Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10:</p>
+<p><img src="https://saucelabs.com/browser-matrix/julianstanley.svg"></p>
+</div>
+<div id="attributions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#attributions" class="anchor"></a>Attributions</h2>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Project supported by the R Project for Statistical Computing</th>
+<th align="center">With funding provided by Google Summer of Code</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="center"><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/img/rlogo.png" alt="alt text" height="200px"></td>
+<td align="center"><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/img/gsoc-icon.png" alt="alt text" height="200px"></td>
+</tr></tbody>
+</table>
+<p>Open Source testing license generously provided by SauceLabs.com :————————-: <img src="https://saucelabs.github.io/images/opensauce/powered-by-saucelabs-badge-gray.svg?sanitize=true" title="Testing Powered By SauceLabs" alt="Testing Powered By SauceLabs"></p>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/julianstanley/gfpop-gui/">https://​github.com/​julianstanley/​gfpop-gui/​</a>
+<li>Browse source code at <br><a href="https://github.com/julianstanley/gfpopgui/">https://​github.com/​julianstanley/​gfpopgui/​</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/julianstanley/gfpop-gui/issues">https://​github.com/​julianstanley/​gfpop-gui/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/julianstanley/gfpopgui/issues">https://​github.com/​julianstanley/​gfpopgui/​issues</a>
 </li>
 </ul>
 </div>
@@ -102,7 +166,17 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://julianstanley.github.io/gfpopgui"> <img src="https://img.shields.io/badge/Documentation%20and%20Articles-pkgdown-blue" alt="Documentation Link"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"> <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://travis-ci.com/julianstanley/gfpopgui"> <img src="https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://codecov.io/gh/julianstanley/gfpopgui?branch=master"> <img src="https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.saucelabs.com/u/julianstanley"> <img src="https://saucelabs.com/buildstatus/julianstanley?dummy=unused" alt="Sauce Test Status"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 

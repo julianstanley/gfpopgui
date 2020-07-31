@@ -86,13 +86,25 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/timeline.html">GSOC 2020 Timeline Updates</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/julianstanley/gfpop-gui/">
+  <a href="https://github.com/julianstanley/gfpopgui/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -136,17 +148,64 @@
       <tr>
         
         <td>
-          <p><code><a href="annotate_data_with_changepoint.html">annotate_data_with_changepoint()</a></code> </p>
+          <p><code><a href="NAtoNone.html">NAtoNone()</a></code> </p>
         </td>
-        <td><p>Given data and it's associated changepoint data, annotates data points
-with the changepoint interval in which that data falls</p></td>
+        <td><p>Converts all NA objects in a vector to "None"</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="generate_changepoint.html">generate_changepoint()</a></code> </p>
+          <p><code><a href="NonetoNA.html">NonetoNA()</a></code> </p>
         </td>
-        <td><p>Given data and a constraint graph, generate a changepoint output
-A wrapper around gfpop::gfpop()</p></td>
+        <td><p>Converts all "None" objects in a vector into NA</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_changepoints.html">add_changepoints()</a></code> </p>
+        </td>
+        <td><p>Adds changepoints annotations to a plotly plot.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_edge.html">add_edge()</a></code> </p>
+        </td>
+        <td><p>Add a new edge to a visNetwork edge dataframe</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_node.html">add_node()</a></code> </p>
+        </td>
+        <td><p>Add a new node to a visNetwork node dataframe</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_null_edge.html">add_null_edge()</a></code> </p>
+        </td>
+        <td><p>Adds a recursive null edge</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_label.html">create_label()</a></code> </p>
+        </td>
+        <td><p>Creates a 'label' array for a graphdf, given the columns that you
+want to include in the label and the seperator</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_label_individual.html">create_label_individual()</a></code> </p>
+        </td>
+        <td><p>Creates an individual label for an individual edge</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="details.html">details()</a></code> </p>
+        </td>
+        <td><p>Create a details drop-down with the given summary and content</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="format_edge.html">format_edge()</a></code> </p>
+        </td>
+        <td><p>Takes in a row from a graph dataframe, returns that row formatted as R code</p></td>
       </tr><tr>
         
         <td>
@@ -156,9 +215,15 @@ A wrapper around gfpop::gfpop()</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="get_associated_changepoint.html">get_associated_changepoint()</a></code> </p>
+          <p><code><a href="grapes-notin-grapes.html">`%notin%`</a></code> </p>
         </td>
-        <td><p>Gets the changepoint location associated with this location on the x axis</p></td>
+        <td><p>Negate in</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="graph_to_R_code.html">graph_to_R_code()</a></code> </p>
+        </td>
+        <td><p>Takes in a graph dataframe, returns the graph formatted as R code</p></td>
       </tr><tr>
         
         <td>
@@ -169,9 +234,29 @@ can be read by visNetwork</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot_changepoint.html">plot_changepoint()</a></code> </p>
+          <p><code><a href="inline_div.html">inline_div</a></code> </p>
         </td>
-        <td><p>Makes a ggplot object with the changepoint data</p></td>
+        <td><p>Creates an inline block div component aligned top with the given width <!-- %} -->
+
+inline_div(width, ...)
+
+
+widthnumeric between 0 and 1, width of the div component
+
+...Parameters to be put inside the div, usually some shiny UI elem
+
+
+a UI HTML div
+
+
+Creates an inline block div component aligned top with the given width <!-- % --></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="modify_visNetwork.html">modify_visNetwork()</a></code> </p>
+        </td>
+        <td><p>Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny</p></td>
       </tr><tr>
         
         <td>
@@ -184,6 +269,20 @@ can be read by visNetwork</p></td>
           <p><code><a href="select_graph_columns.html">select_graph_columns()</a></code> </p>
         </td>
         <td><p>Selects the columns from this graph dataframe that are relevant to gfpop</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="update_visNetwork_edges.html">update_visNetwork_edges()</a></code> </p>
+        </td>
+        <td><p>Updates the given visNetwork edges, based on a new graphdf,
+excluding updates to certain columns. This is useful as to not mess up
+visNetwork edge IDs, which are important to keeping visNetwork happy.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="visNetwork_to_graphdf.html">visNetwork_to_graphdf()</a></code> </p>
+        </td>
+        <td><p>Turns a list that can be read by visNetwork into graph dataframe (for gfpop)</p></td>
       </tr>
     </tbody>
     </table>

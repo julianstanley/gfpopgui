@@ -14,8 +14,8 @@ constrained changepoint detection with the <a href="https://github.com/vrunge/gf
   <!-- badges: start -->
   <div id="banner" style="overflow: hidden;justify-content:space-around;">
   <a href="https://julianstanley.github.io/gfpopgui">
-  <img src="https://img.shields.io/badge/Documentation%20and%20Timeline-Docusaurus-blue" 
-    alt="Documentation vis Docusarus"></img>
+  <img src="https://img.shields.io/badge/Documentation%20and%20Articles-pkgdown-blue" 
+    alt="Documentation Link"></img>
   </a>
   <a href="https://www.tidyverse.org/lifecycle/#experimental">
   <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" 

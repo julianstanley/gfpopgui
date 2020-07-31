@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generates a visNetwork from a list of nodes and edges — generate_visNetwork • gfpopgui</title>
+<title>Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny — modify_visNetwork • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,10 @@
 
 
 
-<meta property="og:title" content="Generates a visNetwork from a list of nodes and edges — generate_visNetwork" />
-<meta property="og:description" content="Generates a visNetwork from a list of nodes and edges" />
+<meta property="og:title" content="Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny — modify_visNetwork" />
+<meta property="og:description" content="Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny" />
 
 
 
@@ -123,32 +126,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generates a visNetwork from a list of nodes and edges</h1>
+    <h1>Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny</h1>
     <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/fct_visNetwork_helpers.R'><code>R/fct_visNetwork_helpers.R</code></a></small>
-    <div class="hidden name"><code>generate_visNetwork.Rd</code></div>
+    <div class="hidden name"><code>modify_visNetwork.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generates a visNetwork from a list of nodes and edges</p>
+    <p>Edits a visNetwork data based on the given command, consistent with the format
+of commands passed to the _graphChange observers in visNetwork-shiny</p>
     </div>
 
-    <pre class="usage"><span class='fu'>generate_visNetwork</span>(<span class='no'>graph_data</span>)</pre>
+    <pre class="usage"><span class='fu'>modify_visNetwork</span>(<span class='no'>event</span>, <span class='no'>graphdata_visNetwork</span>, <span class='kw'>addNull</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>graph_data</th>
-      <td><p>A list containing 'nodes' and 'edges' is visNetwork format</p></td>
+      <th>event</th>
+      <td><p>The event, with at least a $cmd entry, based on observer format</p></td>
+    </tr>
+    <tr>
+      <th>graphdata_visNetwork</th>
+      <td><p>A list of data to be passed to visNetwork</p></td>
+    </tr>
+    <tr>
+      <th>addNull</th>
+      <td><p>Whether to automatically add a null edge to a new node</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a visNetwork object</p>
+    <p>the same format as graphdata_visNetwork, but edited according to event</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>generate_visNetwork</span>(<span class='fu'><a href='graphdf_to_visNetwork.html'>graphdf_to_visNetwork</a></span>(<span class='kw pkg'>gfpop</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gfpop/man/graph.html'>graph</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"std"</span>)))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
