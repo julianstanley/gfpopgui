@@ -18,3 +18,4 @@ local_only
 deploy.R
 tests/testthat/screenshots/*
 _pkgdown.yml
+data/*

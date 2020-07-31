@@ -18,6 +18,29 @@ create_label_individual(
   collapse = " | "
 )
 }
+\arguments{
+\item{state1}{The state where the edge originates}
+
+\item{state2}{The state to which the edge travels}
+
+\item{type}{The type of edge (see gfpop::graph types)}
+
+\item{parameter}{A parameter, such as '1' for null, or gap otherwise}
+
+\item{penalty}{An edge penalty (see gfpop::graph)}
+
+\item{K}{see gfpop::graph}
+
+\item{a}{see gfpop::graph}
+
+\item{min}{see gfpop::graph}
+
+\item{max}{see gfpop::graph}
+
+\item{columns}{The columns to include in this edge}
+
+\item{collapse}{the character seperating edge columns in this label}
+}
 \description{
 Creates an individual label for an individual edge
 }

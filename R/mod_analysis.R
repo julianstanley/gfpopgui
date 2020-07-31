@@ -281,8 +281,8 @@ mod_analysis_ui <- function(id) {
 }
 
 #' analysis Server Function
-#'
-#' @noRd
+#' @param id The id of this module
+#' @param gfpop_data The main data for the gfpop analysis, passed from home mod
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
 #' isolate updateNumericInput renderUI renderText
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
@@ -296,6 +296,18 @@ mod_analysis_ui <- function(id) {
 #' @import gfpop
 #' @export
 mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
+  # CMD Check compatibility section
+  moduleServer <- NULL
+  updateTextInput <- NULL
+  observe <- NULL
+  type <- NULL
+  to <- NULL
+  from <- NULL
+  ..j <- NULL
+  state <- NULL
+  label <- NULL
+  # End CMD compatibility section
+
   moduleServer(
     id,
     function(input, output, session) {

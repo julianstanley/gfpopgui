@@ -1,9 +1,9 @@
 #' Negate in
 #' @import dplyr
-#' @export
+#' @noRd
 `%notin%` <- Negate(`%in%`)
 
-#' Creates an inline block div component aligned top with the given width %
+#' Creates an inline block div component aligned top with the given width percentage
 #' @param width numeric between 0 and 1, width of the div component
 #' @param ... Parameters to be put inside the div, usually some shiny UI elem
 #' @returns a UI HTML div

@@ -22,11 +22,11 @@ update_visNetwork_edges(
 
 \item{edgeSep}{A character seperating the nodes in an edge label}
 
+\item{showNull}{(Boolean) hide null edges?}
+
 \item{label_columns}{(character) An array of columns to use to make edge labels}
 
 \item{columns_to_exclude}{(character) An array of columns not to include in the update}
-
-\item{hideNull}{(Boolean) hide null edges?}
 }
 \description{
 Updates the given visNetwork edges, based on a new graphdf,

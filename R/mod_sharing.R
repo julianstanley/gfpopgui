@@ -12,6 +12,7 @@
 #' @importFrom DT renderDataTable
 #' @importFrom shinyalert shinyalert
 #' @importFrom DT dataTableOutput
+#' @importFrom utils write.csv
 mod_sharing_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -56,6 +57,10 @@ mod_sharing_ui <- function(id) {
 #' @importFrom plotly renderPlotly
 #' @noRd
 mod_sharing_server <- function(id, gfpop_data) {
+  # CMD Check compatibility section
+  moduleServer <- NULL
+  # End CMD compatibility section
+
   moduleServer(
     id,
     function(input, output, session) {

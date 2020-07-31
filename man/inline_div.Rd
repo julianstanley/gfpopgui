@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_general.R
 \name{inline_div}
 \alias{inline_div}
-\title{Creates an inline block div component aligned top with the given width %}
+\title{Creates an inline block div component aligned top with the given width percentage}
 \usage{
 inline_div(width, ...)
 }
@@ -15,5 +15,5 @@ inline_div(width, ...)
 a UI HTML div
 }
 \description{
-Creates an inline block div component aligned top with the given width %
+Creates an inline block div component aligned top with the given width percentage
 }

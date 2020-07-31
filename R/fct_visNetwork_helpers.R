@@ -24,6 +24,10 @@ NonetoNA <- function(vec) {
 #' @returns a character vector combining those columns as specified
 #' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
+  # CMD Check compatibility section
+  ..columns <- NULL
+  # End CMD compatibility section
+
   graphdf <- data.table(graphdf)
   # For compatability with graphdf and visNetwork edges
   if ("to" %in% colnames(graphdf)) {
@@ -47,6 +51,18 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 }
 
 #' Creates an individual label for an individual edge
+#' @param state1 The state where the edge originates
+#' @param state2 The state to which the edge travels
+#' @param type The type of edge (see gfpop::graph types)
+#' @param parameter A parameter, such as '1' for null, or gap otherwise
+#' @param penalty An edge penalty (see gfpop::graph)
+#' @param K see gfpop::graph
+#' @param a see gfpop::graph
+#' @param min see gfpop::graph
+#' @param max see gfpop::graph
+#' @param columns The columns to include in this edge
+#' @param collapse the character seperating edge columns in this label
+#' @export
 create_label_individual <- function(state1, state2, type, parameter,
                                     penalty, K, a, min, max,
                                     columns = c("type", "penalty"), collapse = " | ") {
@@ -152,7 +168,7 @@ add_null_edge <- function(edgedf, nodeid) {
 #' \item{"max"}
 #' }
 #' @param edgeSep A character seperating the nodes in an edge label
-#' @param hideNull (Boolean) hide null edges?
+#' @param showNull (Boolean) hide null edges?
 #' @param label_columns (character) An array of columns to use to make edge labels
 #' @returns a list that can be read by visNetwork
 #' @importFrom dplyr filter %>%
@@ -162,6 +178,12 @@ add_null_edge <- function(edgedf, nodeid) {
 #' @export
 graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
                                   label_columns = c("type", "penalty")) {
+  # CMD Check compatibility section
+  type <- NULL
+  state1 <- NULL
+  . <- NULL
+  # End CMD compatibility section
+
   graphdf <- data.table(graphdf)
 
   # Keep track of starting and ending nodes, but seperate them from the rest
@@ -257,6 +279,10 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
 #' visNetwork_to_graphdf(graphdf_to_visNetwork(gfpop::graph(type = "std")))
 #' @export
 visNetwork_to_graphdf <- function(visNetwork_list) {
+  # CMD Check compatibility section
+  label <- NULL
+  # End CMD compatibility section
+
   if (nrow(visNetwork_list$edges) == 0) {
     return(data.table())
   }
@@ -363,6 +389,12 @@ generate_visNetwork <- function(graph_data) {
 #' @import visNetwork
 #' @export
 modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
+  # CMD Check compatibility section
+  `:=` <- NULL
+  . <- NULL
+  label <- NULL
+  # End CMD compatibility section
+
   graphdata_visNetwork_return <- graphdata_visNetwork
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
@@ -458,7 +490,7 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
 #' @param old_edges A dataframe in visNetwork edges format
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
 #' @param edgeSep A character seperating the nodes in an edge label
-#' @param hideNull (Boolean) hide null edges?
+#' @param showNull (Boolean) hide null edges?
 #' @param label_columns (character) An array of columns to use to make edge labels
 #' @param columns_to_exclude (character) An array of columns not to include in the update
 #' @export
