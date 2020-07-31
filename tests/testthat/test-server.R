@@ -64,7 +64,7 @@ test_that(
         # Set some sample data from an external source
         session$setInputs(primary_input = list(
           datapath =
-            "https://raw.githubusercontent.com/julianstanley/gfpop-gui/master/data/datatest.csv"
+            "https://raw.githubusercontent.com/julianstanley/gfpopgui/master/data/datatest.csv"
         ))
 
         assert_that(
@@ -86,10 +86,12 @@ test_that(
           is.null(gfpop_data$main_data)
         )
 
-        session$setInputs(ndata = 100, sigma = 1, genData = input$genData + 1,
-                          nChangepoints = 5, eChangepoints = 1,
-                          meansChangepoints = "", typeChangepoints = "mean",
-                          gammaChangepoints = 1)
+        session$setInputs(
+          ndata = 100, sigma = 1, genData = input$genData + 1,
+          nChangepoints = 5, eChangepoints = 1,
+          meansChangepoints = "", typeChangepoints = "mean",
+          gammaChangepoints = 1
+        )
         assert_that(
           "The generate data reactive works",
           nrow(gfpop_data$main_data) == 100,
@@ -105,7 +107,7 @@ test_that(
 
         session$setInputs(constraint_graph = list(
           datapath =
-            "https://raw.githubusercontent.com/julianstanley/gfpop-gui/master/data/graphtest.csv"
+            "https://raw.githubusercontent.com/julianstanley/gfpopgui/master/data/graphtest.csv"
         ))
 
         assert_that(
@@ -376,7 +378,12 @@ test_that(
           )
         )
 
+        # Run through the switch-a-roo once
+        gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
+
         session$setInputs(graphOutput_cell_edit = list(row = 2, col = 5, value = 20))
+
+
 
         assert_that(
           "Can edit penalty from graphOutput",
@@ -409,6 +416,18 @@ test_that(
           "Can edit nodes from graphoutput_visNodes",
           all(gfpop_data$graphdata_visNetwork$nodes$size == c(100)),
           list(gfpop_data$graphdata_visNetwork$nodes)
+        )
+      
+        # Start/end node testing
+        session$setInputs(setStart = "Std", setEnd = "Std",
+                          setStartEnd_button = 0)
+        assert_that(
+          "Can set a start and end nodes",
+          gfpop_data$graphdata$type[3] == "start" &
+            gfpop_data$graphdata$state1[3] == "Std" &
+            gfpop_data$graphdata$type[4] == "end" &
+            gfpop_data$graphdata$state1[4] == "Std",
+          list(gfpop_data)
         )
       })
     )

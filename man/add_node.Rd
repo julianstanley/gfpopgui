@@ -18,7 +18,7 @@ add_node(
 )
 }
 \arguments{
-\item{nodedf}{a dataframe containing the nodes.}
+\item{nodedf}{a data.table containing the nodes.}
 
 \item{id}{id of the new node.}
 
@@ -39,7 +39,7 @@ add_node(
 \item{shadow}{Whether this node has a shadow. Default: false}
 }
 \value{
-a dataframe with one more row than nodedf
+a data.table with one more row than nodedf
 }
 \description{
 Add a new node to a visNetwork node dataframe
