@@ -2,7 +2,6 @@
 #' @param graph_df the graph to process
 #' @returns a dataframe with 9 columns, compatable with gfpop
 #' @importFrom dplyr select
-#' @importFrom rlang .data 
 #' @import gfpop
 #' @examples 
 #' graph <- gfpop::graph(type = "std")
