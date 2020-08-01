@@ -281,8 +281,8 @@ mod_analysis_ui <- function(id) {
 }
 
 #' analysis Server Function
-#'
-#' @noRd
+#' @param id The id of this module
+#' @param gfpop_data The main data for the gfpop analysis, passed from home mod
 #' @importFrom shiny reactiveValues observeEvent req reactive isTruthy validate
 #' isolate updateNumericInput renderUI renderText
 #' @importFrom plotly ggplotly renderPlotly plot_ly add_markers
@@ -291,13 +291,22 @@ mod_analysis_ui <- function(id) {
 #' @importFrom data.table data.table rbindlist
 #' @importFrom dplyr mutate filter
 #' @importFrom gfpop gfpop
-#' @importFrom rlang .data
 #' @importFrom shinyalert shinyalert
-#' @importFrom plyr rbind.fill
 #' @importFrom shinyjs onevent
 #' @import gfpop
 #' @export
 mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
+  # CMD Check compatibility section
+  moduleServer <- NULL
+  updateTextInput <- NULL
+  observe <- NULL
+  type <- NULL
+  to <- NULL
+  from <- NULL
+  state <- NULL
+  label <- NULL
+  # End CMD compatibility section
+
   moduleServer(
     id,
     function(input, output, session) {
@@ -564,7 +573,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         
         # Update graphdata via proxy
         gfpop_data$graphdata <- data.table(gfpop_data$graphdata)
-        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, ..j])
+        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j, with=F])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
 
         # Make sure visNetwork data stays up-to-date
@@ -585,7 +594,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$edges[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$edges[i, ..j]
+          v, gfpop_data$graphdata_visNetwork$edges[i, j, with=F]
         )
         replaceData(proxy_visEdges, gfpop_data$graphdata_visNetwork$edges, resetPaging = FALSE)
 
@@ -603,7 +612,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$nodes[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$nodes[i, ..j]
+          v, gfpop_data$graphdata_visNetwork$nodes[i, j, with=F]
         )
         replaceData(proxy_visNodes, gfpop_data$graphdata_visNetwork$nodes, resetPaging = FALSE)
 

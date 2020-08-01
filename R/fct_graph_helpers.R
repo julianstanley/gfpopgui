@@ -2,7 +2,6 @@
 #' @param graph_df the graph to process
 #' @returns a dataframe with 9 columns, compatable with gfpop
 #' @importFrom dplyr select
-#' @importFrom rlang .data 
 #' @import gfpop
 #' @examples 
 #' graph <- gfpop::graph(type = "std")
@@ -10,6 +9,10 @@
 #' select_graph_columns(graph)
 #' @export
 select_graph_columns <- function(graph_df) {
+  # CMD Check compatibility section
+  .SD <- NULL
+  # End CMD compatibility section
+  
   graph_df <- data.table(graph_df)
   graph_df[, .SD, .SDcols = c("state1", "state2", "type", "parameter",
                              "penalty", "K", "a", "min", "max")]
@@ -44,6 +47,10 @@ format_edge <- function(edge_df) {
 #' graph_to_R_code(graph)
 #' @export
 graph_to_R_code <- function(graph) {
+  # CMD Check compatibility section
+  type <- NULL
+  # End CMD compatibility section
+
   valid_colnames <- c("state1", "state2",
                       "type", "parameter",
                       "penalty", "K", "a", 

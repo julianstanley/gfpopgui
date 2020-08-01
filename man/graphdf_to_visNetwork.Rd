@@ -29,9 +29,9 @@ Must have the following columns:
 
 \item{edgeSep}{A character seperating the nodes in an edge label}
 
-\item{label_columns}{(character) An array of columns to use to make edge labels}
+\item{showNull}{(Boolean) hide null edges?}
 
-\item{hideNull}{(Boolean) hide null edges?}
+\item{label_columns}{(character) An array of columns to use to make edge labels}
 }
 \value{
 a list that can be read by visNetwork

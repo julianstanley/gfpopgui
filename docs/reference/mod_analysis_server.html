@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a details drop-down with the given summary and content — details • gfpopgui</title>
+<title>analysis Server Function — mod_analysis_server • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Create a details drop-down with the given summary and content — details" />
-<meta property="og:description" content="Create a details drop-down with the given summary and content" />
+<meta property="og:title" content="analysis Server Function — mod_analysis_server" />
+<meta property="og:description" content="analysis Server Function" />
 
 
 
@@ -123,37 +123,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a details drop-down with the given summary and content</h1>
-    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/utils_general.R'><code>R/utils_general.R</code></a></small>
-    <div class="hidden name"><code>details.Rd</code></div>
+    <h1>analysis Server Function</h1>
+    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/mod_analysis.R'><code>R/mod_analysis.R</code></a></small>
+    <div class="hidden name"><code>mod_analysis_server.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create a details drop-down with the given summary and content</p>
+    <p>analysis Server Function</p>
     </div>
 
-    <pre class="usage"><span class='fu'>details</span>(<span class='no'>summary</span>, <span class='no'>content</span>, <span class='kw'>summary_multiplier</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+    <pre class="usage"><span class='fu'>mod_analysis_server</span>(<span class='no'>id</span>, <span class='kw'>gfpop_data</span> <span class='kw'>=</span> <span class='fu'>reactiveValues</span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>summary</th>
-      <td><p>Content for the 'summary' component of the details tag</p></td>
+      <th>id</th>
+      <td><p>The id of this module</p></td>
     </tr>
     <tr>
-      <th>content</th>
-      <td><p>Content to be put in the details tag</p></td>
-    </tr>
-    <tr>
-      <th>summary_multiplier</th>
-      <td><p>A size multiplier for the summary size. 2=2X, etc.</p></td>
+      <th>gfpop_data</th>
+      <td><p>The main data for the gfpop analysis, passed from home mod</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>an HTML object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

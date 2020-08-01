@@ -86,14 +86,17 @@ mod_home_ui <- function(id) {
 }
 
 #' home Server Function
-#'
-#' @noRd
+#' @param id The id of this module
 #' @importFrom shiny reactive isTruthy req observeEvent
 #' @importFrom data.table fread
 #' @importFrom DT renderDataTable
 #' @importFrom shinyalert shinyalert
 #' @export
 mod_home_server <- function(id) {
+  # CMD Check compatibility section
+  moduleServer <- NULL
+  # End CMD compatibility section
+  
   moduleServer(
     id,
     function(input, output, session) {

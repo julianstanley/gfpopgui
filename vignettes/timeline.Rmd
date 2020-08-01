@@ -1,6 +1,7 @@
 ---
 title: "GSOC 2020 Timeline Updates"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette: default
 vignette: >
   %\VignetteIndexEntry{GSOC 2020 Timeline Updates}
   %\VignetteEngine{knitr::rmarkdown}
@@ -1503,6 +1504,62 @@ For more information, see the [associated commit](https://github.com/julianstanl
 
 * Write some more documentation
 * Test and optimize Phase 2 features
+
+### Quick Logo Design
+
+I made a quick logo! Here it is:
+
+<img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="200">
+
+I made the top plot in `ggplot`, and then edited the colors with illustrator. I made the bottom graph first in visNetwork but, since visNetwork would only export non-vector images, I just drew it in illustrator.
+
+Hopefully, it helps convey how gfpop is slightly different than other changepoint packages, like `changepoint`. 
+
+Conveniently, it also looks a bit like a face.
+
+### data.table
+
+I should have been using `data.table` from the start of this project. Not only is it much more efficient, it also makes filtering and mutating much easier.
+
+For example, previously, I had to write a utility function to use `dplyr::mutate`, but by a row condition instead of by column (see `mutate_cond` in the timeline entry from May 25th). But, with data.table, it's super easy to mutate by a row condition. For example:
+
+```R
+> dt <- data.table(gfpop::graph(type = "updown"))
+> dt[state1 == "Up", penalty := 100]
+> dt
+#    state1 state2 type parameter penalty   K a min max
+# 1:     Dw     Dw null         1       0 Inf 0  NA  NA
+# 2:     Up     Up null         1     100 Inf 0  NA  NA
+# 3:     Dw     Up   up         0       0 Inf 0  NA  NA
+# 4:     Up     Dw down         0     100 Inf 0  NA  NA
+```
+
+It was a little more tricky for me to figure out how to mutate _multiple_ columns at once like this.
+
+For this, the [data.table and dplyr tour page](https://atrebas.github.io/post/2019-03-03-datatable-dplyr/) was absolutely invaluable. 
+
+It didn't have my exact case, but it showed me how to use `.()` to enclose multiple arguments. So, to mutate multiple columns, for example:
+
+```R
+> dt <- data.table(gfpop::graph(type = "updown"))
+> dt[state1 == "Up", c("penalty", "a") := .(100, 5)]
+> dt
+#    state1 state2 type parameter penalty   K a min max
+# 1:     Dw     Dw null         1       0 Inf 0  NA  NA
+# 2:     Up     Up null         1     100 Inf 5  NA  NA
+# 3:     Dw     Up   up         0       0 Inf 0  NA  NA
+# 4:     Up     Dw down         0     100 Inf 5  NA  NA
+```
+
+### R CMD Check and Documentation
+
+I also made some small changes to make R CMD Check pass and to reformat the documentation. 
+
+For example, R CMD Check kept complaining that there was no visible definition for some of the variables I was using to subset and filter data.tables. This had happened previously with dplyr, and the solution was to import .data from rlang, and then use `.data$colname` instead of `colname`, for example. 
+
+I learned a more general solution [in this thread](https://github.com/Rdatatable/data.table/issues/850), which is to just assign those names to NULL at the top of a function definition. So, for example, if R CMD Check is complaining that `colname` is not defined, just set `colname <- NULL` at the top of the function.
+
+I also updated the documentation, switching from docusaurus to pkgdown (which is what you're probably reading this on now). Docusaurus is great for large packages and complex documentation, but it seemed like too much overhead for my purposes with this package, so I just switched this timeline to a vignette.
 
 # Phase 3
 
