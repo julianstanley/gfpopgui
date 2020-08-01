@@ -339,7 +339,7 @@ test_that(
           )
         }
         # Changepoint tests ------------------------------------------------------
-        gfpop_data$main_data <- data.frame(
+        gfpop_data$main_data <- data.table(
           X = 1:100,
           Y = gfpop::dataGenerator(100, c(0.1, 0.3, 0.5, 0.8, 1),
             c(1, 2, 1, 3, 1),
