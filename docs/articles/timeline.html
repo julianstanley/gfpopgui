@@ -1416,6 +1416,48 @@ gfpop_data$main_data &lt;- primary_input
 <li>Test and optimize Phase 2 features</li>
 </ul>
 </div>
+<div id="quick-logo-design" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quick-logo-design" class="anchor"></a>Quick Logo Design</h3>
+<p>I made a quick logo! Here it is:</p>
+<p><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="200"></p>
+<p>I made the top plot in <code>ggplot</code>, and then edited the colors with illustrator. I made the bottom graph first in visNetwork but, since visNetwork would only export non-vector images, I just drew it in illustrator.</p>
+<p>Hopefully, it helps convey how gfpop is slightly different than other changepoint packages, like <code>changepoint</code>.</p>
+<p>Conveniently, it also looks a bit like a face.</p>
+</div>
+<div id="data-table" class="section level3">
+<h3 class="hasAnchor">
+<a href="#data-table" class="anchor"></a>data.table</h3>
+<p>I should have been using <code>data.table</code> from the start of this project. Not only is it much more efficient, it also makes filtering and mutating much easier.</p>
+<p>For example, previously, I had to write a utility function to use <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate</a></code>, but by a row condition instead of by column (see <code>mutate_cond</code> in the timeline entry from May 25th). But, with data.table, it’s super easy to mutate by a row condition. For example:</p>
+<div class="sourceCode" id="cb47"><html><body><pre class="r">&gt; dt &lt;- data.table(gfpop::graph(type = "updown"))
+&gt; dt[state1 == "Up", penalty := 100]
+&gt; dt
+#    state1 state2 type parameter penalty   K a min max
+# 1:     Dw     Dw null         1       0 Inf 0  NA  NA
+# 2:     Up     Up null         1     100 Inf 0  NA  NA
+# 3:     Dw     Up   up         0       0 Inf 0  NA  NA
+# 4:     Up     Dw down         0     100 Inf 0  NA  NA</pre></body></html></div>
+<p>It was a little more tricky for me to figure out how to mutate <em>multiple</em> columns at once like this.</p>
+<p>For this, the <a href="https://atrebas.github.io/post/2019-03-03-datatable-dplyr/">data.table and dplyr tour page</a> was absolutely invaluable.</p>
+<p>It didn’t have my exact case, but it showed me how to use <code>.()</code> to enclose multiple arguments. So, to mutate multiple columns, for example:</p>
+<div class="sourceCode" id="cb48"><html><body><pre class="r">&gt; dt &lt;- data.table(gfpop::graph(type = "updown"))
+&gt; dt[state1 == "Up", c("penalty", "a") := .(100, 5)]
+&gt; dt
+#    state1 state2 type parameter penalty   K a min max
+# 1:     Dw     Dw null         1       0 Inf 0  NA  NA
+# 2:     Up     Up null         1     100 Inf 5  NA  NA
+# 3:     Dw     Up   up         0       0 Inf 0  NA  NA
+# 4:     Up     Dw down         0     100 Inf 5  NA  NA</pre></body></html></div>
+</div>
+<div id="r-cmd-check-and-documentation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#r-cmd-check-and-documentation" class="anchor"></a>R CMD Check and Documentation</h3>
+<p>I also made some small changes to make R CMD Check pass and to reformat the documentation.</p>
+<p>For example, R CMD Check kept complaining that there was no visible definition for some of the variables I was using to subset and filter data.tables. This had happened previously with dplyr, and the solution was to import .data from rlang, and then use <code>.data$colname</code> instead of <code>colname</code>, for example.</p>
+<p>I learned a more general solution <a href="https://github.com/Rdatatable/data.table/issues/850">in this thread</a>, which is to just assign those names to NULL at the top of a function definition. So, for example, if R CMD Check is complaining that <code>colname</code> is not defined, just set <code>colname &lt;- NULL</code> at the top of the function.</p>
+<p>I also updated the documentation, switching from docusaurus to pkgdown (which is what you’re probably reading this on now). Docusaurus is great for large packages and complex documentation, but it seemed like too much overhead for my purposes with this package, so I just switched this timeline to a vignette.</p>
+</div>
 </div>
 </div>
 <div id="phase-3" class="section level1">
