@@ -303,7 +303,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
   type <- NULL
   to <- NULL
   from <- NULL
-  ..j <- NULL
   state <- NULL
   label <- NULL
   # End CMD compatibility section
@@ -574,7 +573,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         
         # Update graphdata via proxy
         gfpop_data$graphdata <- data.table(gfpop_data$graphdata)
-        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, ..j])
+        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j, with=F])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
 
         # Make sure visNetwork data stays up-to-date
@@ -595,7 +594,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$edges[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$edges[i, ..j]
+          v, gfpop_data$graphdata_visNetwork$edges[i, j, with=F]
         )
         replaceData(proxy_visEdges, gfpop_data$graphdata_visNetwork$edges, resetPaging = FALSE)
 
@@ -613,7 +612,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$nodes[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$nodes[i, ..j]
+          v, gfpop_data$graphdata_visNetwork$nodes[i, j, with=F]
         )
         replaceData(proxy_visNodes, gfpop_data$graphdata_visNetwork$nodes, resetPaging = FALSE)
 

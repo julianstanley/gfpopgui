@@ -24,9 +24,6 @@ NonetoNA <- function(vec) {
 #' @returns a character vector combining those columns as specified
 #' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
-  # CMD Check compatibility section
-  ..columns <- NULL
-  # End CMD compatibility section
 
   graphdf <- data.table(graphdf)
   # For compatability with graphdf and visNetwork edges
@@ -42,9 +39,9 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
     }, USE.NAMES = F)
   }
   if (length(columns) > 1) {
-    as.character(apply(graphdf[, ..columns], 1, paste, collapse = collapse))
+    as.character(apply(graphdf[, columns, with=F], 1, paste, collapse = collapse))
   } else if (length(columns) == 1) {
-    as.character(graphdf[, ..columns[1]])
+    as.character(graphdf[, columns[1], with=F])
   } else {
     as.character(rep(" ", dim(graphdf)[1]))
   }
@@ -418,17 +415,7 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
             .("", event$type, event$parameter, event$penalty, event$K,
               event$a, event$min, event$max, angle, 40)
             ]
-    # edges[id == changed_id, label := ""]
-    # edges[id == changed_id, type := event$type]
-    # edges[id == changed_id, parameter := event$parameter]
-    # edges[id == changed_id, penalty := event$penalty]
-    # edges[id == changed_id, K := event$K]
-    # edges[id == changed_id, a := event$a]
-    # edges[id == changed_id, min := event$min]
-    # edges[id == changed_id, max := event$max]
-    # edges[id == changed_id, selfReference.angle := angle]
-    # edges[id == changed_id, selfReference.size := 40]
-    # 
+
     graphdata_visNetwork_return$edges <- edges
   }
 
