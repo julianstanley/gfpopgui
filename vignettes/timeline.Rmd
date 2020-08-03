@@ -1565,6 +1565,19 @@ I also updated the documentation, switching from docusaurus to pkgdown (which is
 
 ## August 01 - August 09
 
+We're in Phase 3 already! Time is weird.
+
+Now, time to focus on writing more tests and ensuring that `gfpopgui` is as fast,
+stable, and useable as possible.
+
+### Goals
+
+* Write more testthat tests, modularizing as necessary
+* Write more Selenium tests
+* Write more vignettes, including a SauceLabs/Selenium one, opening issues as necessary
+* Fix bugs that come up while working on the three previous bullets
+
+
 ## August 10 - August 16
 
 ## August 17 - August 23
