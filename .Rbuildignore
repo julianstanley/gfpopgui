@@ -19,3 +19,7 @@ deploy.R
 tests/testthat/screenshots/*
 _pkgdown.yml
 data/*
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
