@@ -31,7 +31,8 @@ test_that(
       shiny::testServer(app_server_test, {
         assert_that(
           "graphdata is successfully initialized at the app_server level",
-          all(names(gfpop_data) == c("graphdata_visNetwork", "graphdata")),
+          all(sapply(names(gfpop_data), 
+                     function(x) x %in%  c("graphdata_visNetwork", "graphdata"))),
           paste0("Failed, names are: ", names(gfpop_data))
         )
       })
@@ -47,7 +48,8 @@ test_that(
       shiny::testServer(mod_home_server, {
         assert_that(
           "Before any inputs are given, the app should have graphdata loaded",
-          all(names(gfpop_data) == c("graphdata_visNetwork", "graphdata")),
+          all(sapply(names(gfpop_data), 
+                     function(x) x %in%  c("graphdata_visNetwork", "graphdata"))),
           paste0("Failed, names are: ", names(gfpop_data))
         )
 
