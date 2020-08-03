@@ -1,6 +1,6 @@
 #' Adds changepoints annotations to a plotly plot.
 #' @param plotly_obj a plotly object
-#' @param original_data A dataset with "X" and "Y" columns (column names required)
+#' @param original_data A dataset with two columns
 #' @param changepoint_data The output of gfpop::gfpop() with original_data
 #' @returns A list of 3 objects: "plot" (the plotly plot with changepoints added),
 #' "changepoint_annotations", and "changepoint_annotations_regions"
@@ -12,93 +12,73 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     hide_legend()
 
   # Changepoint_annotations describe actual (vertical) changepoints
-  # changepoints_annotations_regions describe the segments (horizontal)
-  # between each changepoint.
-  changepoint_annotations_regions <- data.table(
-    x = c(), y = c(), text = c(),
-    state = c()
-  )
-  changepoint_annotations <- data.table(
-    x = c(), y = c(), text = c(),
-    state = c()
-  )
+  # changepoints_annotations_regions describe the segments (horizontal) between
+  changepoint_annotations_regions <- data.table()
+  changepoint_annotations <- data.table()
 
+  # ds = dataspace, since changepoint data refers to indices, not in dataspace
   changepoints <- changepoint_data$changepoints
-
-  # Note: ds = dataspace, since changepoint data refers to indicates, not in dataspace
   previous_changepoint <- 1
-  previous_changepoint_ds <- original_data$X[1]
-  i <- 1
-  # Add each changepoint to the given plotly object
-  # TODO: carefully add support for 0 or 1 changepoints
-  if (length(changepoints) > 1) {
-    for (i in 1:length(changepoints)) {
-      changepoint <- changepoints[i]
-      changepoint_ds <- original_data$X[changepoint]
+  previous_changepoint_ds <- original_data[[1]][1]
 
-      # The region preceeding a changepoint, or between two changepoints
+  # Add each changepoint to the given plotly object
+  if (length(changepoints) > 1) {
+    lapply(1:length(changepoints), FUN = function(i) {
+      changepoint <- changepoints[i]
+      previous_changepoint <- if (i > 1) changepoints[i - 1] else 1
+      changepoint_ds <- original_data[[1]][changepoint]
+      previous_changepoint_ds <- original_data[[1]][previous_changepoint]
+
       changeregion <- seq(previous_changepoint, changepoint)
       changeregion_ds <- seq(previous_changepoint_ds,
         changepoint_ds,
         length.out = 3
       )
 
-      changepoint_annotations_regions <- rbind(
-        changepoint_annotations_regions,
-        data.table(
-          x = c(changeregion_ds, NA),
-          y = c(rep(changepoint_data$parameters[i], length(changeregion_ds)), NA),
-          text = c(rep(
-            paste0(
-              "State: ", changepoint_data$states[i], "\n",
-              "Region mean: ", round(changepoint_data$parameters[i], 2), "\n",
-              "Next changepoint: ", round(changepoint_ds, 2)
-            ),
-            length(changeregion_ds)
-          ), NA),
-          state = changepoint_data$states[i]
+      changepoint_annotations_regions <<- rbindlist(
+        list(
+          changepoint_annotations_regions,
+          make_region(
+            region_x = changeregion_ds,
+            parameter_y = changepoint_data$parameters[i],
+            state = changepoint_data$states[i],
+            next_cp = changepoint_ds, add_na = TRUE
+          )
         )
       )
-      # If this isn't the first region, connect this region with the last
+
       if (i > 1) {
-        changepoint_annotations <- rbind(
-          changepoint_annotations,
-          data.table(
-            x = c(rep(previous_changepoint_ds, 5), NA),
-            y = c(seq(changepoint_data$parameters[i - 1],
-              changepoint_data$parameters[i],
-              length.out = 2
-            ), NA),
-            text = c(
-              rep(paste0("Changepoint #", i - 1, ": ", round(previous_changepoint_ds, 2)), 5),
-              NA
-            ),
-            state = paste0(changepoint_data$states[i - 1], ",TO,", changepoint_data$states[i])
+        changepoint_annotations <<- rbindlist(
+          list(
+            changepoint_annotations,
+            make_changepoint(
+              parameter_x = previous_changepoint_ds,
+              region_y = seq(changepoint_data$parameters[i - 1],
+                changepoint_data$parameters[i],
+                length.out = 2
+              ),
+              new_state = changepoint_data$states[i],
+              previous_state = changepoint_data$states[i - 1],
+              changepoint_number = i - 1
+            )
           )
         )
       }
-
-
-      # Update the previous changepoints
-      previous_changepoint <- changepoint
-      previous_changepoint_ds <- changepoint_ds
-    }
+    })
   } else {
     changepoint_annotations_regions <-
-      data.table(
-        x = seq(min(original_data$X), max(original_data$X), length.out = 3),
-        y = changepoint_data$parameters[1],
-        text =
-          paste0(
-            "State: ", changepoint_data$states[1], "\n",
-            "Region mean: ", round(changepoint_data$parameters[1], 2), "\n",
-            "Next changepoint: ", round(max(original_data$X), 2)
-          ),
-        state = changepoint_data$states[i]
+      make_region(
+        region_x = seq(min(original_data[[1]]), max(original_data[[1]]),
+          length.out = 3
+        ),
+        parameter_y = changepoint_data$parameters[1],
+        state = changepoint_data$states[1],
+        next_cp = max(original_data[[1]]),
+        add_na = FALSE
       )
   }
 
-
+  # Add the changeregions on top of the base plotly plot
   return_plotly <- return_plotly %>%
     add_lines(
       data = changepoint_annotations_regions,
@@ -112,6 +92,8 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     )
 
   if (nrow(changepoint_annotations) > 0) {
+    # There must also be (vertical) changepoints, so add those on top of the
+    # base plotly plot
     return_plotly <- return_plotly %>%
       add_lines(
         data = changepoint_annotations,
@@ -130,4 +112,70 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     changepoint_annotations = changepoint_annotations,
     changepoint_annotations_regions = changepoint_annotations_regions
   )
+}
+
+#' Make a changeregion data.table
+#' @param region_x The x values over which this region spans
+#' @param parameter_y The median of this region
+#' @param state The state of this region
+#' @param next_cp The median of the next region
+#' @param add_na Whether to add a row of NAs at the bottom of the return table
+#' @returns (data.table) describing the changeregion
+make_region <- function(region_x, parameter_y, state, next_cp = NaN, add_na = TRUE) {
+  x <- region_x
+  y <- rep(parameter_y, length(x))
+  text_individual <- paste0(
+    "State: ", state, "\n",
+    "Region mean: ", round(parameter_y, 2), "\n",
+    "Next changepoint: ", round(next_cp, 2)
+  )
+  text <- rep(text_individual, length(x))
+  state <- rep(state, length(x))
+
+  if (add_na) {
+    x <- c(x, NA)
+    y <- c(y, NA)
+    text <- c(text, NA)
+    state <- c(state, NA)
+  }
+
+  data.table(x = x, y = y, text = text, state = state)
+}
+
+#' Make a changepoint data.table
+#' @param parameter_x The x location of this changepoint
+#' @param region_y A range of values between the mean of the previous changeregion
+#' and the mean of the next changeregion
+#' @param new_state The name of the next changeregion's state
+#' @param previous_state The name of the previous changeregion's state
+#' @param changepoint_number The index/number of this changepoint (default NaN)
+#' @param add_na Whether to add a row of NAs at the bottom of the return table
+#' @returns (data.table) describing the changepoint
+make_changepoint <- function(parameter_x, region_y, new_state, previous_state, changepoint_number = NaN,
+                             add_na = TRUE) {
+  y <- region_y
+  x <- rep(parameter_x, length(y))
+
+  state_individual <- paste0(previous_state, ",TO,", new_state)
+  state <- rep(state_individual, length(y))
+
+  text_individual <- paste0(
+    "Changepoint at: ", round(parameter_x, 2), " ; ", state_individual
+  )
+  text_individual <- if (is.nan(changepoint_number)) {
+    text_individual
+  } else {
+    paste0(text_individual, " (CP #", changepoint_number, ")")
+  }
+
+  text <- rep(text_individual, length(y))
+
+  if (add_na) {
+    x <- c(x, NA)
+    y <- c(y, NA)
+    text <- c(text, NA)
+    state <- c(state, NA)
+  }
+
+  data.table(x = x, y = y, text = text, state = state)
 }
