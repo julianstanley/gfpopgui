@@ -1,3 +1,15 @@
+visNetwork_attachjs<- "function(el, x) {
+// Validate edge type when the save button is pressed
+$('#editedge-saveButton').on('click', function() {
+let type = $('#editedge-type').val();
+if (!['null', 'std', 'up', 'down', 'abs'].includes(type.toLowerCase())) {
+alert(`${type} is not a valid type. Defaulting to null`);
+$('#editedge-type').val('null');
+}
+})
+}
+"
+
 #' Converts all NA objects in a vector to "None"
 #' @param vec a vector or unnamed list (vector equivalent)
 #' @returns a unnamed list (vector equivalent) where "None"-->NA
@@ -24,24 +36,24 @@ NonetoNA <- function(vec) {
 #' @returns a character vector combining those columns as specified
 #' @export
 create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " | ") {
-
   graphdf <- data.table(graphdf)
   # For compatability with graphdf and visNetwork edges
-  if ("to" %in% colnames(graphdf)) {
+  if (("to" %in% columns | "from" %in% columns) &
+    ("to" %notin% colnames(graphdf))) {
     columns <- sapply(columns, function(x) {
-      if (x == "state1") {
-        "from"
-      } else if (x == "state2") {
-        "to"
+      if (x == "from") {
+        "state1"
+      } else if (x == "to") {
+        "state2"
       } else {
         x
       }
     }, USE.NAMES = F)
   }
   if (length(columns) > 1) {
-    as.character(apply(graphdf[, columns, with=F], 1, paste, collapse = collapse))
+    as.character(apply(graphdf[, columns, with = F], 1, paste, collapse = collapse))
   } else if (length(columns) == 1) {
-    as.character(graphdf[, columns[1], with=F])
+    graphdf[, columns[1], with = F][[columns[1]]]
   } else {
     as.character(rep(" ", dim(graphdf)[1]))
   }
@@ -58,7 +70,7 @@ create_label <- function(graphdf, columns = c("type", "penalty"), collapse = " |
 #' @param min see gfpop::graph
 #' @param max see gfpop::graph
 #' @param columns The columns to include in this edge
-#' @param collapse the character seperating edge columns in this label
+#' @param collapse the character separating edge columns in this label
 #' @export
 create_label_individual <- function(state1, state2, type, parameter,
                                     penalty, K, a, min, max,
@@ -96,7 +108,6 @@ add_node <- function(nodedf, id, label = "", size = 40, start = FALSE,
         color.border = color.border, shadow = shadow
       )
     )
-    
   )
 }
 
@@ -120,7 +131,7 @@ add_node <- function(nodedf, id, label = "", size = 40, start = FALSE,
 #' @returns a dataframe with one more row than edgedf
 #' @importFrom data.table rbindlist
 add_edge <- function(edgedf, id, label, to, from, type, parameter,
-                     penalty, K = Inf, a = 0, min= NA, max = NA, selfReference.angle = NA,
+                     penalty, K = Inf, a = 0, min = NA, max = NA, selfReference.angle = NA,
                      selfReference.size = 40, hidden = FALSE, color = "black") {
   new_row <- list(
     id = id, label = label, to = to, from = from, type = type,
@@ -141,8 +152,8 @@ add_null_edge <- function(edgedf, nodeid) {
     edgedf = edgedf,
     id = paste0(nodeid, "_", nodeid, "_null"),
     label = "null | 0", to = nodeid, from = nodeid,
-    type = "null", parameter = "1", penalty = "0", K = "Inf", a = "0",
-    min = "None", max = "None",
+    type = "null", parameter = 1, penalty = 0, K = Inf, a = 0,
+    min = NA, max = NA,
     selfReference.angle = pi, selfReference.size = 40, hidden = FALSE,
     color = "black"
   )
@@ -167,35 +178,38 @@ add_null_edge <- function(edgedf, nodeid) {
 #' @param edgeSep A character seperating the nodes in an edge label
 #' @param showNull (Boolean) hide null edges?
 #' @param label_columns (character) An array of columns to use to make edge labels
+#' @param edge_ids An array of ids, one for each edge in the graphdf
+#' @param label_collapse the character separating edge columns in this label
 #' @returns a list that can be read by visNetwork
-#' @importFrom dplyr filter %>%
 #' @import visNetwork
 #' @examples
-#' graphdf_to_visNetwork(gfpop::graph(type = "std"))
+#' graphdf_to_visNetwork(gfpop::graph(type = "std"), edge_ids = 1:2)
 #' @export
 graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
-                                  label_columns = c("type", "penalty")) {
+                                  label_columns = c("type", "penalty"),
+                                  label_collapse = " | ",
+                                  edge_ids = c()) {
   # CMD Check compatibility section
   type <- NULL
   state1 <- NULL
-  . <- NULL
   # End CMD compatibility section
 
   graphdf <- data.table(graphdf)
 
-  # Keep track of starting and ending nodes, but seperate them from the rest
+  # Keep track of starting and ending nodes, but separate them from the rest
   starts <- graphdf[type == "start", state1]
-  ends <- graphdf %>%
-    filter(type == "end") %>%
-    select(state1) %>%
-    .$state1
-  graphdf <- graphdf %>% filter(type != "start" & type != "end")
+  ends <- graphdf[type == "end", state1]
+  graphdf <- graphdf[type != "start" & type != "end"]
 
   # Set edge and node names
   edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
 
-  # Determine the value of selfReference.angle and hidden (edge params)
+  if (length(edge_ids) == 0) {
+    edge_ids <- edge_names
+  }
+
+  # Determine the value of dynamic edge parameters
   selfReference.angle <- c()
   hidden <- c()
   apply(graphdf, 1, function(x) {
@@ -211,7 +225,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
     }
   })
 
-  # Determine the value of start and end (node params)
+  # Determine which nodes are start or end nodes
   startbool <- sapply(node_names,
     function(x) tolower(x) %in% tolower(starts),
     USE.NAMES = F
@@ -220,28 +234,27 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
     function(x) tolower(x) %in% tolower(ends),
     USE.NAMES = F
   )
+
+  # Based on what nodes are start or end nodes, determine the node shape
   shape <- mapply(function(start, end) {
     if (start & end) {
       "star"
     } else if (start) {
       "triangle"
-    } else if (end) {
-      "square"
-    } else {
-      "dot"
-    }
+    } else if (end) "square" else "dot"
   }, startbool, endbool)
-  nodes <- data.table(
-    id = node_names, label = node_names, size = 40,
-    start = startbool, end = endbool, shape = shape,
-    color.background = "lightblue", color.border = "lightblue",
-    shadow = FALSE
-  )
 
-  if ("state1_id" %notin% graphdf) {
+  if ("state1_id" %notin% colnames(graphdf)) {
+    nodes <- data.table(
+      id = node_names, label = node_names, size = 40,
+      start = startbool, end = endbool, shape = shape,
+      color.background = "lightblue", color.border = "lightblue",
+      shadow = FALSE
+    )
+
     edges <- data.table(
-      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
-      label = create_label(graphdf, columns = label_columns), to = graphdf$state2, from = graphdf$state1,
+      id = edge_ids,
+      label = create_label(graphdf, columns = label_columns, collapse = label_collapse), to = graphdf$state2, from = graphdf$state1,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
@@ -249,9 +262,16 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
       color = "black"
     )
   } else {
+    nodes <- data.table(
+      id = unique(c(graphdf$state1_id, graphdf$state2_id)), label = node_names, size = 40,
+      start = startbool, end = endbool, shape = shape,
+      color.background = "lightblue", color.border = "lightblue",
+      shadow = FALSE
+    )
+
     edges <- data.table(
-      id = paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep),
-      label = create_label(graphdf, columns = label_columns), to = graphdf$state2_id, from = graphdf$state1_id,
+      id = edge_ids,
+      label = create_label(graphdf, columns = label_columns, collapse = label_collapse), to = graphdf$state2_id, from = graphdf$state1_id,
       type = graphdf$type, parameter = graphdf$parameter,
       penalty = graphdf$penalty, K = as.character(graphdf$K), a = graphdf$a,
       min = as.character(NAtoNone(graphdf$min)), max = as.character(NAtoNone(graphdf$max)),
@@ -280,41 +300,40 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   label <- NULL
   # End CMD compatibility section
 
-  if (nrow(visNetwork_list$edges) == 0) {
+  if (length(visNetwork_list$edges) == 0) {
     return(data.table())
   }
 
   edges <- visNetwork_list$edges
   nodes <- visNetwork_list$nodes
 
-  # State1 and State1 should actually be based on labels, not IDs,
-  # But we should also keep track of the IDs for when we convert back to
-  # visNetwork
+  # Note: graphdf "state1" and "state2" are based on node labels, not on ids.
+  # But visNetwork "to" and "from" are based on ids. So, need to map.
+
+  # For each edge, find the node label associated with state1
   state1 <- unlist(
     apply(
       edges, 1,
       function(x) {
-        nodes %>%
-          filter(id == x[["from"]]) %>%
-          select(label)
+        nodes[id == x[["from"]], "label"]
       }
     ),
     use.names = F
   )
   state1_id <- edges$from
 
+  # For each edge, find the node label associated with state 2
   state2 <- unlist(
     apply(
       edges, 1,
       function(x) {
-        nodes %>%
-          filter(id == x[["to"]]) %>%
-          select(label)
+        nodes[id == x[["to"]], "label"]
       }
     ),
     use.names = F
   )
   state2_id <- edges$to
+
   type <- edges$type
   parameter <- as.numeric(edges$parameter)
   penalty <- as.numeric(edges$penalty)
@@ -322,6 +341,7 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   a <- as.numeric(edges$a)
   min <- as.numeric(NonetoNA(edges$min))
   max <- as.numeric(NonetoNA(edges$max))
+
   data.table(
     state1 = state1, state1_id = state1_id, state2 = state2, type = type,
     state2_id = state2_id, parameter = parameter, penalty = penalty,
@@ -329,17 +349,6 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   )
 }
 
-additional_js <- "function(el, x) {
-// Validate edge type when the save button is pressed
-$('#editedge-saveButton').on('click', function() {
-let type = $('#editedge-type').val();
-if (!['null', 'std', 'up', 'down', 'abs'].includes(type.toLowerCase())) {
-alert(`${type} is not a valid type. Defaulting to null`);
-$('#editedge-type').val('null');
-}
-})
-}
-"
 #' Generates a visNetwork from a list of nodes and edges
 #' @param graph_data A list containing 'nodes' and 'edges' is visNetwork format
 #' @returns a visNetwork object
@@ -374,7 +383,7 @@ generate_visNetwork <- function(graph_data) {
       highlightNearest = list(enabled = T, degree = 0, hover = F)
     ) %>%
     visLayout(randomSeed = 123) %>%
-    onRender(additional_js)
+    onRender(visNetwork_attachjs)
 }
 
 #' Edits a visNetwork data based on the given command, consistent with the format
@@ -390,14 +399,14 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   `:=` <- NULL
   . <- NULL
   label <- NULL
-  # End CMD compatibility section
 
+  # End CMD compatibility section
   graphdata_visNetwork_return <- graphdata_visNetwork
   if (!is.null(event$type)) {
     event$type <- tolower(event$type)
     if (!(event$type %in% c("null", "std", "up", "down", "abs"))) {
-      warning("Invalid 'type' parameter, returning unchanged data and a refresh recommendation.")
-      return(list(data = graphdata_visNetwork, refresh = TRUE))
+      warning("Invalid 'type' parameter, returning unchanged data.")
+      return(graphdata_visNetwork)
     }
   }
   ### Edit Edge --------------------------------------------------------------
@@ -407,14 +416,20 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
     angle <- if (event$type == "null") pi else 2 * pi
 
     edges <- data.table(
-      graphdata_visNetwork_return$edges)
+      graphdata_visNetwork_return$edges
+    )
 
-    edges[id == changed_id, 
-          c("label", "type", "parameter", "penalty", "K", "a", "min", "max",
-          "selfReference.angle", "selfReference.size") :=
-            .("", event$type, event$parameter, event$penalty, event$K,
-              event$a, event$min, event$max, angle, 40)
-            ]
+    edges[
+      id == changed_id,
+      c(
+        "label", "type", "parameter", "penalty", "K", "a", "min", "max",
+        "selfReference.angle", "selfReference.size"
+      ) :=
+        .(
+          "", event$type, event$parameter, event$penalty, event$K,
+          event$a, event$min, event$max, angle, 40
+        )
+    ]
 
     graphdata_visNetwork_return$edges <- edges
   }
@@ -457,7 +472,6 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
     nodes <- data.table(graphdata_visNetwork_return$nodes)
     nodes[id == event$id, label := event$label]
     graphdata_visNetwork_return$nodes <- nodes
-      
   }
 
   ### Delete Node ------------------------------------------------------------
@@ -471,21 +485,22 @@ modify_visNetwork <- function(event, graphdata_visNetwork, addNull = FALSE) {
   graphdata_visNetwork_return
 }
 
-#' Updates the given visNetwork edges, based on a new graphdf,
-#' excluding updates to certain columns. This is useful as to not mess up
-#' visNetwork edge IDs, which are important to keeping visNetwork happy.
+#' Allows to update old visNetwork edges from a new gfpop graphdf,
+#' while only updating certain columns
 #' @param old_edges A dataframe in visNetwork edges format
 #' @param graphdf A graph object (in the form of a dataframe) from gfpop
 #' @param edgeSep A character seperating the nodes in an edge label
 #' @param showNull (Boolean) hide null edges?
 #' @param label_columns (character) An array of columns to use to make edge labels
 #' @param columns_to_exclude (character) An array of columns not to include in the update
+#' @param label_collapse the character separating edge columns in this label
 #' @export
 update_visNetwork_edges <- function(old_edges, graphdf, edgeSep = "_", showNull = TRUE,
                                     label_columns = c("type", "penalty"),
+                                    label_collapse = " | ",
                                     columns_to_exclude = c("id", "to", "from")) {
   return_edges <- old_edges
-  new_edges <- graphdf_to_visNetwork(graphdf, edgeSep, showNull, label_columns)$edges
+  new_edges <- graphdf_to_visNetwork(graphdf, edgeSep, showNull, label_columns, label_collapse)$edges
   for (column in colnames(old_edges)) {
     if (column %notin% columns_to_exclude) {
       return_edges[[column]] <- new_edges[[column]]

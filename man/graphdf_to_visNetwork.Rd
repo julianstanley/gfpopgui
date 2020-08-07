@@ -9,7 +9,8 @@ graphdf_to_visNetwork(
   graphdf,
   edgeSep = "_",
   showNull = TRUE,
-  label_columns = c("type", "penalty")
+  label_columns = c("type", "penalty"),
+  edge_ids = c()
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ Must have the following columns:
 \item{showNull}{(Boolean) hide null edges?}
 
 \item{label_columns}{(character) An array of columns to use to make edge labels}
+
+\item{edge_ids}{An array of ids, one for each edge in the graphdf}
 }
 \value{
 a list that can be read by visNetwork
@@ -41,5 +44,5 @@ Turns a graph dataframe (from gfpop) into a list that
 can be read by visNetwork
 }
 \examples{
-graphdf_to_visNetwork(gfpop::graph(type = "std"))
+graphdf_to_visNetwork(gfpop::graph(type = "std"), edge_ids = 1:2)
 }

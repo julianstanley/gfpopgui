@@ -428,7 +428,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(
           gfpop_data$graphdata,
           showNull = input$showNull,
-          label_columns = input$labels
+          label_columns = input$labels,
+          edge_ids = gfpop_data$graphdata_visNetwork$edges$id
         )
 
         # Hard refresh the graph
@@ -490,7 +491,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         # Update the visNetwork data to match the gfpop data
         gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata,
           showNull = input$showNull,
-          label_columns = input$labels
+          label_columns = input$labels,
+          edge_ids = gfpop_data$graphdata_visNetwork$edges$id
         )
       })
 

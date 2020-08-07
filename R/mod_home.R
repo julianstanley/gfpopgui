@@ -111,7 +111,7 @@ mod_home_server <- function(id) {
         graphdata_visNetwork = graphdf_to_visNetwork(gfpop::graph(
           penalty = as.double(15),
           type = "std"
-        ))
+        ), edge_ids = c("std_std_null", "std_std_std"))
       )
 
       # Main Data Input and Preview-------------------------------------------------
@@ -223,7 +223,10 @@ mod_home_server <- function(id) {
               graph_input <- fread(input$constraint_graph$datapath, sep = ",", stringsAsFactors = F)
               gfpop_data$graph_input <- graph_input
               gfpop_data$graphdata <- gfpop::graph(gfpop_data$graph_input)
-              gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+              gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata,
+                                                                       edge_ids = paste0(gfpop_data$graphdata$state1, "_",
+                                                                                         gfpop_data$graphdata$state2, "_",
+                                                                                         gfpop_data$graphdata$state))
             },
             error = function(e) {
               shinyalert(
