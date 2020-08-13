@@ -582,7 +582,7 @@
 <a href="#use-dtrenderdatatable-not-shinyrenderdatatable" class="anchor"></a>Use DT::renderDataTable, not shiny::renderDataTable</h3>
 <p>While modularizing my code this week, I noticed that I had some errors through Travis that I could not reproduce locally. If you’re reading this and are interested, <a href="https://community.rstudio.com/t/x-must-be-a-vector-travis-but-not-local/68717">here’s a link to my community.rstudio post about the problem</a>.</p>
 <p>Ultimately, I was able to fix the problem by upgrading my R version, which was a few months out of date.</p>
-<p>When I updated, I got errors in my <code><a href="https://rdrr.io/pkg/shiny/man/renderDataTable.html">shiny::renderDataTable</a></code> calls. Evidently <a href="https://community.rstudio.com/t/shiny-1-3-2-renderdatatable-cant-work-now/41935/2">others were also having the same problems in newer R versions</a> and the developers are moving from <code><a href="https://rdrr.io/pkg/shiny/man/renderDataTable.html">shiny::renderDataTable</a></code> to <code><a href="https://rdrr.io/pkg/DT/man/dataTableOutput.html">DT::renderDataTable</a></code>, and switching those functions (and having to tweak a bit to get them to work) fixed things up.</p>
+<p>When I updated, I got errors in my <code><a href="https://shiny.rstudio.com/reference/shiny/latest/renderDataTable.html">shiny::renderDataTable</a></code> calls. Evidently <a href="https://community.rstudio.com/t/shiny-1-3-2-renderdatatable-cant-work-now/41935/2">others were also having the same problems in newer R versions</a> and the developers are moving from <code><a href="https://shiny.rstudio.com/reference/shiny/latest/renderDataTable.html">shiny::renderDataTable</a></code> to <code><a href="https://rdrr.io/pkg/DT/man/dataTableOutput.html">DT::renderDataTable</a></code>, and switching those functions (and having to tweak a bit to get them to work) fixed things up.</p>
 <p>But, this episode convinced me that I needed to be more explicit about where my functions come from. So, I’ve completely removed <code>@import</code> statements in my ROxygen documentation comments and replaced them with <code>@importFrom</code> statements. This way, I am being explicit about the packages from which each of my function calls come.</p>
 </div>
 </div>
@@ -799,32 +799,32 @@
 <p>It’s really great because it allows you to access all of the inputs inside of your reactive shiny objects. For example,</p>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
 <span class="no">example_module_server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">id</span>) {
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/moduleServer.html">moduleServer</a></span>(
+  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/moduleServer.html">moduleServer</a></span>(
     <span class="no">id</span>,
     <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>, <span class="no">session</span>) {
-      <span class="no">myvals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html">reactiveValues</a></span>(<span class="kw">example</span> <span class="kw">=</span> <span class="st">"Hello, world!"</span>)
+      <span class="no">myvals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveValues.html">reactiveValues</a></span>(<span class="kw">example</span> <span class="kw">=</span> <span class="st">"Hello, world!"</span>)
     }
   )
 }
 
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
   <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">myvals</span>$<span class="no">example</span>)
 })</pre></body></html></div>
 <div class="sourceCode" id="cb20"><html><body><pre class="r">[1] "Hello, world!"</pre></body></html></div>
 <p>It also allows you to set inputs:</p>
 <div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
 <span class="no">example_module_server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">id</span>) {
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/moduleServer.html">moduleServer</a></span>(
+  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/moduleServer.html">moduleServer</a></span>(
     <span class="no">id</span>,
     <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>, <span class="no">session</span>) {
-      <span class="no">my_func</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span>({
+      <span class="no">my_func</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactive.html">reactive</a></span>({
         <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">input</span>$<span class="no">my_input</span>)
       })
     }
   )
 }
 
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
   <span class="no">session</span>$<span class="fu">setInputs</span>(<span class="kw">my_input</span> <span class="kw">=</span> <span class="st">"This is my input!"</span>)
   <span class="fu">my_func</span>()
 })</pre></body></html></div>
@@ -836,17 +836,17 @@
 <p>This testServer code should print “Button was pressed”, but it doesn’t.]</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
 <span class="no">example_module_server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">id</span>) {
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/moduleServer.html">moduleServer</a></span>(
+  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/moduleServer.html">moduleServer</a></span>(
     <span class="no">id</span>,
     <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>, <span class="no">session</span>) {
-      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html">eventReactive</a></span>(<span class="no">input</span>$<span class="no">my_button</span>, {
+      <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html">eventReactive</a></span>(<span class="no">input</span>$<span class="no">my_button</span>, {
         <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="st">"Button was pressed"</span>)
       })
     }
   )
 }
 
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/testServer.html">testServer</a></span>(<span class="no">example_module_server</span>, {
   <span class="co"># my_button should already be NULL, but for good measure:</span>
   <span class="no">session</span>$<span class="fu">setInputs</span>(<span class="kw">my_button</span> <span class="kw">=</span> <span class="kw">NULL</span>)
   <span class="co"># This should be what happens when the button is pressed</span>
@@ -1014,13 +1014,13 @@
 <h3 class="hasAnchor">
 <a href="#adding-save-and-load-buttons" class="anchor"></a>Adding ‘Save’ and ‘Load’ buttons</h3>
 <p>In <code>gfpop</code>, users should be able to save and load their analyses, complete with their graphical constraint and main <code>gfpop</code> parameters.</p>
-<p>Implementing this at a basic level was fairly straightforward: when a user presses “save”, all inputs that are necessary to reproduce the analysis should be saved in a <code><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html">reactiveValues()</a></code> list, with some user-supplied identifier.</p>
+<p>Implementing this at a basic level was fairly straightforward: when a user presses “save”, all inputs that are necessary to reproduce the analysis should be saved in a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveValues.html">reactiveValues()</a></code> list, with some user-supplied identifier.</p>
 <p>Then, users can choose from saved identifiers to re-load saved analyses.</p>
 <p>Practically, it looks something like this:</p>
 <div id="initalize-reactive-values-list" class="section level4">
 <h4 class="hasAnchor">
 <a href="#initalize-reactive-values-list" class="anchor"></a>Initalize reactive values list</h4>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">saved_analyses</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html">reactiveValues</a></span>(
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">saved_analyses</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveValues.html">reactiveValues</a></span>(
     <span class="kw">saved_full</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(),
     <span class="kw">saved_descriptions</span> <span class="kw">=</span> <span class="fu">data.table</span>()
 )</pre></body></html></div>
@@ -1089,17 +1089,17 @@ selectInput(ns("loadId"), "Select a previous analysis",
 <p>This part was a little tricky. First, to load the saved analyses, I need to coerce them into a reactive object, since I used <code>reactiveValuesToList</code> when saving. Then, I need to use a <code>&lt;&lt;-</code> to assign <code>gfpop_data</code> globally, not just within the observeEvent. Then, I use <code>do.call</code> to make each component of the saved list reactive.</p>
 <p>In addition, overwriting <code>gfpop_data</code> does not update the graph (since there’s a manual button to update that graph). So, I use <code>updateNumericInput</code> to manually refresh the graph.</p>
 <div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="co"># In UI</span>
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span>(
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html">actionButton</a></span>(
         <span class="kw">inputId</span> <span class="kw">=</span> <span class="fu">ns</span>(<span class="st">"loadButton"</span>),
         <span class="kw">label</span> <span class="kw">=</span> <span class="st">"Load Analysis"</span>
     )
 
 <span class="co"># In Server</span>
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html">observeEvent</a></span>(<span class="no">input</span>$<span class="no">loadButton</span>, {
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html">req</a></span>(<span class="no">input</span>$<span class="no">loadId</span>)
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html">observeEvent</a></span>(<span class="no">input</span>$<span class="no">loadButton</span>, {
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html">req</a></span>(<span class="no">input</span>$<span class="no">loadId</span>)
 <span class="no">gfpop_data</span> <span class="kw">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"reactiveValues"</span>, <span class="no">saved_analyses</span>$<span class="no">saved_full</span><span class="kw">[[</span><span class="no">input</span>$<span class="no">loadId</span>]])
 
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/updateNumericInput.html">updateNumericInput</a></span>(
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/updateNumericInput.html">updateNumericInput</a></span>(
     <span class="kw">session</span> <span class="kw">=</span> <span class="no">session</span>, <span class="kw">inputId</span> <span class="kw">=</span> <span class="st">"graph_refresh_helper"</span>,
     <span class="kw">value</span> <span class="kw">=</span> <span class="no">input</span>$<span class="no">graph_refresh_helper</span> + <span class="fl">1</span>
 )
@@ -1129,10 +1129,10 @@ lapply(names(gfpop_data_list[[1]]),
   })</pre></body></html></div>
 <p>To download:</p>
 <div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="co"># Just save gfpop_data as a list</span>
-<span class="no">output</span>$<span class="no">downloadData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/downloadHandler.html">downloadHandler</a></span>(
+<span class="no">output</span>$<span class="no">downloadData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/downloadHandler.html">downloadHandler</a></span>(
     <span class="kw">filename</span> <span class="kw">=</span> <span class="kw">function</span>() <span class="st">"gfpopgui_data.Rdata"</span>,
     <span class="kw">content</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">file</span>) {
-        <span class="no">gfpop_data_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveValuesToList.html">reactiveValuesToList</a></span>(<span class="no">gfpop_data</span>, <span class="kw">all.names</span><span class="kw">=</span><span class="no">T</span>)
+        <span class="no">gfpop_data_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveValuesToList.html">reactiveValuesToList</a></span>(<span class="no">gfpop_data</span>, <span class="kw">all.names</span><span class="kw">=</span><span class="no">T</span>)
         <span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span>(<span class="no">gfpop_data_list</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">file</span>)
     }
 )</pre></body></html></div>
@@ -1261,7 +1261,7 @@ lapply(names(gfpop_data_list[[1]]),
 <a href="#fixing-the-visnetwork-graph-refresh-problem" class="anchor"></a>Fixing the visNetwork graph refresh problem</h3>
 <p>This was deceptively easy. I just needed to use the <code>visNetworkProxy</code> functionality. I had tried to do this before, but thought I was on the wrong path because of some small code bugs.</p>
 <p>In short, if anyone is reading this and trying to resolve a similar problem, just look at the visNetwork example shiny application:</p>
-<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"shiny"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"visNetwork"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html">runApp</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"shiny"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"visNetwork"</span>))</pre></body></html></div>
 <p>Essentially, I previously re-generated the visNetwork plot at certain times. Now, instead of re-generating the visNetwork plot, I just call:</p>
 <div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="fu">visNetworkProxy</span>(<span class="fu">ns</span>(<span class="st">"gfpopGraph"</span>)) <span class="kw">%&gt;%</span>
     <span class="fu">visUpdateNodes</span>(<span class="kw">nodes</span> <span class="kw">=</span> <span class="no">gfpop_data</span>$<span class="no">graphdata_visNetwork</span>$<span class="no">nodes</span>) <span class="kw">%&gt;%</span>
@@ -1274,8 +1274,8 @@ lapply(names(gfpop_data_list[[1]]),
 <p>Users need to be able to pick <em>one</em> starting node, and one ending node.</p>
 <p>They also need to be able to not pick a node at all. By default, all nodes should be able to be starting or ending nodes.</p>
 <p>So, I created dropdown boxes with all current nodes, plus the string “N/A” that users can choose between to set the starting and ending nodes. For example:</p>
-<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="no">output</span>$<span class="no">uiSetStart</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderUI.html">renderUI</a></span>({
-<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span>(<span class="fu">ns</span>(<span class="st">"setStart"</span>), <span class="st">"Select a starting node"</span>,
+<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="no">output</span>$<span class="no">uiSetStart</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderUI.html">renderUI</a></span>({
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/selectInput.html">selectInput</a></span>(<span class="fu">ns</span>(<span class="st">"setStart"</span>), <span class="st">"Select a starting node"</span>,
     <span class="kw">choices</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
     <span class="st">"N/A"</span>,
     <span class="no">gfpop_data</span>$<span class="no">graphdata_visNetwork</span>$<span class="no">nodes</span>$<span class="no">label</span>
@@ -1285,7 +1285,7 @@ lapply(names(gfpop_data_list[[1]]),
 })</pre></body></html></div>
 <p>Notice that I set <code>selected = startEnd$start</code>. What was that about? The problem is that, each time the graphdata updates, the <code>setStart</code> selectInput will be refreshed. But, we want, for example, the starting node dropdown should have the current start node selected. So, I had to create a reactive value that holds the <em>current</em> starting node, and then have that value be the one that is selected in the dropdown.</p>
 <p>Then, I use the value from the dropdown to set the starting node in the gfpop data:</p>
-<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html">observeEvent</a></span>(<span class="no">input</span>$<span class="no">setStartEnd_button</span>, {
+<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html">observeEvent</a></span>(<span class="no">input</span>$<span class="no">setStartEnd_button</span>, {
 
     <span class="co"># new_val: the new start or new end</span>
     <span class="co"># val_type: "start" or "end"</span>
@@ -1321,12 +1321,12 @@ lapply(names(gfpop_data_list[[1]]),
 <div id="common-error-over-isolating-inputs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#common-error-over-isolating-inputs" class="anchor"></a>Common error: over-isolating inputs</h3>
-<p>Lots of errors have popped up while developing this application. One common error is that I tend to overuse the <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">shiny::isolate()</a></code> function.</p>
-<p>The <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate()</a></code> function removes data from shiny’s reactive structure. So, for example, in this function:</p>
-<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="no">output</span>$<span class="no">myOut</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span>(<span class="no">x</span> <span class="kw">&lt;-</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate</a></span>(<span class="no">input</span>$<span class="no">xmax</span>))</pre></body></html></div>
-<p>The <code>myOut</code> plot will only update if I update it manually–unlike it’s counterpart without <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate()</a></code>, which would update each time <code>input$xmax</code> is updated.</p>
-<p>This can be really handy for when outputs are computationally intensive to calculate. For example, I have the user press a “run gfpop” button whenever they want to run gfpop. Without <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate()</a></code>, the gfpop results would update each time an input was changed. And, if a user were changing lots of inputs, that might bog down the app unnecessarily.</p>
-<p>But I have to be careful about using <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate()</a></code>. For example, when building the function that generates some data for gfpop, I initally used it in such a way that isolate was necessary, and it looked a bit like this:</p>
+<p>Lots of errors have popped up while developing this application. One common error is that I tend to overuse the <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">shiny::isolate()</a></code> function.</p>
+<p>The <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate()</a></code> function removes data from shiny’s reactive structure. So, for example, in this function:</p>
+<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="no">output</span>$<span class="no">myOut</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html">renderPlot</a></span>(<span class="no">x</span> <span class="kw">&lt;-</span> <span class="fl">1</span>:<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate</a></span>(<span class="no">input</span>$<span class="no">xmax</span>))</pre></body></html></div>
+<p>The <code>myOut</code> plot will only update if I update it manually–unlike it’s counterpart without <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate()</a></code>, which would update each time <code>input$xmax</code> is updated.</p>
+<p>This can be really handy for when outputs are computationally intensive to calculate. For example, I have the user press a “run gfpop” button whenever they want to run gfpop. Without <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate()</a></code>, the gfpop results would update each time an input was changed. And, if a user were changing lots of inputs, that might bog down the app unnecessarily.</p>
+<p>But I have to be careful about using <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate()</a></code>. For example, when building the function that generates some data for gfpop, I initally used it in such a way that isolate was necessary, and it looked a bit like this:</p>
 <div class="sourceCode" id="cb43"><html><body><pre class="r">primary_input &lt;- data.frame(
     X = 1:isolate(input$ndata)
     Y = dataGenerator(isolate(input$ndata),
@@ -1345,7 +1345,7 @@ primary_input &lt;- data.frame(
 
 gfpop_data$main_data &lt;- primary_input
 })</pre></body></html></div>
-<p>But, the <code><a href="https://rdrr.io/pkg/shiny/man/isolate.html">isolate()</a></code> calls here will prevent this expression from being run more than once! So, when I noticed that I couldn’t generate data more than once this week, I had to remove the isolate calls:</p>
+<p>But, the <code><a href="https://shiny.rstudio.com/reference/shiny/latest/isolate.html">isolate()</a></code> calls here will prevent this expression from being run more than once! So, when I noticed that I couldn’t generate data more than once this week, I had to remove the isolate calls:</p>
 <div class="sourceCode" id="cb45"><html><body><pre class="r">observeEvent(input$genData, {
 primary_input &lt;- data.frame(
     X = 1:input$ndata

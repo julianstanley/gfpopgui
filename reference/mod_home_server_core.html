@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Adds changepoints annotations to a plotly plot. — add_changepoints • gfpopgui</title>
+<title>Core functionality of the home server function — mod_home_server_core • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Adds changepoints annotations to a plotly plot. — add_changepoints" />
-<meta property="og:description" content="Adds changepoints annotations to a plotly plot." />
+<meta property="og:title" content="Core functionality of the home server function — mod_home_server_core" />
+<meta property="og:description" content="Core functionality of the home server function" />
 
 
 
@@ -123,38 +123,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Adds changepoints annotations to a plotly plot.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/fct_changepoint_plot_helpers.R'><code>R/fct_changepoint_plot_helpers.R</code></a></small>
-    <div class="hidden name"><code>add_changepoints.Rd</code></div>
+    <h1>Core functionality of the home server function</h1>
+    <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/mod_home.R'><code>R/mod_home.R</code></a></small>
+    <div class="hidden name"><code>mod_home_server_core.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Adds changepoints annotations to a plotly plot.</p>
+    <p>Core functionality of the home server function</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_changepoints</span>(<span class='no'>plotly_obj</span>, <span class='no'>original_data</span>, <span class='no'>changepoint_data</span>)</pre>
+    <pre class="usage"><span class='fu'>mod_home_server_core</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>plotly_obj</th>
-      <td><p>a plotly object</p></td>
+      <th>input</th>
+      <td><p>From shiny</p></td>
     </tr>
     <tr>
-      <th>original_data</th>
-      <td><p>A dataset with two columns</p></td>
+      <th>output</th>
+      <td><p>From shiny</p></td>
     </tr>
     <tr>
-      <th>changepoint_data</th>
-      <td><p>The output of gfpop::gfpop() with original_data</p></td>
+      <th>session</th>
+      <td><p>From shiny</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A list of 3 objects: "plot" (the plotly plot with changepoints added),
-"changepoint_annotations", and "changepoint_annotations_regions"</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

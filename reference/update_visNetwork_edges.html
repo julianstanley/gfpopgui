@@ -6,9 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy. — update_visNetwork_edges • gfpopgui</title>
+<title>Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns — update_visNetwork_edges • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -41,12 +40,10 @@ visNetwork edge IDs, which are important to keeping visNetwork happy. — update
 
 
 
-<meta property="og:title" content="Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy. — update_visNetwork_edges" />
-<meta property="og:description" content="Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy." />
+<meta property="og:title" content="Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns — update_visNetwork_edges" />
+<meta property="og:description" content="Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns" />
 
 
 
@@ -129,17 +126,15 @@ visNetwork edge IDs, which are important to keeping visNetwork happy." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy.</h1>
+    <h1>Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns</h1>
     <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/fct_visNetwork_helpers.R'><code>R/fct_visNetwork_helpers.R</code></a></small>
     <div class="hidden name"><code>update_visNetwork_edges.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy.</p>
+    <p>Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns</p>
     </div>
 
     <pre class="usage"><span class='fu'>update_visNetwork_edges</span>(
@@ -148,6 +143,7 @@ visNetwork edge IDs, which are important to keeping visNetwork happy.</p>
   <span class='kw'>edgeSep</span> <span class='kw'>=</span> <span class='st'>"_"</span>,
   <span class='kw'>showNull</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>label_columns</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"type"</span>, <span class='st'>"penalty"</span>),
+  <span class='kw'>label_collapse</span> <span class='kw'>=</span> <span class='st'>" | "</span>,
   <span class='kw'>columns_to_exclude</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"id"</span>, <span class='st'>"to"</span>, <span class='st'>"from"</span>)
 )</pre>
 
@@ -173,6 +169,10 @@ visNetwork edge IDs, which are important to keeping visNetwork happy.</p>
     <tr>
       <th>label_columns</th>
       <td><p>(character) An array of columns to use to make edge labels</p></td>
+    </tr>
+    <tr>
+      <th>label_collapse</th>
+      <td><p>the character separating edge columns in this label</p></td>
     </tr>
     <tr>
       <th>columns_to_exclude</th>

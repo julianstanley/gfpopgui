@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Adds changepoints annotations to a plotly plot. — add_changepoints • gfpopgui</title>
+<title>Make a changeregion data.table — make_region • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Adds changepoints annotations to a plotly plot. — add_changepoints" />
-<meta property="og:description" content="Adds changepoints annotations to a plotly plot." />
+<meta property="og:title" content="Make a changeregion data.table — make_region" />
+<meta property="og:description" content="Make a changeregion data.table" />
 
 
 
@@ -123,38 +123,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Adds changepoints annotations to a plotly plot.</h1>
+    <h1>Make a changeregion data.table</h1>
     <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/fct_changepoint_plot_helpers.R'><code>R/fct_changepoint_plot_helpers.R</code></a></small>
-    <div class="hidden name"><code>add_changepoints.Rd</code></div>
+    <div class="hidden name"><code>make_region.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Adds changepoints annotations to a plotly plot.</p>
+    <p>Make a changeregion data.table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_changepoints</span>(<span class='no'>plotly_obj</span>, <span class='no'>original_data</span>, <span class='no'>changepoint_data</span>)</pre>
+    <pre class="usage"><span class='fu'>make_region</span>(<span class='no'>region_x</span>, <span class='no'>parameter_y</span>, <span class='no'>state</span>, <span class='kw'>next_cp</span> <span class='kw'>=</span> <span class='fl'>NaN</span>, <span class='kw'>add_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>plotly_obj</th>
-      <td><p>a plotly object</p></td>
+      <th>region_x</th>
+      <td><p>The x values over which this region spans</p></td>
     </tr>
     <tr>
-      <th>original_data</th>
-      <td><p>A dataset with two columns</p></td>
+      <th>parameter_y</th>
+      <td><p>The median of this region</p></td>
     </tr>
     <tr>
-      <th>changepoint_data</th>
-      <td><p>The output of gfpop::gfpop() with original_data</p></td>
+      <th>state</th>
+      <td><p>The state of this region</p></td>
+    </tr>
+    <tr>
+      <th>next_cp</th>
+      <td><p>The median of the next region</p></td>
+    </tr>
+    <tr>
+      <th>add_na</th>
+      <td><p>Whether to add a row of NAs at the bottom of the return table</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of 3 objects: "plot" (the plotly plot with changepoints added),
-"changepoint_annotations", and "changepoint_annotations_regions"</p>
+    <p>(data.table) describing the changeregion</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

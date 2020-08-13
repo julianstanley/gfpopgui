@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Adds changepoints annotations to a plotly plot. — add_changepoints • gfpopgui</title>
+<title>Make a changepoint data.table — make_changepoint • gfpopgui</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Adds changepoints annotations to a plotly plot. — add_changepoints" />
-<meta property="og:description" content="Adds changepoints annotations to a plotly plot." />
+<meta property="og:title" content="Make a changepoint data.table — make_changepoint" />
+<meta property="og:description" content="Make a changepoint data.table" />
 
 
 
@@ -123,38 +123,57 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Adds changepoints annotations to a plotly plot.</h1>
+    <h1>Make a changepoint data.table</h1>
     <small class="dont-index">Source: <a href='https://github.com/julianstanley/gfpopgui/blob/master/R/fct_changepoint_plot_helpers.R'><code>R/fct_changepoint_plot_helpers.R</code></a></small>
-    <div class="hidden name"><code>add_changepoints.Rd</code></div>
+    <div class="hidden name"><code>make_changepoint.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Adds changepoints annotations to a plotly plot.</p>
+    <p>Make a changepoint data.table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_changepoints</span>(<span class='no'>plotly_obj</span>, <span class='no'>original_data</span>, <span class='no'>changepoint_data</span>)</pre>
+    <pre class="usage"><span class='fu'>make_changepoint</span>(
+  <span class='no'>parameter_x</span>,
+  <span class='no'>region_y</span>,
+  <span class='no'>new_state</span>,
+  <span class='no'>previous_state</span>,
+  <span class='kw'>changepoint_number</span> <span class='kw'>=</span> <span class='fl'>NaN</span>,
+  <span class='kw'>add_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>plotly_obj</th>
-      <td><p>a plotly object</p></td>
+      <th>parameter_x</th>
+      <td><p>The x location of this changepoint</p></td>
     </tr>
     <tr>
-      <th>original_data</th>
-      <td><p>A dataset with two columns</p></td>
+      <th>region_y</th>
+      <td><p>A range of values between the mean of the previous changeregion
+and the mean of the next changeregion</p></td>
     </tr>
     <tr>
-      <th>changepoint_data</th>
-      <td><p>The output of gfpop::gfpop() with original_data</p></td>
+      <th>new_state</th>
+      <td><p>The name of the next changeregion's state</p></td>
+    </tr>
+    <tr>
+      <th>previous_state</th>
+      <td><p>The name of the previous changeregion's state</p></td>
+    </tr>
+    <tr>
+      <th>changepoint_number</th>
+      <td><p>The index/number of this changepoint (default NaN)</p></td>
+    </tr>
+    <tr>
+      <th>add_na</th>
+      <td><p>Whether to add a row of NAs at the bottom of the return table</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of 3 objects: "plot" (the plotly plot with changepoints added),
-"changepoint_annotations", and "changepoint_annotations_regions"</p>
+    <p>(data.table) describing the changepoint</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
