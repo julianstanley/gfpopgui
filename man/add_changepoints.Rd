@@ -9,7 +9,7 @@ add_changepoints(plotly_obj, original_data, changepoint_data)
 \arguments{
 \item{plotly_obj}{a plotly object}
 
-\item{original_data}{A dataset with "X" and "Y" columns (column names required)}
+\item{original_data}{A dataset with two columns}
 
 \item{changepoint_data}{The output of gfpop::gfpop() with original_data}
 }

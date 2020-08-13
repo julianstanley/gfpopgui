@@ -1,0 +1,11 @@
+<h4>How many changepoints? And, how should those changepoints 
+                    be distributed?
+</h4>
+By default, they are evently spaced. However, modifying 'e' below 
+will lead to (n) logarithmically-spaced changepoints, as follows:
+<br>
+<code style='text-align:center;'> 
+seq_unnorm <- seq(0, 1, length_out = n+1)^e
+            <br> 
+relative_changepoint_loc <- (seq_unnorm / max(seq(unnorm))[2:length(seq_unnorm)]
+</code>

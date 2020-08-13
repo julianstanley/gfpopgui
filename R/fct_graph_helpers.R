@@ -55,7 +55,8 @@ graph_to_R_code <- function(graph) {
                       "type", "parameter",
                       "penalty", "K", "a", 
                       "min", "max")
-  if(!all(colnames(graph) == valid_colnames)) {
+  if(!all(sapply(colnames(graph), function(x) x %in% valid_colnames)) |
+     !all(sapply(valid_colnames, function(x) x %in% colnames(graph)))) {
     stop("Invalid column names. Is this a dataframe returned from gfpop::graph?")
   }
   
@@ -78,14 +79,14 @@ graph_to_R_code <- function(graph) {
   })
   
   if(hasStart & hasEnd) {
-    return_command <- paste0(return_command, "    startEnd(start = '", 
+    return_command <- paste0(return_command, "    StartEnd(start = '", 
                              graph_with_start[["state1"]][1], "', end = '",
                              graph_with_end[["state1"]][1], "'),\n")
   } else if(hasStart) {
-    return_command <- paste0(return_command, "    startEnd(start = '", 
+    return_command <- paste0(return_command, "    StartEnd(start = '", 
                              graph_with_start[["state1"]][1], "'),\n")
   } else if(hasEnd) {
-    return_command <- paste0(return_command, "    startEnd(end = '",
+    return_command <- paste0(return_command, "    StartEnd(end = '",
                              graph_with_end[["state1"]][1], "'),\n")
   }
   

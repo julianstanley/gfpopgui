@@ -39,7 +39,7 @@ create_label_individual(
 
 \item{columns}{The columns to include in this edge}
 
-\item{collapse}{the character seperating edge columns in this label}
+\item{collapse}{the character separating edge columns in this label}
 }
 \description{
 Creates an individual label for an individual edge
