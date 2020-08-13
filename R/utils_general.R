@@ -32,6 +32,10 @@ details <- function(summary, content, summary_multiplier = 1) {
   )
 }
 
+#' Make a vector of relative changepoint locations to use as input to gfpop's
+#' generateData function.
+#' @param n int, the number of changepoints
+#' @param e numeric, the logarithmic spacing between changepoints
 #' @export
 make_changepoint_locs <- function(n, e) {
   seq_unnorm <- seq(0, 1,
