@@ -31,3 +31,11 @@ details <- function(summary, content, summary_multiplier = 1) {
     )
   )
 }
+
+#' @export
+make_changepoint_locs <- function(n, e) {
+  seq_unnorm <- seq(0, 1,
+                    length.out = (n + 1)
+  )^(e)
+  (seq_unnorm / max(seq_unnorm))[2:length(seq_unnorm)]
+}

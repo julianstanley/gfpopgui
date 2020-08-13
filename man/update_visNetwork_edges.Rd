@@ -2,9 +2,8 @@
 % Please edit documentation in R/fct_visNetwork_helpers.R
 \name{update_visNetwork_edges}
 \alias{update_visNetwork_edges}
-\title{Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy.}
+\title{Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns}
 \usage{
 update_visNetwork_edges(
   old_edges,
@@ -12,6 +11,7 @@ update_visNetwork_edges(
   edgeSep = "_",
   showNull = TRUE,
   label_columns = c("type", "penalty"),
+  label_collapse = " | ",
   columns_to_exclude = c("id", "to", "from")
 )
 }
@@ -26,10 +26,11 @@ update_visNetwork_edges(
 
 \item{label_columns}{(character) An array of columns to use to make edge labels}
 
+\item{label_collapse}{the character separating edge columns in this label}
+
 \item{columns_to_exclude}{(character) An array of columns not to include in the update}
 }
 \description{
-Updates the given visNetwork edges, based on a new graphdf,
-excluding updates to certain columns. This is useful as to not mess up
-visNetwork edge IDs, which are important to keeping visNetwork happy.
+Allows to update old visNetwork edges from a new gfpop graphdf,
+while only updating certain columns
 }

@@ -10,6 +10,7 @@ graphdf_to_visNetwork(
   edgeSep = "_",
   showNull = TRUE,
   label_columns = c("type", "penalty"),
+  label_collapse = " | ",
   edge_ids = c()
 )
 }
@@ -33,6 +34,8 @@ Must have the following columns:
 \item{showNull}{(Boolean) hide null edges?}
 
 \item{label_columns}{(character) An array of columns to use to make edge labels}
+
+\item{label_collapse}{the character separating edge columns in this label}
 
 \item{edge_ids}{An array of ids, one for each edge in the graphdf}
 }
