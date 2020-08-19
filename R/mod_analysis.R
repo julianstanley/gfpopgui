@@ -381,6 +381,12 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         gfpop_data_tmp <- do.call("reactiveValues", 
                                saved_analyses$saved_full[[input$loadId]])
         
+        # Reset all currently-stored values in gfpop_data
+        for(name in names(gfpop_data)) {
+          gfpop_data[[name]] <- NULL
+        }
+        
+        # Add saved values
         for(name in names(gfpop_data_tmp)) {
           gfpop_data[[name]] <- gfpop_data_tmp[[name]]
         }
