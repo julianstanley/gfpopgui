@@ -491,8 +491,14 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           }
         }
 
-        set_startEnd(input$setStart, "start")
-        set_startEnd(input$setEnd, "end")
+        # Only update start and end values if they changed
+        if(input$setStart != startEnd$start) {
+          set_startEnd(input$setStart, "start")
+        }
+        if(input$setEnd != startEnd$end) {
+          set_startEnd(input$setEnd, "end")
+        }
+        
 
         # Remember the start and end node. Important for UI fluidity.
         startEnd$start <- input$setStart
