@@ -529,6 +529,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
               edgedf = gfpop_data$graphdata_visNetwork$edges,
               nodeid = input$addNode_id
             )
+            
+            gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
           }
         } else {
           shinyalert(
