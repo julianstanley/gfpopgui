@@ -378,7 +378,12 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Observe a load
       observeEvent(input$loadButton, {
         req(input$loadId)
-        gfpop_data <<- do.call("reactiveValues", saved_analyses$saved_full[[input$loadId]])
+        gfpop_data_tmp <- do.call("reactiveValues", 
+                               saved_analyses$saved_full[[input$loadId]])
+        
+        for(name in names(gfpop_data_tmp)) {
+          gfpop_data[[name]] <- gfpop_data_tmp[[name]]
+        }
 
         # Hard update everything after a load
         dummy_graph_refresh$i <- dummy_graph_refresh$i + 1
