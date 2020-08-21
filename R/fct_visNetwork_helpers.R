@@ -195,6 +195,11 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
   # End CMD compatibility section
 
   graphdf <- data.table(graphdf)
+  
+  # Early return for an empty graphdf
+  if(nrow(graphdf) == 0) {
+    return(list(nodes = data.table(), edges = data.table()))
+  }
 
   # Keep track of starting and ending nodes, but separate them from the rest
   starts <- graphdf[type == "start", state1]
