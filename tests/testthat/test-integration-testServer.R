@@ -8,6 +8,7 @@ assert_that <- function(error, expr = "", msgs = list()) {
     print(paste0("Failed in test-server.R: ", error))
     stop(paste0("Failed: ", error, "| Length 0"), call. = FALSE)
   }
+  msgs <- toString(msgs)
   if (!expr) {
     print(paste0("Failed in test-server.R: ", error))
     print(paste0("Begin debug: ", error, " ------------"))
@@ -31,8 +32,10 @@ test_that(
       shiny::testServer(app_server_test, {
         assert_that(
           "graphdata is successfully initialized at the app_server level",
-          all(sapply(names(gfpop_data), 
-                     function(x) x %in%  c("graphdata_visNetwork", "graphdata"))),
+          all(sapply(
+            names(gfpop_data),
+            function(x) x %in% c("graphdata_visNetwork", "graphdata")
+          )),
           paste0("Failed, names are: ", names(gfpop_data))
         )
       })
@@ -40,7 +43,7 @@ test_that(
   }
 )
 
-# mod_home_server.R ------------------------------------------------------------
+# mod_home_server.R, general ---------------------------------------------------
 test_that(
   "Server tests: mod_home_server",
   {
@@ -48,8 +51,10 @@ test_that(
       shiny::testServer(mod_home_server, {
         assert_that(
           "Before any inputs are given, the app should have graphdata loaded",
-          all(sapply(names(gfpop_data), 
-                     function(x) x %in%  c("graphdata_visNetwork", "graphdata"))),
+          all(sapply(
+            names(gfpop_data),
+            function(x) x %in% c("graphdata_visNetwork", "graphdata")
+          )),
           paste0("Failed, names are: ", names(gfpop_data))
         )
 
@@ -139,7 +144,7 @@ test_that(
 )
 
 
-# mod_analysis_server.R---------------------------------------------------------
+# mod_analysis_server.R, general -----------------------------------------------
 test_that(
   "Server tests: mod_analysis_server",
   {
@@ -419,10 +424,12 @@ test_that(
           all(gfpop_data$graphdata_visNetwork$nodes$size == c(100)),
           list(gfpop_data$graphdata_visNetwork$nodes)
         )
-      
+
         # Start/end node testing
-        session$setInputs(setStart = "Std", setEnd = "Std",
-                          setStartEnd_button = 0)
+        session$setInputs(
+          setStart = "Std", setEnd = "Std",
+          setStartEnd_button = 0
+        )
         assert_that(
           "Can set a start and end nodes",
           gfpop_data$graphdata$type[3] == "start" &
@@ -435,3 +442,403 @@ test_that(
     )
   }
 )
+
+# Saving and loading -----------------------------------------------------------
+shiny::testServer(mod_analysis_server, {
+  updown_graph <- gfpop::graph(type = "updown")
+  std_graph <- gfpop::graph(type = "std")
+
+  gfpop_data$graphdata <- updown_graph
+  session$setInputs(saveId = "test_save")
+  session$setInputs(saveButton = 1)
+
+  test_that("Basic saving of gfpop data works", {
+    expect_equal(saved_analyses$saved_full[["test_save"]]$graphdata, updown_graph)
+  })
+
+
+  # Attempting to save with the same ID
+  gfpop_data$graphdata <- std_graph
+  session$setInputs(saveId = "test_save")
+  session$setInputs(saveButton = 2)
+
+  test_that("Saving duplicate IDs does not work", {
+    expect_equal(
+      saved_analyses$saved_full[["test_save"]]$graphdata, updown_graph
+    )
+  })
+
+  # OK with a different ID, though
+  session$setInputs(saveId = "test_save2")
+  session$setInputs(saveButton = 3)
+
+  test_that("Saving with non-duplicate IDs works", {
+    expect_equal(
+      saved_analyses$saved_full[["test_save2"]]$graphdata, std_graph,
+    )
+  })
+
+  # Can save multiple values
+  gfpop_data$base_plot <- plotly::plot_ly(x = ~ 1:5, y = ~ 11:15) %>% plotly::add_markers()
+
+  session$setInputs(saveId = "test_save3")
+  session$setInputs(saveButton = 4)
+
+  test_that("Saving multiple parameters works", {
+    expect_equal(
+      saved_analyses$saved_full[["test_save3"]]$graphdata, std_graph,
+    )
+    expect_silent(
+      is_a("plotly")(saved_analyses$saved_full[["test_save3"]]$base_plot)
+    )
+  })
+
+
+  # Reset gfpop data
+  session$setInputs(loadId = "test_save")
+  session$setInputs(loadButton = 1)
+  test_that("Can do a basic load of gfpop data", {
+    expect_equal(gfpop_data$graphdata, updown_graph)
+    expect_null(gfpop_data$base_plot)
+  })
+
+  session$setInputs(loadId = "test_save3")
+  session$setInputs(loadButton = 2)
+  test_that("Can load multiple values from a save", {
+    expect_equal(gfpop_data$graphdata, std_graph)
+    expect_silent(
+      is_a("plotly")(gfpop_data$base_plot)
+    )
+  })
+})
+
+# Graph edits ------------------------------------------------------------------
+
+# From visNetwork
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std", penalty = 15)
+
+  gfpop_data$graphdata <- std_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(std_graph,
+    edge_ids = c(
+      "Std_Std_null",
+      "Std_Std_std"
+    )
+  )
+
+  session$setInputs(gfpopGraph_graphChange = event <- list(
+    cmd = "editEdge",
+    to = "Std", from = "Std",
+    id = "Std_Std_std", type = "std", penalty = 200, parameter = 0,
+    K = Inf, a = 0, min = "None", max = "None", hidden = "FALSE"
+  ))
+
+  test_that("gfpopGraph_graphChange triggers a visNetwork graph modification", {
+    expect_equal(gfpop_data$graphdata_visNetwork$edges$penalty, c(0, 200))
+  })
+
+  test_that("gfpopGraph_graphChange also keeps the main gfpopdata graph up to date", {
+    expect_equal(gfpop_data$graphdata$penalty, c(0, 200))
+  })
+})
+
+# From the "add node" button
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std", penalty = 15)
+
+  gfpop_data$graphdata <- std_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(std_graph,
+    edge_ids = c(
+      "Std_Std_null",
+      "Std_Std_std"
+    )
+  )
+
+  session$setInputs(
+    addNode_id = "new_test_node",
+    addNull = FALSE,
+    addNode_button = 0
+  )
+
+  test_that("add_node button works as expected without addNull", {
+    # Did not add any edges
+    expect_equal(
+      gfpop_data$graphdata,
+      std_graph
+    )
+
+    # Did add a node
+    expect_equal(
+      gfpop_data$graphdata_visNetwork$nodes$id,
+      c("Std", "new_test_node")
+    )
+  })
+
+  session$setInputs(
+    addNode_id = "new_test_node2",
+    addNull = TRUE,
+    addNode_button = 1
+  )
+
+  test_that("add_node button works as expected with addNull", {
+    # Did add an edge
+    expect_equal(
+      gfpop_data$graphdata$state1,
+      c("Std", "Std", "new_test_node2")
+    )
+
+    # Column names have now changed, since we converted from visNetwork
+    expect_true("state1_id" %in% colnames(gfpop_data$graphdata) &
+      "state2_id" %in% colnames(gfpop_data$graphdata))
+  })
+
+  # Try to add a new node with a duplicate ID
+  session$setInputs(
+    addNode_id = "new_test_node2",
+    addNull = TRUE,
+    addNode_button = 2
+  )
+
+  test_that("No change if you try to add a duplicate node id", {
+    # Did add an edge
+    expect_equal(
+      gfpop_data$graphdata$state1,
+      c("Std", "Std", "new_test_node2")
+    )
+
+    # Column names have now changed, since we converted from visNetwork
+    expect_true("state1_id" %in% colnames(gfpop_data$graphdata) &
+      "state2_id" %in% colnames(gfpop_data$graphdata))
+  })
+
+  session$setInputs(
+    addNode_id = "",
+    addNull = TRUE,
+    addNode_button = 2
+  )
+  test_that("No change if you try to add an empty node id", {
+    # Did add an edge
+    expect_equal(
+      gfpop_data$graphdata$state1,
+      c("Std", "Std", "new_test_node2")
+    )
+  })
+})
+
+# From the "remove node" button
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std")
+  updown_graph <- gfpop::graph(type = "updown")
+
+  gfpop_data$graphdata <- std_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(std_graph,
+    edge_ids = c(
+      "Std_Std_null",
+      "Std_Std_std"
+    )
+  )
+
+  session$setInputs(
+    setRemoveNode = "Std",
+    removeNode_button = 0
+  )
+
+  test_that("Can remove all nodes, also removes all edges", {
+    expect_equal(nrow(gfpop_data$graphdata), 0)
+    expect_equal(nrow(gfpop_data$graphdata_visNetwork$edges), 0)
+    expect_equal(nrow(gfpop_data$graphdata_visNetwork$nodes), 0)
+  })
+
+
+  gfpop_data$graphdata <- updown_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(updown_graph)
+
+  session$setInputs(
+    setRemoveNode = "Dw",
+    removeNode_button = 1
+  )
+
+  test_that("Removing one node removes all edges associated with that node", {
+    expect_equal(gfpop_data$graphdata_visNetwork$nodes$id, c("Up"))
+    expect_equal(gfpop_data$graphdata_visNetwork$edges$id, c("Up_Up"))
+    expect_equal(gfpop_data$graphdata$state1, c("Up"))
+  })
+})
+
+# From the "addEdge" button
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std")
+  updown_graph <- gfpop::graph(type = "updown")
+
+  gfpop_data$graphdata <- updown_graph[3:4, ]
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+
+  session$setInputs(
+    labels = c(),
+    addEdge_to = "Up",
+    addEdge_from = "Up",
+    addEdge_type = "null",
+    addEdge_parameter = 23,
+    addEdge_penalty = 11
+  )
+
+  session$setInputs(addEdge_button = 1)
+
+  test_that("addEdge button can add an appropriate edge", {
+    expect_equal(gfpop_data$graphdata$state1, c("Dw", "Up", "Up"))
+    expect_equal(gfpop_data$graphdata$state2, c("Up", "Dw", "Up"))
+    expect_equal(
+      gfpop_data$graphdata_visNetwork$edges$id,
+      c("Dw_Up", "Up_Dw", "Up_Up_null")
+    )
+  })
+})
+
+# Start and end nodes ----------------------------------------------------------
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std", penalty = 15)
+
+  gfpop_data$graphdata <- std_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(std_graph,
+    edge_ids = c(
+      "Std_Std_null",
+      "Std_Std_std"
+    )
+  )
+
+  session$setInputs(
+    setStart = "Std", setEnd = "Std",
+    setStartEnd_button = 0,
+    showNull = FALSE,
+    label_columns = c()
+  )
+
+  test_that("Basic setting start and end works as expected", {
+    expect_equal(gfpop_data$graphdata$type, c(
+      "null", "std",
+      "start", "end"
+    ))
+    expect_equal(gfpop_data$graphdata$state1, rep("Std", 4))
+    expect_equal(gfpop_data$graphdata_visNetwork$nodes$shape, "star")
+  })
+
+  session$setInputs(
+    setStart = "Std", setEnd = "N/A",
+    setStartEnd_button = 0,
+    showNull = FALSE,
+    label_columns = c()
+  )
+
+  test_that("Re-setting the ending node works as expected", {
+    expect_equal(gfpop_data$graphdata$type, c(
+      "null", "std",
+      "start"
+    ))
+    expect_equal(gfpop_data$graphdata$state1, rep("Std", 3))
+    expect_equal(gfpop_data$graphdata_visNetwork$nodes$shape, "triangle")
+  })
+
+  session$setInputs(
+    setStart = "N/A", setEnd = "N/A",
+    setStartEnd_button = 0,
+    showNull = FALSE,
+    label_columns = c()
+  )
+
+  test_that("Re-setting the ending node works as expected", {
+    expect_equal(gfpop_data$graphdata$type, c("null", "std"))
+    expect_equal(gfpop_data$graphdata$state1, rep("Std", 2))
+    expect_equal(gfpop_data$graphdata_visNetwork$nodes$shape, "dot")
+  })
+})
+
+# Crosstalk --------------------------------------------------------------------
+
+# input$gfpopGraph_highlight_color_id
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std")
+  updown_graph <- gfpop::graph(type = "updown")
+
+  gfpop_data$graphdata <- updown_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+
+  gfpop_data$changepoint_annotations_list <- add_changepoints(
+    plotly::plot_ly(),
+    data.table::data.table(1:20, c(1:10, 101:110)),
+    gfpop::gfpop(c(1:10, 101:110), mygraph = gfpop::graph(type = "updown", penalty = 10))
+  )
+
+  session$setInputs(
+    crosstalk = TRUE
+  )
+
+  session$setInputs(
+    gfpopGraph_highlight_color_id = "Up"
+  )
+
+  test_that("Highlighting segments correctly keeps track of highlighted", {
+    expect_equal(selected$segments, c("Up"))
+  })
+
+  session$setInputs(
+    gfpopGraph_highlight_color_id = "Dw"
+  )
+
+  test_that("Highlighting segments correctly un-highlights previously-highlighted segments", {
+    expect_equal(selected$segments, c("Dw"))
+  })
+})
+
+# Main gfpop running -----------------------------------------------------------
+
+shiny::testServer(mod_analysis_server, {
+  std_graph <- gfpop::graph(type = "std")
+  updown_graph <- gfpop::graph(type = "updown")
+
+  gfpop_data$graphdata <- updown_graph
+  gfpop_data$graphdata_visNetwork <- graphdf_to_visNetwork(gfpop_data$graphdata)
+
+  gfpop_data$base_plot <- plotly::plot_ly()
+  gfpop_data$main_data <- data.table::data.table(X = 1:20, Y = c(1:10, 101:110))
+  gfpop_data$changepoints <- gfpop::gfpop(c(1:10, 101:110),
+    mygraph = gfpop::graph(
+      type = "updown",
+      penalty = 10
+    )
+  )
+  session$setInputs(
+    runGfpop = 0
+  )
+
+  test_that("runGfpop successfully produces the correct items", {
+    expect_equal(
+      names(gfpop_data$changepoint_annotations_list),
+      c(
+        "plot", "changepoint_annotations",
+        "changepoint_annotations_regions"
+      )
+    )
+  })
+
+  test_that("runGfpop creates the right sort of changepoint plot", {
+    expect_equal(
+      class(gfpop_data$changepoint_plot),
+      c("plotly", "htmlwidget")
+    )
+  })
+})
+
+shiny::testServer(mod_analysis_server, {
+  gfpop_data$changepoints <- "Something"
+  gfpop_data$changepoint_plot <- "Also something"
+  gfpop_data$base_plot <- "The base plot"
+
+  session$setInputs(
+    clsCp = 0
+  )
+
+  test_that("clsCp successfully clears changepoints data", {
+    expect_null(gfpop_data$changepoints)
+    expect_equal(gfpop_data$changepoint_plot, "The base plot")
+  })
+})
