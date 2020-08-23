@@ -567,6 +567,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         from <- input$addEdge_from
         type <- input$addEdge_type
         parameter <- input$addEdge_parameter
+        penalty <- input$addEdge_penalty
 
         gfpop_data$graphdata_visNetwork$edges <- edges %>% add_edge(
           label = create_label_individual(to, from, type, parameter, penalty,
@@ -575,7 +576,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           ),
           id = paste(to, from, type, sep = "_"), to = to, from = from,
           type = type, parameter = parameter,
-          penalty = input$addEdge_penalty
+          penalty = penalty
         )
 
         # Make sure that the graphdata stays up-to-date
