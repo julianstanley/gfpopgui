@@ -206,6 +206,10 @@ test_that("add_null_edge works", {
 
 
 # graphdf_to_visNetwork --------------------------------------------------------
+test_that("graphdf_to_visNetwork can handle empty data", {
+  expect_silent(graphdf_to_visNetwork(gfpop::graph()))
+})
+
 test_that("graphdf_to_visNetwork generate a list", {
   visNetwork_list <- graphdf_to_visNetwork(gfpop::graph(type = "std"),
     edge_ids = c("std1", "std2")

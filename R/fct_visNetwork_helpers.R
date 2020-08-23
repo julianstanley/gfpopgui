@@ -195,6 +195,11 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
   # End CMD compatibility section
 
   graphdf <- data.table(graphdf)
+  
+  # Early return for an empty graphdf
+  if(nrow(graphdf) == 0) {
+    return(list(nodes = data.table(), edges = data.table()))
+  }
 
   # Keep track of starting and ending nodes, but separate them from the rest
   starts <- graphdf[type == "start", state1]
@@ -289,7 +294,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
 #' @param visNetwork_list A list object compatable with visNetwork
 #' See graphdf_to_visNetwork.
 #' @returns a dataframe/graph for gfpop
-#' @importFrom dplyr filter %>%
+#' @importFrom dplyr %>%
 #' @import visNetwork
 #' @importFrom gfpop gfpop
 #' @examples
@@ -300,7 +305,7 @@ visNetwork_to_graphdf <- function(visNetwork_list) {
   label <- NULL
   # End CMD compatibility section
 
-  if (length(visNetwork_list$edges) == 0) {
+  if (nrow(visNetwork_list$edges) == 0) {
     return(data.table())
   }
 

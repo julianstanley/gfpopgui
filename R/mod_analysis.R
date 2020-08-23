@@ -193,10 +193,6 @@ mod_analysis_ui <- function(id) {
                   tabPanel(
                     "Add",
                     br(),
-                    inline_div(0.3, textInput(
-                      inputId = ns("addEdge_id"),
-                      label = "Provide a unique ID"
-                    )),
                     inline_div(0.3, uiOutput(ns("ui_addEdge_from"))),
                     inline_div(0.3, uiOutput(ns("ui_addEdge_to"))),
                     br(),
@@ -378,7 +374,20 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Observe a load
       observeEvent(input$loadButton, {
         req(input$loadId)
-        gfpop_data <<- do.call("reactiveValues", saved_analyses$saved_full[[input$loadId]])
+        gfpop_data_tmp <- do.call(
+          "reactiveValues",
+          saved_analyses$saved_full[[input$loadId]]
+        )
+
+        # Reset all currently-stored values in gfpop_data
+        for (name in names(gfpop_data)) {
+          gfpop_data[[name]] <- NULL
+        }
+
+        # Add saved values
+        for (name in names(gfpop_data_tmp)) {
+          gfpop_data[[name]] <- gfpop_data_tmp[[name]]
+        }
 
         # Hard update everything after a load
         dummy_graph_refresh$i <- dummy_graph_refresh$i + 1
@@ -470,7 +479,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
               rbindlist(list(
                 gfpop_data$graphdata,
                 list(state1 = new_val, type = val_type)
-              ), use.names=T, fill =T)
+              ), use.names = T, fill = T)
             )
           } else {
             gfpop_data$graphdata <<- gfpop::graph(
@@ -480,8 +489,14 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
           }
         }
 
-        set_startEnd(input$setStart, "start")
-        set_startEnd(input$setEnd, "end")
+        # Only update start and end values if they changed
+        if (input$setStart != startEnd$start) {
+          set_startEnd(input$setStart, "start")
+        }
+        if (input$setEnd != startEnd$end) {
+          set_startEnd(input$setEnd, "end")
+        }
+
 
         # Remember the start and end node. Important for UI fluidity.
         startEnd$start <- input$setStart
@@ -498,7 +513,11 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       # Add a new node
       observeEvent(input$addNode_button, {
         # New node must have a unique ID. TODO: Does this need to be edited?
-        if (input$addNode_id %notin% gfpop_data$graphdata_visNetwork$nodes$id) {
+        if (input$addNode_id == "") {
+          shinyalert(
+            title = "Please enter an ID", type = "error"
+          )
+        } else if (input$addNode_id %notin% gfpop_data$graphdata_visNetwork$nodes$id) {
           # Add the node
           gfpop_data$graphdata_visNetwork$nodes <- add_node(
             gfpop_data$graphdata_visNetwork$nodes,
@@ -512,6 +531,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
               edgedf = gfpop_data$graphdata_visNetwork$edges,
               nodeid = input$addNode_id
             )
+
+            gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
           }
         } else {
           shinyalert(
@@ -527,12 +548,11 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         nodes <- gfpop_data$graphdata_visNetwork$nodes
         edges <- gfpop_data$graphdata_visNetwork$edges
 
-        gfpop_data$graphdata_visNetwork$nodes <- nodes %>%
-          filter(id != input$setRemoveNode)
+        gfpop_data$graphdata_visNetwork$nodes <- nodes[id != input$setRemoveNode]
 
         # Also filter out any edges containing the deleted node
-        gfpop_data$graphdata_visNetwork$edges <- edges %>%
-          filter(to != input$setRemoveNode & from != input$setRemoveNode)
+        gfpop_data$graphdata_visNetwork$edges <- edges[to != input$setRemoveNode &
+          from != input$setRemoveNode]
 
         # Make sure that the graphdata stays up-to-date
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
@@ -543,16 +563,21 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         edges <- gfpop_data$graphdata_visNetwork$edges
 
         # Add new edge with the given inputs
-        gfpop_data$graphdata_visNetwork$edges <- edges %>% add_edge(
-          label = create_label(edges,input$labels),
-          id = input$addEdge_id, to = input$addEdge_to, from = input$addEdge_from,
-          type = input$addEdge_type, parameter = input$addEdge_parameter,
-          penalty = input$addEdge_penalty
-        )
+        to <- input$addEdge_to
+        from <- input$addEdge_from
+        type <- input$addEdge_type
+        parameter <- input$addEdge_parameter
+        penalty <- input$addEdge_penalty
 
-        # Update edge labels appropriately
-        gfpop_data$graphdata_visNetwork$edges$label <- gfpop_data$graphdata_visNetwork$edges %>%
-          create_label()
+        gfpop_data$graphdata_visNetwork$edges <- edges %>% add_edge(
+          label = create_label_individual(to, from, type, parameter, penalty,
+            K = NA, a = NA, min = NA, max = NA,
+            columns = input$labels
+          ),
+          id = paste(to, from, type, sep = "_"), to = to, from = from,
+          type = type, parameter = parameter,
+          penalty = penalty
+        )
 
         # Make sure that the graphdata stays up-to-date
         gfpop_data$graphdata <- visNetwork_to_graphdf(gfpop_data$graphdata_visNetwork)
@@ -568,13 +593,13 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
         v <- info$value
 
         # Account for the "state1_id" and "state2_id" columns:
-        if(ncol(gfpop_data$graphdata) > 9) {
+        if (ncol(gfpop_data$graphdata) > 9) {
           j <- if (j > 3) j + 2 else if (j > 1) j + 1 else j
         }
-        
+
         # Update graphdata via proxy
         gfpop_data$graphdata <- data.table(gfpop_data$graphdata)
-        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j, with=F])
+        gfpop_data$graphdata[i, j] <<- DT::coerceValue(v, gfpop_data$graphdata[i, j, with = F])
         replaceData(proxy, gfpop_data$graphdata, resetPaging = FALSE)
 
         # Make sure visNetwork data stays up-to-date
@@ -595,7 +620,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$edges[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$edges[i, j, with=F]
+          v, gfpop_data$graphdata_visNetwork$edges[i, j, with = F]
         )
         replaceData(proxy_visEdges, gfpop_data$graphdata_visNetwork$edges, resetPaging = FALSE)
 
@@ -613,7 +638,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
         # Update visNetwork data via proxy
         gfpop_data$graphdata_visNetwork$nodes[i, j] <<- DT::coerceValue(
-          v, gfpop_data$graphdata_visNetwork$nodes[i, j, with=F]
+          v, gfpop_data$graphdata_visNetwork$nodes[i, j, with = F]
         )
         replaceData(proxy_visNodes, gfpop_data$graphdata_visNetwork$nodes, resetPaging = FALSE)
 
@@ -897,6 +922,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # When the user hovers on Plotly, highlight nodes in visNetwork
       observeEvent(hover_data(), {
+        print(hover_data())
         if (input$crosstalk) {
           event <- hover_data()
           nevents <- dim(event)[1]
