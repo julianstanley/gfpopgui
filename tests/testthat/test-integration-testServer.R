@@ -1,6 +1,7 @@
 library(testthat)
 library(gfpop)
 library(shiny)
+library(data.table)
 
 # A helper function for server tests
 assert_that <- function(error, expr = "", msgs = list()) {
@@ -143,6 +144,129 @@ test_that(
   }
 )
 
+# Home uploading and generating data -------------------------------------------
+
+# Uploading
+shiny::testServer(mod_home_server, {
+  data <- data.table(X = 1:5, Y = 11:15)
+  path_csv <- tempfile()
+  write.csv(data, path_csv, row.names = F)
+
+  session$setInputs(
+    primary_input = list(datapath = path_csv)
+  )
+
+
+  test_that("Can upload basic data", {
+    expect_equal(data, gfpop_data$main_data)
+  })
+
+  # Try to upload invalid data, it shouldn't change
+  data2 <- data.table(X = 11:15, Y = 1:5, Z = 21:25)
+  path_csv2 <- tempfile()
+  write.csv(data2, path_csv2, row.names = F)
+
+  session$setInputs(
+    primary_input = list(datapath = path_csv2)
+  )
+
+  test_that("Uploading data with invalid shape has no effect", {
+    expect_equal(data, gfpop_data$main_data)
+  })
+
+  # Try to upload very invalid data, also shouldn't change
+  data3 <- "helloworld"
+  path3 <- tempfile()
+  write(data3, path3)
+
+  session$setInputs(
+    primary_input = list(datapath = path3)
+  )
+
+  test_that("Uploading data with invalid type has no effect", {
+    expect_equal(data, gfpop_data$main_data)
+  })
+})
+
+# Generating
+shiny::testServer(mod_home_server, {
+  # With proper means, proper number of changepoints
+  session$setInputs(
+    meansChangepoints = "1,2,1,4",
+    nChangepoints = 4,
+    eChangepoints = 1,
+    ndata = 100,
+    type = "mean",
+    typeChangepoints = "mean",
+    sigma = 1, gammaChangepoints = 1
+  )
+
+  session$setInputs(genData = 0)
+
+  test_that("gendata produces reasonable data", {
+    expect_equal(dim(gfpop_data$main_data), c(100, 2))
+  })
+
+
+  data_save <- gfpop_data$main_data
+
+  # Can re-generate data with more changepoints
+  session$setInputs(
+    nChangepoints = 5,
+    meansChangepoints = "1,2,1,4,1"
+  )
+
+  session$setInputs(genData = 1)
+
+  test_that("genData does change", {
+    expect_false(isTRUE(all.equal(gfpop_data$main_data, data_save)))
+  })
+
+  data_save2 <- gfpop_data$main_data
+
+
+  # With proper means, improper number of changepoints
+  session$setInputs(
+    nChangepoints = 1
+  )
+
+  session$setInputs(genData = 3)
+
+  test_that("gendata does not change when nChangepoints is improper", {
+    expect_equal(gfpop_data$main_data, data_save2)
+  })
+
+  # With invalid parameters
+  session$setInputs(
+    ndata = "hello",
+    type = "mean",
+    sigma = 1, gamma = 1
+  )
+  session$setInputs(genData = 3)
+
+  test_that("gendata does not change when ndata or type are invalid", {
+    expect_equal(gfpop_data$main_data, data_save2)
+  })
+})
+
+# Upload graph
+shiny::testServer(mod_home_server, {
+  data <- gfpop::graph(type = "updown")
+  path_csv <- tempfile()
+  write.csv(data, path_csv, row.names = F)
+
+  session$setInputs(
+    constraint_graph = list(datapath = path_csv)
+  )
+
+  data2 <- data.table()
+  path_csv2 <- tempfile()
+  write.csv(data2, path_csv2, row.names = F)
+
+  session$setInputs(
+    constraint_graph = list(datapath = path_csv2)
+  )
+})
 
 # mod_analysis_server.R, general -----------------------------------------------
 test_that(

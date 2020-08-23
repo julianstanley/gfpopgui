@@ -168,9 +168,9 @@ mod_home_server_core <- function(input, output, session) {
 
   # Generate some random data when the button is pressed
   genData_func <- observeEvent(input$genData, {
+    parameters <- rep(c(1,2), length.out = input$nChangepoints)
     # Make changepoint means
     if (input$meansChangepoints == "") {
-      parameters <- rep(c(1, 2), length.out = input$nChangepoints)
     } else {
       tryCatch(
         expr = {
