@@ -236,13 +236,28 @@ shiny::testServer(mod_home_server, {
     expect_equal(gfpop_data$main_data, data_save2)
   })
 
-  # With invalid parameters
+
+  # With improper means
+  session$setInputs(
+    meansChangepoints = 1e6,
+    nChangepoints = 5,
+    ndata = 100,
+    type = "mean",
+    sigma = 1, gamma = 1
+  )
+  session$setInputs(genData = 4)
+
+  test_that("gendata does not change when means are improper", {
+    expect_equal(gfpop_data$main_data, data_save2)
+  })
+
+  # With another invalid parameter
   session$setInputs(
     ndata = "hello",
     type = "mean",
     sigma = 1, gamma = 1
   )
-  session$setInputs(genData = 3)
+  session$setInputs(genData = 5)
 
   test_that("gendata does not change when ndata or type are invalid", {
     expect_equal(gfpop_data$main_data, data_save2)
