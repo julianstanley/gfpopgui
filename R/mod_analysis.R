@@ -615,7 +615,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       observeEvent(input$graphOutput_visEdges_cell_edit, {
         info <- input$graphOutput_visEdges_cell_edit
         i <- info$row
-        j <- info$col
+        # Add one to the column to shift for id
+        j <- info$col + 1
         v <- info$value
 
         # Update visNetwork data via proxy
@@ -633,7 +634,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
       observeEvent(input$graphOutput_visNodes_cell_edit, {
         info <- input$graphOutput_visNodes_cell_edit
         i <- info$row
-        j <- info$col
+        # Add one to column to shift for id
+        j <- info$col + 1
         v <- info$value
 
         # Update visNetwork data via proxy
@@ -717,7 +719,10 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       output$graphOutput_visEdges <- DT::renderDT(
         {
-          gfpop_data$graphdata_visNetwork$edges
+          gfpop_data$graphdata_visNetwork$edges[,c("label", "to", "from",
+                                                  "type", "parameter", "penalty",
+                                                  "K", "a", "min", "max", "selfReference.angle",
+                                                  "selfReference.size", "hidden", "color")]
         },
         editable = TRUE,
         options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)
@@ -725,7 +730,8 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       output$graphOutput_visNodes <- DT::renderDT(
         {
-          gfpop_data$graphdata_visNetwork$nodes
+          gfpop_data$graphdata_visNetwork$nodes[,c("label", "size", "start", "end",
+                                                   "shape", "color.background", "color.border", "shadow")]
         },
         editable = TRUE,
         options = list("pageLength" = 5, dom = "tp", searching = F, scrollX = T)

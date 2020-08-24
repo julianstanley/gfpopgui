@@ -528,7 +528,7 @@ test_that(
           )
         )
 
-        session$setInputs(graphOutput_visEdges_cell_edit = list(row = 2, col = 7, value = 100))
+        session$setInputs(graphOutput_visEdges_cell_edit = list(row = 2, col = 6, value = 100))
 
         assert_that(
           "Can edit penalty from graphOutput_visEdges",
@@ -542,7 +542,7 @@ test_that(
           )
         )
 
-        session$setInputs(graphOutput_visNodes_cell_edit = list(row = 1, col = 3, value = 100))
+        session$setInputs(graphOutput_visNodes_cell_edit = list(row = 1, col = 2, value = 100))
         assert_that(
           "Can edit nodes from graphoutput_visNodes",
           all(gfpop_data$graphdata_visNetwork$nodes$size == c(100)),
