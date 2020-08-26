@@ -784,7 +784,7 @@ shiny::testServer(mod_analysis_server, {
 
   test_that("Removing one node removes all edges associated with that node", {
     expect_equal(gfpop_data$graphdata_visNetwork$nodes$id, c("Up"))
-    expect_equal(gfpop_data$graphdata_visNetwork$edges$id, c("Up_Up"))
+    expect_equal(gfpop_data$graphdata_visNetwork$edges$id, c("Up_Up_null"))
     expect_equal(gfpop_data$graphdata$state1, c("Up"))
   })
 })
@@ -813,7 +813,7 @@ shiny::testServer(mod_analysis_server, {
     expect_equal(gfpop_data$graphdata$state2, c("Up", "Dw", "Up"))
     expect_equal(
       gfpop_data$graphdata_visNetwork$edges$id,
-      c("Dw_Up", "Up_Dw", "Up_Up_null")
+      c("Dw_Up_up", "Up_Dw_down", "Up_Up_null")
     )
   })
 })
