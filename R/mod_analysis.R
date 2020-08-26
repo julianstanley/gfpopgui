@@ -46,7 +46,7 @@ mod_analysis_ui <- function(id) {
             "state1", "state2", "type", "parameter", "penalty",
             "K", "a", "min", "max"
           ),
-          selected = c("type", "parameter"),
+          selected = c("type", "penalty"),
           multiple = TRUE
         ),
         actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
@@ -56,7 +56,7 @@ mod_analysis_ui <- function(id) {
         selectInput(
           inputId = ns("gfpopType"),
           label = "Cost model",
-          choices = c("mean", "variance", "poisson", "exp", "negbin")
+          choices = c("mean", "variance", "poisson", "exp")
         ),
         actionButton(inputId = ns("runGfpop"), label = "Run gfpop!"),
         actionButton(inputId = ns("clsCp"), label = "Clear Changepoints"),
