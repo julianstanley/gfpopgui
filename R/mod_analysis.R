@@ -835,15 +835,27 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # Add changepoints to a saved Plotly plot when the user asks
       observeEvent(input$runGfpop, {
-        initialize_changepoints()
-        changepoint_annotations_list <- add_changepoints(
-          gfpop_data$base_plot,
-          isolate(gfpop_data$main_data),
-          isolate(gfpop_data$changepoints)
+        tryCatch(
+          expr = {
+            initialize_changepoints()
+            changepoint_annotations_list <- add_changepoints(
+              gfpop_data$base_plot,
+              isolate(gfpop_data$main_data),
+              isolate(gfpop_data$changepoints)
+            )
+            
+            gfpop_data$changepoint_plot <- changepoint_annotations_list[["plot"]]
+            gfpop_data$changepoint_annotations_list <- changepoint_annotations_list
+          },
+          error = function(e) {
+            shinyalert(
+              title = "Invalid model",
+              text = paste0("An error occurred while running gfpop: ",
+                            e)
+            )
+          }
         )
-
-        gfpop_data$changepoint_plot <- changepoint_annotations_list[["plot"]]
-        gfpop_data$changepoint_annotations_list <- changepoint_annotations_list
+        
       })
 
       # A helper function to initalize changepoints (gfpop_data$changepoints)
