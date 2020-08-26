@@ -15,6 +15,12 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
   # changepoints_annotations_regions describe the segments (horizontal) between
   changepoint_annotations_regions <- data.table()
   changepoint_annotations <- data.table()
+  
+  # Full range of X data
+  data_range <- max(original_data[[1]]) - min(original_data[[1]])
+  
+  # How many total points to render for changeregions
+  total_changeregion_granularity <- 1000
 
   # ds = dataspace, since changepoint data refers to indices, not in dataspace
   changepoints <- changepoint_data$changepoints
@@ -28,11 +34,14 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
       previous_changepoint <- if (i > 1) changepoints[i - 1] else 1
       changepoint_ds <- original_data[[1]][changepoint]
       previous_changepoint_ds <- original_data[[1]][previous_changepoint]
+      
+      # Decide on how many points to render in this changeregion
+      num_points <- ((changepoint_ds - previous_changepoint_ds) / (data_range)) * total_changeregion_granularity
 
       changeregion <- seq(previous_changepoint, changepoint)
       changeregion_ds <- seq(previous_changepoint_ds,
         changepoint_ds,
-        length.out = 3
+        length.out = num_points
       )
 
       changepoint_annotations_regions <<- rbindlist(
@@ -69,7 +78,7 @@ add_changepoints <- function(plotly_obj, original_data, changepoint_data) {
     changepoint_annotations_regions <-
       make_region(
         region_x = seq(min(original_data[[1]]), max(original_data[[1]]),
-          length.out = 3
+          length.out = total_changeregion_granularity
         ),
         parameter_y = changepoint_data$parameters[1],
         state = changepoint_data$states[1],
