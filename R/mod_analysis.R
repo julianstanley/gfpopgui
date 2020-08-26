@@ -939,7 +939,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # When the user hovers on Plotly, highlight nodes in visNetwork
       observeEvent(hover_data(), {
-        print(hover_data())
         if (input$crosstalk) {
           event <- hover_data()
           nevents <- dim(event)[1]
