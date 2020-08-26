@@ -765,8 +765,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
               highlighted_label <- node_id_to_label$main[[highlighted_id]]
 
               segments_to_highlight <-
-                gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]] %>%
-                filter(state == highlighted_label)
+                gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]][state == highlighted_label | is.na(state)]
 
               # Highlight the appropriate region by adding a new red trace
               plotlyProxy("gfpopPlot", session) %>%
