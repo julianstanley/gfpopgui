@@ -1,11 +1,11 @@
 test_that("app ui", {
-  ui <- app_ui()
-  golem::expect_shinytaglist(ui)
+  ui_test <- app_ui()
+  golem::expect_shinytaglist(ui_test)
 })
 
 test_that("app server", {
-  server <- app_server
-  expect_is(server, "function")
+  server_test <- app_server
+  expect_is(server_test, "function")
 })
 
 # Configure this test to fit your need
