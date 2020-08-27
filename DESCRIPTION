@@ -7,7 +7,7 @@ License: MIT + file LICENSE
 Imports: 
     config,
     golem (>= 0.2.1),
-    shiny (>= 1.5.0),
+    shiny,
     DT,
     htmltools,
     gfpop (>= 0.2.2),
@@ -34,5 +34,6 @@ Suggests:
     rmarkdown
 Remotes: 
     vrunge/gfpop,
+    rstudio/shiny,
     datastorm-open/visNetwork,
 VignetteBuilder: knitr
