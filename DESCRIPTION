@@ -34,6 +34,5 @@ Suggests:
     rmarkdown
 Remotes: 
     vrunge/gfpop,
-    rstudio/shiny,
     datastorm-open/visNetwork,
 VignetteBuilder: knitr
