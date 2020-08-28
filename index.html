@@ -38,13 +38,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="articles/tutorialvideos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="articles/gsoc2020report.html">GSOC Report</a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -54,12 +60,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/gsoc2020report.html">GSOC 2020 Report</a>
+    </li>
+    <li>
+      <a href="articles/rselenium_lessons.html">Integration Testing with RSelenium and SauceLabs</a>
+    </li>
+    <li>
       <a href="articles/timeline.html">GSOC 2020 Timeline Updates</a>
     </li>
+    <li>
+      <a href="articles/tutorialvideos.html">Tutorial Videos</a>
+    </li>
   </ul>
-</li>
-<li>
-  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -103,6 +115,7 @@ An interactive shiny-based application for exploring graph- constrained changepo
 <p>Generally, <code>gfpop</code> is an R package implementing an algorithm that lets users detect changepoints in their data. Unlike related packages (e.g. <code>changepoint</code>), <code>gfpop</code> works under the assumption that its users have some general idea about the patterns of their changepoints. For example, you might expect that your data alternates between “up” and “down” changepoints, each with a mean change of at least 1. If you can represent your assumptions about your changepoints as a directed graph, <code>gfpop</code> can take that constraint graph as an input and very efficiently predict changepoints in your data.</p>
 <p>This GUI for gfpop lets you draw a constraint graph and edit its parameters interactively. Then, it will run the <code>gfpop</code> algorithm and let you interactively see changepoint differences.</p>
 <p>This is an in-progress summer project. See the project description at <a href="https://summerofcode.withgoogle.com/projects/#6502959753461760">Google Summer of Code 2020</a>.</p>
+<p>For more complete documentation, see the <a href="https://julianstanley.github.io/gfpopgui">pkgdown site</a>.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -117,8 +130,9 @@ An interactive shiny-based application for exploring graph- constrained changepo
 <h2 class="hasAnchor">
 <a href="#testing" class="anchor"></a>Testing</h2>
 <p>Uses a combination of testing frameworks. <code>testthat</code> and <code><a href="https://shiny.rstudio.com/reference/shiny/latest/testServer.html">shiny::testServer</a></code> are used for most functionality and run via CI.</p>
-<p>Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10:</p>
+<p>Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10 via SauceLabs.</p>
 <p><img src="https://saucelabs.com/browser-matrix/julianstanley.svg"></p>
+<p>Tests are also run on the latest releases of Windows 10, macOS, and Ubuntu 16.04 via GitHub actions.</p>
 </div>
 <div id="attributions" class="section level2">
 <h2 class="hasAnchor">
