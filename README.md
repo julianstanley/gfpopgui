@@ -63,6 +63,8 @@ run the `gfpop` algorithm and let you interactively see changepoint differences.
 
 This is an in-progress summer project. See the project description at [Google Summer of Code 2020](https://summerofcode.withgoogle.com/projects/#6502959753461760).
 
+For more complete documentation, see the [pkgdown site](https://julianstanley.github.io/gfpopgui).
+
 ## Installation
 
 To install:
@@ -82,9 +84,11 @@ See the application for more detailed usage information. [Documentation](https:/
 
 Uses a combination of testing frameworks. `testthat` and `shiny::testServer` are used for most functionality and run via CI.
 
-Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10:
+Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10 via SauceLabs.
 
 ![](https://saucelabs.com/browser-matrix/julianstanley.svg)
+
+Tests are also run on the latest releases of Windows 10, macOS, and Ubuntu 16.04 via GitHub actions.
 
 ## Attributions
 

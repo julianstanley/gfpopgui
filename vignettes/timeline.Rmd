@@ -1577,11 +1577,14 @@ stable, and useable as possible.
 * Write more vignettes, including a SauceLabs/Selenium one, opening issues as necessary
 * Fix bugs that come up while working on the three previous bullets
 
+## August 10 - August 31
 
-## August 10 - August 16
+I am consolidating these timeline sections because I fell of the bandwagon writing
+these over the last couple weeks, in part because the changes that I've made
+these past few weeks have not been particularly interesting.
 
-## August 17 - August 23
 
-## August 24 - August 31
+
+
 
 

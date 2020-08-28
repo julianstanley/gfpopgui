@@ -1,0 +1,41 @@
+---
+title: "Tutorial Videos"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial Videos}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+Over time, I hope to add more tutorial videos. Feel free to email me at 
+julianst=mit+edu with any questions, or to request specific tutorials!
+
+# Introduction
+
+```{R, echo=FALSE}
+htmltools::HTML('<div class="vembedr">
+  <div>
+    <iframe src="https://www.youtube.com/embed/3jFwmrvPGi4" width="533" height="300" frameborder="0" allowfullscreen=""></iframe>
+  </div>
+</div>
+                ')
+```
+
+# Uploading Custom Data
+
+```{R, echo=FALSE}
+htmltools::HTML('<div class="vembedr">
+  <div>
+    <iframe src="https://www.youtube.com/embed/cL23UYGs2K4" width="533" height="300" frameborder="0" allowfullscreen=""></iframe>
+  </div>
+</div>      ')
+```
+
