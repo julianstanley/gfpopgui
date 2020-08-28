@@ -53,7 +53,7 @@ test_that("add_changepoints works for data with only one changeregion", {
   )
 
   expect_equal(dim(added_changepoints$changepoint_annotations), c(0, 0))
-  expect_equal(dim(added_changepoints$changepoint_annotations_regions), c(3, 4))
+  expect_equal(dim(added_changepoints$changepoint_annotations_regions), c(1000, 4))
 })
 
 test_that("add_changepoints works for data with many changeregions", {
@@ -73,7 +73,7 @@ test_that("add_changepoints works for data with many changeregions", {
   expect_equal(dim(added_changepoints$changepoint_annotations), c(117, 4))
 
   # There should be four rows for each changeregion. So, 160 total.
-  expect_equal(dim(added_changepoints$changepoint_annotations_regions), c(160, 4))
+  expect_equal(dim(added_changepoints$changepoint_annotations_regions), c(1064, 4))
 })
 
 

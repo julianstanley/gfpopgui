@@ -1,1 +1,22 @@
 destination: docs
+navbar:
+  structure:
+    left:
+    - home
+    - tutorialvideos
+    - gsocreport
+    - reference
+    right: github
+  components:
+    home:
+      text: Home
+      href: index.html
+    tutorialvideos:
+      text: Tutorial Videos
+      href: articles/tutorialvideos.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    gsocreport:
+      text: GSOC Report
+      href: articles/gsoc2020report.html

@@ -6,7 +6,7 @@ Description: A Shiny-based graphical user interface (GUI) for the gfpop package.
 License: MIT + file LICENSE
 Imports: 
     config,
-    golem,
+    golem (>= 0.2.1),
     shiny,
     DT,
     htmltools,
@@ -36,5 +36,4 @@ Remotes:
     vrunge/gfpop,
     rstudio/shiny,
     datastorm-open/visNetwork,
-    ThinkR-open/golem
 VignetteBuilder: knitr

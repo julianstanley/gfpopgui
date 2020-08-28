@@ -46,7 +46,7 @@ mod_analysis_ui <- function(id) {
             "state1", "state2", "type", "parameter", "penalty",
             "K", "a", "min", "max"
           ),
-          selected = c("type", "parameter"),
+          selected = c("type", "penalty"),
           multiple = TRUE
         ),
         actionButton(inputId = ns("refreshGraph"), label = "Refresh Graph"),
@@ -56,7 +56,7 @@ mod_analysis_ui <- function(id) {
         selectInput(
           inputId = ns("gfpopType"),
           label = "Cost model",
-          choices = c("mean", "variance", "poisson", "exp", "negbin")
+          choices = c("mean", "variance", "poisson", "exp")
         ),
         actionButton(inputId = ns("runGfpop"), label = "Run gfpop!"),
         actionButton(inputId = ns("clsCp"), label = "Clear Changepoints"),
@@ -242,11 +242,6 @@ mod_analysis_ui <- function(id) {
             h5("This is what gets sent to gfpop"),
             dataTableOutput(ns("graphOutput")),
             uiOutput(ns("graphOutput_code"))
-          ),
-
-          # For help editing the graph (TODO)
-          tabPanel(
-            "Help",
           )
         )
       ),
@@ -765,8 +760,7 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
               highlighted_label <- node_id_to_label$main[[highlighted_id]]
 
               segments_to_highlight <-
-                gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]] %>%
-                filter(state == highlighted_label)
+                gfpop_data$changepoint_annotations_list[["changepoint_annotations_regions"]][state == highlighted_label | is.na(state)]
 
               # Highlight the appropriate region by adding a new red trace
               plotlyProxy("gfpopPlot", session) %>%
@@ -836,15 +830,27 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # Add changepoints to a saved Plotly plot when the user asks
       observeEvent(input$runGfpop, {
-        initialize_changepoints()
-        changepoint_annotations_list <- add_changepoints(
-          gfpop_data$base_plot,
-          isolate(gfpop_data$main_data),
-          isolate(gfpop_data$changepoints)
+        tryCatch(
+          expr = {
+            initialize_changepoints()
+            changepoint_annotations_list <- add_changepoints(
+              gfpop_data$base_plot,
+              isolate(gfpop_data$main_data),
+              isolate(gfpop_data$changepoints)
+            )
+            
+            gfpop_data$changepoint_plot <- changepoint_annotations_list[["plot"]]
+            gfpop_data$changepoint_annotations_list <- changepoint_annotations_list
+          },
+          error = function(e) {
+            shinyalert(
+              title = "Invalid model",
+              text = paste0("An error occurred while running gfpop: ",
+                            e)
+            )
+          }
         )
-
-        gfpop_data$changepoint_plot <- changepoint_annotations_list[["plot"]]
-        gfpop_data$changepoint_annotations_list <- changepoint_annotations_list
+        
       })
 
       # A helper function to initalize changepoints (gfpop_data$changepoints)
@@ -928,7 +934,6 @@ mod_analysis_server <- function(id, gfpop_data = reactiveValues()) {
 
       # When the user hovers on Plotly, highlight nodes in visNetwork
       observeEvent(hover_data(), {
-        print(hover_data())
         if (input$crosstalk) {
           event <- hover_data()
           nevents <- dim(event)[1]

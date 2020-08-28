@@ -1,0 +1,400 @@
+---
+title: "Integration Testing with RSelenium and SauceLabs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Integration Testing with RSelenium and SauceLabs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Overview
+
+After making a stable web application, you may want to write integration tests.
+
+You can write integration tests with `shinytest` but, especially with more complicated
+features, a more general tool may be more useful.
+
+One such tool is Selenium, which is an automated testing framework for any web application.
+In short, Selenium allows you to interact with your web application via a headless browser.
+For more information, [see the documentation](https://www.selenium.dev/documentation/en/introduction/on_test_automation/).
+
+Selenium has been ported to a variety of languages, such as Java, Python, and JavaScript. There
+is also an R port called (appropriately) [RSelenium](https://github.com/ropensci/RSelenium).
+
+The documentation for RSelenium is good, but I found that some of the instructions were outdated and
+I spent a lot of time fixing bugs and trying to get my tests setup. 
+
+One fantastic resource was [this repository from adamrobinson361](https://github.com/adamrobinson361/shiny-testing-template) 
+that has a shiny testing template. Still, I needed many more resources besides that template to 
+implement RSelenium for my purposes.
+
+So, the purpose of this article is to get you up-and-running with RSelenium as quickly as possible.
+
+# Run a Selenium Server
+
+Selenium relies on a Selenium Server. Basically, your RSelenium code calls need to 
+connect to a server where a headless browser can run.
+
+You can run this server:
+
+1. On your local computer via a .jar binary
+2. On your local computer via a docker file
+3. Via SauceLabs
+
+I personally very much perfer SauceLabs for this, especially since it's a commercial
+service that [provides free open source licenses](https://saucelabs.com/solutions/open-source).
+
+I felt weird applying for a license at first, but I filled out their quick form and
+they got back to me the next day with a free account.
+
+## Via the .jar binary
+
+This can be tricky and I don't recommend it. But there are some instructions 
+[here](https://cran.r-project.org/web/packages/RSelenium/vignettes/basics.html#how-do-i-run-the-selenium-server) that 
+still work, with some troubleshooting.
+
+## Via a docker file
+
+This is the easiest way to run a local Selenium server, in my opinion. In fact,
+I'll show below how I used docker to run a Selenium server for testing on Travis
+before I used SauceLabs.
+
+Just install docker on your local computer. On Ubuntu, just run `sudo apt install docker`.
+
+Then, run the `selenium/standalone-firefox` docker image, like so:
+
+`docker run -d --net=host selenium/standalone-firefox&`
+
+This will be a bit slow the first time, but faster afterwards.
+
+The service runs on port 4444 by default. To access a dashboard for the server,
+navigate to `http://localhost:4444/wd/hub/static/resource/hub.html`.
+
+## Via SauceLabs
+
+If you have a SauceLabs account setup, you don't need to set up a local Selenium server,
+since SauceLabs provides one.
+
+# Run the application
+
+You'll need an application to test. You can test:
+
+1. A locally-running version of your application, or
+2. A remote version of your application.
+
+## Remote application
+
+Regardless of how you are running the Selenium Server, testing a remote
+application is really easy. Later in this article, you'll just point
+the headless browser to the URL or IP of your webserver.
+
+## Local Selenium Server (.jar or docker) + Local Application
+
+If you're running a Selenium server locally, then it should have no problem accessing
+a local version of your application.
+
+So, just run your application in the background. For example, in a terminal:
+
+```bash
+${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &
+```
+
+You can also execute the same command through R:
+
+```R
+system("${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &", 
+       ignore.stdout = TRUE,
+       ignore.stderr = TRUE)
+```
+
+## SauceLabs + Local Application
+
+You can test local versions of your application through SauceLabs, but it can be 
+a bit tricky because SauceLabs' servers need some way to access your local network.
+
+Basically, first run your application in the background like you would usually:
+
+```bash
+${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &
+```
+
+Then, you can use the 'Sauce Connect Proxy' to let SauceLabs connect to a port on 
+your local computer.
+
+[Sauce Connect Proxy Install Instructions](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy).
+
+Once that's installed, you can run the `sc` binary with parameters containing
+your SauceLabs username and the secret key (found in SauceLabs account settings).
+Also, you may need to set `ulimit` if you are on Ubuntu:
+
+```bash
+julian-ThinkPad-T460:SauceLabs_Connect_4.6.2$ pwd
+/home/julian/SauceLabs_Connect_4.6.2
+julian-ThinkPad-T460:SauceLabs_Connect_4.6.2$ ulimit -n 8192 && ./bin/sc -v -u $SAUCE_USERNAME -k $SAUCE_SECRET_KEY -B all
+```
+
+Once that's up and running, you're _almost_ there. The problem now is that
+Sauce Connect has some problems with websocket handshake that Shiny requires.
+
+So, you'll need to provide a non-localhost name for 127.0.0.1 in your hosts file.
+For example, in Ubuntu, I changed my `/etc/hosts` file to look like this:
+
+```bash
+julian-ThinkPad-T460:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	julian-ThinkPad-T460
+
+# For SauceConnect
+127.0.0.1	julian.local
+
+# ... truncated
+```
+
+# Opening a Remote Web Driver with RSelenium
+
+After installing RSelenium (available on CRAN), you can create a remoteDriver
+object, which is the object that can communicate with the Selenium headless browser.
+
+Basically, a remoteDriver object takes in:
+
+1. The IP of the Selenium server
+2. The port of the Selenium server
+3. A browser name (e.g. "chome" or "firefox")
+4. A browser version (e.g. "latest")
+5. An operating system (e.g. "macOS 10.15")
+6. A list of extra capabilities
+
+The list of extra capabilities can contain things like the browser screen resolution 
+to use for testing, as well as a username and secret key for SauceLabs.
+
+If you are using a local Selenium server, your IP will be `localhost` and your 
+port will probably be `4444`. So, for example:
+
+```R
+remDr <- remoteDriver$new(remoteServerAddr = "localhost", 
+                        port = 4444,
+                        browserName = "firefox",
+                        version = "latest",
+                        platform = "macOS 10.15")
+```
+
+If you are using SauceLabs, your IP can be formed from your SauceLabs username
+and secret key. Your port will be `80`. For example:
+
+```R
+user <- Sys.getenv("SAUCE_USERNAME")
+pass <- Sys.getenv("SAUCE_SECRET_KEY")
+port <- 80
+ip <- paste0(user, ":", pass, "@ondemand.saucelabs.com")
+
+extraCapabilities <- list(
+  name = "Main test-integration",
+  username = user,
+  accessKey = pass,
+  tags = list("R", "Shiny"),
+  "screen-resolution" = "2560x1600")
+
+remDr <- remoteDriver$new(
+    remoteServerAddr = ip,
+    port = 30,
+    browserName = "firefox",
+    version = "latest",
+    platform = "macOS 10.15"
+    extraCapabilities = extraCapabilities
+  )
+```
+
+Then, once you make a remote driver object, you need to (1) open it, and
+(2) point it to your app URL.
+
+For example, with a remote web server:
+
+```R
+remDr$open()
+remDr$navigate(url = "https://www.julianstanley.shinyapps.io/gfpopgui")
+```
+
+Or with a local web server through SauceConnect:
+
+```R
+remDr$open()
+remDr$navigate(url = "http://julian.local:3000")
+```
+
+Where I am running my local app on port 3000. Also see "SauceLabs + Local Application"
+header above, where I explained porting 'localhost' to 'julian.local'
+
+Or, with a local web server that also has a local Selenium server:
+
+```R
+remDr$open()
+remDr$navigate(url = "localhost:3000")
+```
+
+Where, again, the application is running on port 3000.
+
+# Running tests with RSelenium and testthat
+
+Once you have the remoteDriver object open to your application, it's very easy to
+write simple tests. You can also wrap the tests in `testthat` in R so that they run 
+automatically and fail more nicely. For example:
+
+```R
+library(testthat)
+library(rselenium)
+
+test_that("Can connect to app", {
+  remDr$open(silent = T)
+  remDr$navigate(url = appURL)
+  remDr$setImplicitWaitTimeout(milliseconds = 5000)
+  expect_equal(remDr$getTitle()[[1]], "gfpopgui")
+  remDr$close()
+})
+```
+
+Note that it's important to run `remDr$close()` at the end of each test. I also 
+put it again at the end of the document, in case the tests are cut short by 
+one of the expect statements failing.
+
+The RSelenium docs explain this in a bit more detail.
+
+Where the official docs come a bit short is in how to find more complicated
+DOM components when you are testing.
+
+My solution is to use the [Katalon Recorder Chrome Extension](https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid?hl=en-US). Install that to Chrome, navigate to your webserver, and click 
+"record". Then, click on the DOM element that you want to access. Then, you should see
+a table with "Command" and "Target". For example, when I clicked on one cell
+in a datatable in my Shiny application, "Command" was "click" and "target"
+was "//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]".
+
+This "target" data is an xpath locator--essentially a syntax with which to specify 
+the location of DOM elements.
+
+So, in RSelenium, to get the content of that particular datatable cell, I can say:
+
+```R
+cell_element <- remDr$findElement("xpath", "//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]")
+cell_content <- cell_element$getElementAttribute("innerHTML")[[1]] 
+```
+
+And then you can test whether `cell_content` is what you expect it to be.
+
+You can also use the same technique to click on elements. For example, to click
+that cell in the datatable:
+
+```R
+cell_element <- remDr$findElement("xpath", "//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]")
+cell_element.clickElement()
+```
+
+To me, this was a more reliable way to find more complicated elements than the 
+more-commonly used `remDr$findelement("id", ...)` command, that I would use for
+simpler elements, such as:
+
+`remDr$findElement("id", "home_ui_1-genData")$clickElement()`
+
+# Waiting for the application to load
+
+One gripe I've had with this form of testing is that my application does not always
+load for a consistent amount of time.
+
+To get past that,  I've been using constrained `while` loops that wait for certain 
+components.
+
+For example, once the title of the application is loaded, I can be somewhat
+confident that the application is live. So, at the beginning of a test, I'll 
+look for the title each second until I find it, and then start the rest of the tests:
+
+```R
+wait_for_title <- function(remDr, seconds, title_expected) {
+    count <- 0
+    while (count < seconds) {
+      appTitle <- remDr$getTitle()[[1]]
+      if (appTitle == title_expected) {
+        break
+      }
+      message(paste0("Waited ", count, " seconds. App isn't loaded yet, waiting
+                   for another second."))
+      Sys.sleep(1)
+      count <- count + 1
+    }
+
+    return(appTitle)
+  }
+  
+test_that("Example test", {
+  remDr$open(silent = T)
+  remDr$navigate(url = appURL)
+  remDr$setImplicitWaitTimeout(milliseconds = 5000)
+  appTitle <- wait_for_title(remDr, 10, "gfpopgui")
+  # ... truncated, more tests below
+})
+```
+
+# Sending test status to SauceLabs
+
+While `testthat` will tell you whether or not your RSelenium tests failed, that
+information is not sent to SauceLabs. That's not ideal because SauceLabs
+has a badge that updates, like Travis badges, to tell users whether or not
+your tests are passing. If RSelenium doesn't send any test statuses to SauceLabs,
+then that badges never updates.
+
+Unfortunately, RSelenium can't send test status directly. However, you can send
+those statuses via JavaScript with the `remDr$executeScript()` function.
+
+Through that function, you can send a job build, job name, and a result.
+
+All jobs names with the same build name will be compiled into one build on 
+SauceLabs. I use this function:
+
+```R
+submit_job_info <- function(remDr, build, name, result) {
+    if (!(result %in% c("passed", "failed", "true", "false"))) {
+      stop("Invalid result. Please use: passed, failed, true, or false")
+    }
+
+    remDr$executeScript(paste0("sauce:job-build=", build))
+    remDr$executeScript(paste0("sauce:job-name=", name))
+    remDr$executeScript(paste0("sauce:job-result=", result))
+  }
+```
+
+Then, I'll keep track of whether my test fails or succeeds, and pass that
+status to both `submit_job_info()` and `expect_equal`. For example:
+
+```R
+ test_that("the generate data button works", {
+    remDr$open(silent = T)
+    remDr$navigate(url = appURL)
+    remDr$setImplicitWaitTimeout(milliseconds = 5000)
+
+    # Get entry from datatable 2; should be "Std"
+    webElem <- remDr$findElement("xpath", "//table[@id='DataTables_Table_0']/tbody/tr/td[2]")
+    elemContent <- webElem$getElementAttribute("innerHTML")[[1]]
+    result <- elemContent == "Std"
+    
+    # Send result to SauceLabs
+    submit_job_info(remDr, buildName,
+      name = "the generate data button works",
+      result = result
+    )
+    
+    # Make the same test with testthat
+    expect_equal(elemContent, "Std")
+    remDr$close()
+  })
+```
+
+# Conclusion
+
+I hope this has helped! I wrote it a bit quickly, so please forgive any mistakes.
+It also may help to look at my [testing file here](https://github.com/julianstanley/gfpopgui/blob/master/tests/testthat/test-integration-RSelenium.R).
+
+And, if you have any questions, feel free to email me at julianst=mit+edu.

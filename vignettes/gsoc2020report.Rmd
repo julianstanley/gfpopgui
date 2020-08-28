@@ -1,0 +1,207 @@
+---
+title: "GSOC 2020 Report"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GSOC 2020 Report}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# TL;DR
+
+I built a stable web application for creating directed graphs to constrain the `gfpop` changepoint-detection algorithm. 
+[Commit history](https://github.com/julianstanley/gfpopgui/commits/master?user=julianstanley).
+
+Users can run an entire analysis
+in the app, or they can construct a graph and export it as R code.
+
+The application is an R package [available here](https://github.com/julianstanley/gfpopgui/). It is hosted
+through shinyapps.io [at this address](https://julianstanley.shinyapps.io/gfpopgui/). 
+More documentation is [available here](https://julianstanley.github.io/gfpopgui/).
+
+The application is well-tested, but still needs more integration tests.
+Rewriting components in JavaScript would increase efficiency. 
+Some features, such as analysis of `gfpop` accuracy, are not yet implemented.
+I hope to continue patching this project after the GSOC period.
+
+
+# Introduction and Contribution
+
+Where do sudden changes in data occur? While changepoints may be apparent by eye, 
+accurately identifying changepoints algorithmically without any prior information 
+is very difficult. 
+
+Luckily, in scenarios where researcher wants to detect changepoints, they often
+have some prior information about changepoint patterns. For example, 
+imagine that you are modeling electricity flow through a light switch. You should expect
+electricity flow to suddenly increase when the switch is "on", and suddenly decrease
+when the switch is "off". In this case, you expect your changepoints (the times at which
+the switch is turned "on" or "off") to alternate between "up" and "down" states with 
+higher and lower average amounts of electricity, respectively. 
+
+In 2018, Toby Hocking, Guillem Rigaill, and others introduced an efficient algorithm to detect changepoints
+by incorporating prior information about changepoint patterns. They named the 
+algorithm "Generalized Functional Pruning Optimal Partitioning", or GFPOP, and 
+developed an associated R package, `gfpop`.
+
+`gfpop` asks users to encode prior information about changepoint patterns as a 
+directed graph. In the light switch example above, the directed graph would be
+an "up" and a "down" node and two edges, one going from "up" to "down", and another
+going from "down" to "up". 
+
+The `gfpop` package provides `Edge` and `Node` classes so that users can build
+directed graphs to constrain the GFPOP algorithm. However, it would be more intuitive 
+if users could build graphs visually by, for example, clicking and dragging between
+two nodes to create a connecting edge. It would also be helpful if it were easy to 
+visualize how nodes and edges in the graph correspond to changepoint locations in the data.
+
+This summer, Toby Hocking and Guillem Rigaill mentored me as I created a web
+application, called `gfpopgui` where users can interactively build graphs and see how modifying
+their graphs impacts the results of the `gfpop` package.
+
+You can find the application [online here](https://julianstanley.shinyapps.io/gfpopgui/),
+or you can run a local copy with `devtools::install_github("julianstanley/gfpopgui"); gfpopgui::run_app()`. 
+
+# Implementation
+
+The application is built with R Shiny, along with a little bit of JavaScript.
+
+The application has four pages. The "Home" page contains some instructions on how
+to get started, and is also where users can upload their data (including already-completed
+constraint graphs or .Rdata files containing whole analyses), or generate some sample data.
+
+The "Analysis" page is where most of the application lives. Here, users can interactively 
+build a constraint graph. They have the option to build the graph by (i) clicking directly on the 
+nodes or edges, (ii) clicking on cells within a data.table, or (iii) inputting parameters in 
+text boxes and drop-down menus and clicking buttons to add, edit, or delete nodes and edges. Then,
+users can press a button to run `gfpop` with their custom data and then view the outputs.
+
+Importantly, the "Analysis" page includes cross-talk between the custom constraint graph
+and the plot that shows the results of `gfpop`. When a user hovers over a changepoints
+in their data, the corresponding graph node is highlighted, and vice-versa.
+
+In addition, users may save full clones of previous data on the "Analysis" page,
+allowing them to experiment with new graph structures without fear of losing a
+previous, stable version.
+
+Since the application does not have a user system, `gfpopgui` users should export
+all of their analysis before exiting the application. To do so, they can navigate
+to the "Sharing" page, which includes a quick preview of the current analysis, as
+well as buttons to download different aspects of the analysis.
+
+Finally, the "Help" page includes some additional documentation and links.
+
+## Shiny and Javascript Logistics
+
+Most of the application relies on the Shiny framework. There are different ways to format a Shiny application, and I choose to use the guidelines provided by the `golem` package. That is, the application is:
+
+(i) contained within an R package,
+(ii) broken into modules
+(iii) tested via `testthat`, and
+(iv) documented with `roxygen`, like the package it is.
+
+The application is generally divided within a `shiny::navbarPage()`. Then, each page is separated into a
+different shiny module.
+
+In the future, the application might be improved if I can separate
+the application into more modules. While the one-module-per-page approach is more advantageous than not using modules at all,
+it doesn't conform with the spirit of modules, that is, creating
+reusable parts with which a broad application can be built.
+
+## Dependencies
+
+`gfpopgui` relies on a lot of dependencies. Most notably, it heavily relies on `plotly` and `visNetwork` to create interactive plots of the data/changepoints and the constraint graph, respectively. And each of these two packages rely on various
+other packages in turn. While `plotly` and `visNetwork` are both quite stable, `gfpopgui` could be improved by reducing the number of dependencies.
+
+## Testing
+
+A lot of my time this summer has been dedicated testing. Namely, there are four
+main ways to test shiny applications:
+
+(i) unit testing 
+(ii) integration testing via `testServer()`
+(iii) integration testing via `shinytest`
+(iv) integration testing via `RSelenium` and SauceLabs.
+
+In my opinion, this is also the order of the difficulty of implementing each 
+testing framework--unit tests are generally easy to write, fast, and transparent,
+whereas integration tests that involve a headless browser, such as shinytest
+and RSelenium, are much more difficult to implement.
+
+All four of these methods rely on `testthat` for expectations.
+
+My first approach to testing was to functionalize as much as possible, and use 
+unit tests. This approach was amenable to most of the functionality in `gfpopgui` and
+is very transparent. In the `golem` framework, functions are defined in separate 
+files, prefaced with `fct_`. Each of the `fct` files have unit tests in an associated
+`tests/testthat/test-*.R` file. For example, the unit tests for `R/fct-graph-helpers`
+can be found at `tests/testthat/test-graph-helpers.R`. 
+
+Then, I was left with functionality that requires reactivity, and therefore
+cannot be tested with unit tests. For those features, I used `testServer()`, 
+a new method in the `shiny` package that allows to users to direct test server
+modules without the use of a headless browser. Those tests can be found
+in `test-integration-testServer.R`. 
+
+However, `testServer()` cannot test any features that require javascript. For that,
+many users use the `shinytest` package. However, I had some trouble implementing `shinytest`
+tests--I could only run these tests locally. One future direction of the project
+could be better defining and troubleshooting problems implementing `shinytest`.
+
+`RSelenium` is also an option for testing features that require javascript. It required
+a lot of troubleshooting to set up, and I wrote a few `gfpopgui` tests through that platform,
+but I regret that I could not write more. I have written down what I learned about the 
+setup [here](https://julianstanley.github.io/gfpopgui/articles/rselenium_lessons.html).
+
+In total, I tracked coverage with CodeCov.io and the current commit has a code coverage
+of around 92%. For more information, see [the project's CodeCov page](https://codecov.io/gh/julianstanley/gfpopgui/).
+
+## Documentation
+
+Throughout this project, I kept approximately-weekly, blog-style logs of my progress.
+You can find those articles [here](https://julianstanley.github.io/gfpopgui/articles/timeline.html).
+
+To better explain how the application itself works, I created a series of tutorial videos.
+Those are hosted on YouTube and you can find them [here](https://julianstanley.github.io/gfpopgui/articles/tutorialvideos.html). 
+
+## Continuous Integration
+
+When the master branch is updated in the `gfpopgui` repository, there are four
+continuous integration actions triggered:
+
+1. Travis CI: CMD Check. A CRAN CMD check is performed by Travis.
+2. Travis CI: shinyapps.io deploy. Travis automatically deploys all changes to the
+shinyapps.io server.
+3. GitHub Actions: Cross-platform CMD Check. GitHub actions performs a CRAN CMD
+check on macOS-latest, windows-latest, ubuntu-16.04 devel, and ubuntu-16.04 release.
+4. GitHub Actions: pkgdown render. GitHub actions runs `pkgdown::build_site()` to update
+the documentation website. 
+
+# Future directions
+
+While I think the gfpop GUI is relatively stable right now, I think there is a
+lot of room for improvement. Namely,
+
+1. Features. Some additional features would make the application more useful.
+For example, (a) changepoints themselves, rather than just changeregions, should
+cause graph _edges_ to be highlighted; (b) users should be able to view quantitatively
+how much the predicted changepoints differ from their expectations/the ground truth; and (c) a user management system, where individual users can save all of their data to a database,
+would reduce the need for saving and loading.
+
+2. Efficiency. Different components of the application could be optimized.
+For example, cross-talk between the plotly visualization and the constraint
+graph should be done client-side, without Shiny.
+
+3. Testing. The application needs more integration testing. For example, right now
+download handlers are not tested.
+
+In the previous sections, I discussed some particular future directions. Additionally,
+reference the [issues page](https://github.com/julianstanley/gfpopgui/issues) for more current information.
+

@@ -207,7 +207,7 @@ graphdf_to_visNetwork <- function(graphdf, edgeSep = "_", showNull = TRUE,
   graphdf <- graphdf[type != "start" & type != "end"]
 
   # Set edge and node names
-  edge_names <- paste(graphdf$state1, graphdf$state2, sep = edgeSep)
+  edge_names <- paste(graphdf$state1, graphdf$state2, graphdf$type, sep = edgeSep)
   node_names <- unique(c(graphdf$state1, graphdf$state2))
 
   if (length(edge_ids) == 0) {
