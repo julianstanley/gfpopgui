@@ -242,11 +242,6 @@ mod_analysis_ui <- function(id) {
             h5("This is what gets sent to gfpop"),
             dataTableOutput(ns("graphOutput")),
             uiOutput(ns("graphOutput_code"))
-          ),
-
-          # For help editing the graph (TODO)
-          tabPanel(
-            "Help",
           )
         )
       ),
