@@ -38,7 +38,7 @@ Where do sudden changes in data occur? While changepoints may be apparent by eye
 accurately identifying changepoints algorithmically without any prior information 
 is very difficult. 
 
-Luckily, in scenarios where researcher wants to detect changepoints, they often
+Luckily, in scenarios where a researcher wants to detect changepoints, they often
 have some prior information about changepoint patterns. For example, 
 imagine that you are modeling electricity flow through a light switch. You should expect
 electricity flow to suddenly increase when the switch is "on", and suddenly decrease
