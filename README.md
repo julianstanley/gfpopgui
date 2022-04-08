@@ -21,7 +21,7 @@ constrained changepoint detection with the <a href="https://github.com/vrunge/gf
   <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" 
     alt="Lifecycle: experimental"></img>
   </a>
-  <a href="https://travis-ci.com/julianstanley/gfpopgui">
+  <a href="https://app.travis-ci.com/github/julianstanley/gfpopgui">
   <img src="https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master" 
     alt="Travis build status"></img>
   </a>
