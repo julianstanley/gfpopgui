@@ -1,10 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 1.5.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   gsoc2020report: gsoc2020report.html
   rselenium_lessons: rselenium_lessons.html
   timeline: timeline.html
   tutorialvideos: tutorialvideos.html
-last_built: 2020-08-28T12:22Z
+last_built: 2022-04-08T22:14Z
 

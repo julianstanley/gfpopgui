@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">gfpopgui</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -49,35 +51,11 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/gsoc2020report.html">GSOC 2020 Report</a>
-    </li>
-    <li>
-      <a href="articles/rselenium_lessons.html">Integration Testing with RSelenium and SauceLabs</a>
-    </li>
-    <li>
-      <a href="articles/timeline.html">GSOC 2020 Timeline Updates</a>
-    </li>
-    <li>
-      <a href="articles/tutorialvideos.html">Tutorial Videos</a>
-    </li>
-  </ul>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/julianstanley/gfpopgui/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/julianstanley/gfpopgui/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -98,7 +76,7 @@
 <br><img src="https://github.com/julianstanley/gfpopgui/raw/master/inst/docs/assets/readme_assets/gfpopgui_logo.png" alt="gfpopgui" width="300"><br> gfpop gui <br>
 </h1></div>
 <h4 align="center">
-An interactive shiny-based application for exploring graph- constrained changepoint detection with the <a href="https://github.com/vrunge/gfpop" target="_blank">gfpop</a> package.
+An interactive shiny-based application for exploring graph- constrained changepoint detection with the <a href="https://github.com/vrunge/gfpop" target="_blank" class="external-link">gfpop</a> package.
 </h4>
 <div align="center">
 <!-- badges: start -->
@@ -108,35 +86,37 @@ An interactive shiny-based application for exploring graph- constrained changepo
 </p>
 </div>
 <!-- badges: end -->
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p>This is a graphical user interface (GUI) for the <a href="https://github.com/vrunge/gfpop">gfpop</a> package.</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>This is a graphical user interface (GUI) for the <a href="https://github.com/vrunge/gfpop" class="external-link">gfpop</a> package.</p>
 <p>Generally, <code>gfpop</code> is an R package implementing an algorithm that lets users detect changepoints in their data. Unlike related packages (e.g. <code>changepoint</code>), <code>gfpop</code> works under the assumption that its users have some general idea about the patterns of their changepoints. For example, you might expect that your data alternates between “up” and “down” changepoints, each with a mean change of at least 1. If you can represent your assumptions about your changepoints as a directed graph, <code>gfpop</code> can take that constraint graph as an input and very efficiently predict changepoints in your data.</p>
 <p>This GUI for gfpop lets you draw a constraint graph and edit its parameters interactively. Then, it will run the <code>gfpop</code> algorithm and let you interactively see changepoint differences.</p>
-<p>This is an in-progress summer project. See the project description at <a href="https://summerofcode.withgoogle.com/projects/#6502959753461760">Google Summer of Code 2020</a>.</p>
-<p>For more complete documentation, see the <a href="https://julianstanley.github.io/gfpopgui">pkgdown site</a>.</p>
+<p>This is an in-progress summer project. See the project description at <a href="https://summerofcode.withgoogle.com/projects/#6502959753461760" class="external-link">Google Summer of Code 2020</a>.</p>
+<p>For more complete documentation, see the <a href="https://julianstanley.github.io/gfpopgui" class="external-link">pkgdown site</a>.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>To install:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"julianstanley/gfpopgui"</span>)</pre></div>
-<p>To run, you can either <a href="https://julianstanley.shinyapps.io/gfpopgui/">visit the web application</a>, or run:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">gfpopgui</span><span class="kw ns">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span>()</pre></div>
-<p>See the application for more detailed usage information. <a href="https://julianstanley.github.io/gfpopgui">Documentation</a> is still in progress.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"julianstanley/gfpopgui"</span><span class="op">)</span></code></pre></div>
+<p>To run, you can either <a href="https://julianstanley.shinyapps.io/gfpopgui/" class="external-link">visit the web application</a>, or run:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">gfpopgui</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>See the application for more detailed usage information. <a href="https://julianstanley.github.io/gfpopgui" class="external-link">Documentation</a> is still in progress.</p>
 </div>
-<div id="testing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#testing" class="anchor"></a>Testing</h2>
-<p>Uses a combination of testing frameworks. <code>testthat</code> and <code><a href="https://shiny.rstudio.com/reference/shiny/latest/testServer.html">shiny::testServer</a></code> are used for most functionality and run via CI.</p>
+<div class="section level2">
+<h2 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a>
+</h2>
+<p>Uses a combination of testing frameworks. <code>testthat</code> and <code><a href="https://rdrr.io/pkg/shiny/man/testServer.html" class="external-link">shiny::testServer</a></code> are used for most functionality and run via CI.</p>
 <p>Other functionality is tested on the most recent version of Chrome on OSX Catalina and Windows 10 via SauceLabs.</p>
 <p><img src="https://saucelabs.com/browser-matrix/julianstanley.svg"></p>
 <p>Tests are also run on the latest releases of Windows 10, macOS, and Ubuntu 16.04 via GitHub actions.</p>
 </div>
-<div id="attributions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#attributions" class="anchor"></a>Attributions</h2>
+<div class="section level2">
+<h2 id="attributions">Attributions<a class="anchor" aria-label="anchor" href="#attributions"></a>
+</h2>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -158,48 +138,59 @@ An interactive shiny-based application for exploring graph- constrained changepo
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/julianstanley/gfpopgui/">https://​github.com/​julianstanley/​gfpopgui/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/julianstanley/gfpopgui/issues">https://​github.com/​julianstanley/​gfpopgui/​issues</a>
-</li>
+<li><a href="https://github.com/julianstanley/gfpopgui/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/julianstanley/gfpopgui/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing gfpopgui</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Julian Stanley <br><small class="roles"> Maintainer, author </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://julianstanley.github.io/gfpopgui"> <img src="https://img.shields.io/badge/Documentation%20and%20Articles-pkgdown-blue" alt="Documentation Link"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"> <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://travis-ci.com/julianstanley/gfpopgui"> <img src="https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://codecov.io/gh/julianstanley/gfpopgui?branch=master"> <img src="https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://app.saucelabs.com/u/julianstanley"> <img src="https://saucelabs.com/buildstatus/julianstanley?dummy=unused" alt="Sauce Test Status"></a></li>
+<li><a href="https://julianstanley.github.io/gfpopgui" class="external-link"> <img src="https://img.shields.io/badge/Documentation%20and%20Articles-pkgdown-blue" alt="Documentation Link"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"> <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://app.travis-ci.com/github/julianstanley/gfpopgui" class="external-link"> <img src="https://travis-ci.com/julianstanley/gfpopgui.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://codecov.io/gh/julianstanley/gfpopgui?branch=master" class="external-link"> <img src="https://codecov.io/gh/julianstanley/gfpopgui/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.saucelabs.com/u/julianstanley" class="external-link"> <img src="https://saucelabs.com/buildstatus/julianstanley?dummy=unused" alt="Sauce Test Status"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Julian Stanley.</p>
+  <p></p>
+<p>Developed by Julian Stanley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -207,6 +198,8 @@ An interactive shiny-based application for exploring graph- constrained changepo
 
   
 
+
+  
 
   </body>
 </html>

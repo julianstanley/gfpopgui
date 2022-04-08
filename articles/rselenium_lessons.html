@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">gfpopgui</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -49,35 +51,11 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/gsoc2020report.html">GSOC 2020 Report</a>
-    </li>
-    <li>
-      <a href="../articles/rselenium_lessons.html">Integration Testing with RSelenium and SauceLabs</a>
-    </li>
-    <li>
-      <a href="../articles/timeline.html">GSOC 2020 Timeline Updates</a>
-    </li>
-    <li>
-      <a href="../articles/tutorialvideos.html">Tutorial Videos</a>
-    </li>
-  </ul>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/julianstanley/gfpopgui/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/julianstanley/gfpopgui/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -97,27 +75,27 @@
       <h1 data-toc-skip>Integration Testing with RSelenium and SauceLabs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/julianstanley/gfpopgui/blob/master/vignettes/rselenium_lessons.Rmd"><code>vignettes/rselenium_lessons.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/julianstanley/gfpopgui/blob/HEAD/vignettes/rselenium_lessons.Rmd" class="external-link"><code>vignettes/rselenium_lessons.Rmd</code></a></small>
       <div class="hidden name"><code>rselenium_lessons.Rmd</code></div>
 
     </div>
 
     
     
-<div id="overview" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h1>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>After making a stable web application, you may want to write integration tests.</p>
 <p>You can write integration tests with <code>shinytest</code> but, especially with more complicated features, a more general tool may be more useful.</p>
-<p>One such tool is Selenium, which is an automated testing framework for any web application. In short, Selenium allows you to interact with your web application via a headless browser. For more information, <a href="https://www.selenium.dev/documentation/en/introduction/on_test_automation/">see the documentation</a>.</p>
-<p>Selenium has been ported to a variety of languages, such as Java, Python, and JavaScript. There is also an R port called (appropriately) <a href="https://github.com/ropensci/RSelenium">RSelenium</a>.</p>
+<p>One such tool is Selenium, which is an automated testing framework for any web application. In short, Selenium allows you to interact with your web application via a headless browser. For more information, <a href="https://www.selenium.dev/documentation/en/introduction/on_test_automation/" class="external-link">see the documentation</a>.</p>
+<p>Selenium has been ported to a variety of languages, such as Java, Python, and JavaScript. There is also an R port called (appropriately) <a href="https://github.com/ropensci/RSelenium" class="external-link">RSelenium</a>.</p>
 <p>The documentation for RSelenium is good, but I found that some of the instructions were outdated and I spent a lot of time fixing bugs and trying to get my tests setup.</p>
-<p>One fantastic resource was <a href="https://github.com/adamrobinson361/shiny-testing-template">this repository from adamrobinson361</a> that has a shiny testing template. Still, I needed many more resources besides that template to implement RSelenium for my purposes.</p>
+<p>One fantastic resource was <a href="https://github.com/adamrobinson361/shiny-testing-template" class="external-link">this repository from adamrobinson361</a> that has a shiny testing template. Still, I needed many more resources besides that template to implement RSelenium for my purposes.</p>
 <p>So, the purpose of this article is to get you up-and-running with RSelenium as quickly as possible.</p>
 </div>
-<div id="run-a-selenium-server" class="section level1">
-<h1 class="hasAnchor">
-<a href="#run-a-selenium-server" class="anchor"></a>Run a Selenium Server</h1>
+<div class="section level2">
+<h2 id="run-a-selenium-server">Run a Selenium Server<a class="anchor" aria-label="anchor" href="#run-a-selenium-server"></a>
+</h2>
 <p>Selenium relies on a Selenium Server. Basically, your RSelenium code calls need to connect to a server where a headless browser can run.</p>
 <p>You can run this server:</p>
 <ol style="list-style-type: decimal">
@@ -125,16 +103,16 @@
 <li>On your local computer via a docker file</li>
 <li>Via SauceLabs</li>
 </ol>
-<p>I personally very much perfer SauceLabs for this, especially since it’s a commercial service that <a href="https://saucelabs.com/solutions/open-source">provides free open source licenses</a>.</p>
+<p>I personally very much perfer SauceLabs for this, especially since it’s a commercial service that <a href="https://saucelabs.com/solutions/open-source" class="external-link">provides free open source licenses</a>.</p>
 <p>I felt weird applying for a license at first, but I filled out their quick form and they got back to me the next day with a free account.</p>
-<div id="via-the--jar-binary" class="section level2">
-<h2 class="hasAnchor">
-<a href="#via-the--jar-binary" class="anchor"></a>Via the .jar binary</h2>
-<p>This can be tricky and I don’t recommend it. But there are some instructions <a href="https://cran.r-project.org/web/packages/RSelenium/vignettes/basics.html#how-do-i-run-the-selenium-server">here</a> that still work, with some troubleshooting.</p>
+<div class="section level3">
+<h3 id="via-the--jar-binary">Via the .jar binary<a class="anchor" aria-label="anchor" href="#via-the--jar-binary"></a>
+</h3>
+<p>This can be tricky and I don’t recommend it. But there are some instructions <a href="https://cran.r-project.org/web/packages/RSelenium/vignettes/basics.html#how-do-i-run-the-selenium-server" class="external-link">here</a> that still work, with some troubleshooting.</p>
 </div>
-<div id="via-a-docker-file" class="section level2">
-<h2 class="hasAnchor">
-<a href="#via-a-docker-file" class="anchor"></a>Via a docker file</h2>
+<div class="section level3">
+<h3 id="via-a-docker-file">Via a docker file<a class="anchor" aria-label="anchor" href="#via-a-docker-file"></a>
+</h3>
 <p>This is the easiest way to run a local Selenium server, in my opinion. In fact, I’ll show below how I used docker to run a Selenium server for testing on Travis before I used SauceLabs.</p>
 <p>Just install docker on your local computer. On Ubuntu, just run <code>sudo apt install docker</code>.</p>
 <p>Then, run the <code>selenium/standalone-firefox</code> docker image, like so:</p>
@@ -142,44 +120,45 @@
 <p>This will be a bit slow the first time, but faster afterwards.</p>
 <p>The service runs on port 4444 by default. To access a dashboard for the server, navigate to <code>http://localhost:4444/wd/hub/static/resource/hub.html</code>.</p>
 </div>
-<div id="via-saucelabs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#via-saucelabs" class="anchor"></a>Via SauceLabs</h2>
+<div class="section level3">
+<h3 id="via-saucelabs">Via SauceLabs<a class="anchor" aria-label="anchor" href="#via-saucelabs"></a>
+</h3>
 <p>If you have a SauceLabs account setup, you don’t need to set up a local Selenium server, since SauceLabs provides one.</p>
 </div>
 </div>
-<div id="run-the-application" class="section level1">
-<h1 class="hasAnchor">
-<a href="#run-the-application" class="anchor"></a>Run the application</h1>
+<div class="section level2">
+<h2 id="run-the-application">Run the application<a class="anchor" aria-label="anchor" href="#run-the-application"></a>
+</h2>
 <p>You’ll need an application to test. You can test:</p>
 <ol style="list-style-type: decimal">
 <li>A locally-running version of your application, or</li>
 <li>A remote version of your application.</li>
 </ol>
-<div id="remote-application" class="section level2">
-<h2 class="hasAnchor">
-<a href="#remote-application" class="anchor"></a>Remote application</h2>
+<div class="section level3">
+<h3 id="remote-application">Remote application<a class="anchor" aria-label="anchor" href="#remote-application"></a>
+</h3>
 <p>Regardless of how you are running the Selenium Server, testing a remote application is really easy. Later in this article, you’ll just point the headless browser to the URL or IP of your webserver.</p>
 </div>
-<div id="local-selenium-server--jar-or-docker-local-application" class="section level2">
-<h2 class="hasAnchor">
-<a href="#local-selenium-server--jar-or-docker-local-application" class="anchor"></a>Local Selenium Server (.jar or docker) + Local Application</h2>
+<div class="section level3">
+<h3 id="local-selenium-server--jar-or-docker-local-application">Local Selenium Server (.jar or docker) + Local Application<a class="anchor" aria-label="anchor" href="#local-selenium-server--jar-or-docker-local-application"></a>
+</h3>
 <p>If you’re running a Selenium server locally, then it should have no problem accessing a local version of your application.</p>
 <p>So, just run your application in the background. For example, in a terminal:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="va">${R_HOME}</span><span class="ex">/bin/Rscript</span> -e <span class="st">'library(gfpopgui);options(shiny.port = 15123);run_app()'</span> <span class="kw">&amp;</span></span></code></pre></div>
 <p>You can also execute the same command through R:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &amp;"</span>,
-       <span class="kw">ignore.stdout</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-       <span class="kw">ignore.stderr</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"${R_HOME}/bin/Rscript -e 'library(gfpopgui);options(shiny.port = 15123);run_app()' &amp;"</span>, 
+       ignore.stdout <span class="op">=</span> <span class="cn">TRUE</span>,
+       ignore.stderr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="saucelabs-local-application" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saucelabs-local-application" class="anchor"></a>SauceLabs + Local Application</h2>
+<div class="section level3">
+<h3 id="saucelabs-local-application">SauceLabs + Local Application<a class="anchor" aria-label="anchor" href="#saucelabs-local-application"></a>
+</h3>
 <p>You can test local versions of your application through SauceLabs, but it can be a bit tricky because SauceLabs’ servers need some way to access your local network.</p>
 <p>Basically, first run your application in the background like you would usually:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="va">${R_HOME}</span><span class="ex">/bin/Rscript</span> -e <span class="st">'library(gfpopgui);options(shiny.port = 15123);run_app()'</span> <span class="kw">&amp;</span></span></code></pre></div>
 <p>Then, you can use the ‘Sauce Connect Proxy’ to let SauceLabs connect to a port on your local computer.</p>
-<p><a href="https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy">Sauce Connect Proxy Install Instructions</a>.</p>
+<p><a href="https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy" class="external-link">Sauce Connect Proxy Install Instructions</a>.</p>
 <p>Once that’s installed, you can run the <code>sc</code> binary with parameters containing your SauceLabs username and the secret key (found in SauceLabs account settings). Also, you may need to set <code>ulimit</code> if you are on Ubuntu:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">julian-ThinkPad-T460</span>:SauceLabs_Connect_4.6.2$ pwd</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="ex">/home/julian/SauceLabs_Connect_4.6.2</span></span>
@@ -196,9 +175,9 @@
 <span id="cb5-8"><a href="#cb5-8"></a><span class="co"># ... truncated</span></span></code></pre></div>
 </div>
 </div>
-<div id="opening-a-remote-web-driver-with-rselenium" class="section level1">
-<h1 class="hasAnchor">
-<a href="#opening-a-remote-web-driver-with-rselenium" class="anchor"></a>Opening a Remote Web Driver with RSelenium</h1>
+<div class="section level2">
+<h2 id="opening-a-remote-web-driver-with-rselenium">Opening a Remote Web Driver with RSelenium<a class="anchor" aria-label="anchor" href="#opening-a-remote-web-driver-with-rselenium"></a>
+</h2>
 <p>After installing RSelenium (available on CRAN), you can create a remoteDriver object, which is the object that can communicate with the Selenium headless browser.</p>
 <p>Basically, a remoteDriver object takes in:</p>
 <ol style="list-style-type: decimal">
@@ -211,146 +190,156 @@
 </ol>
 <p>The list of extra capabilities can contain things like the browser screen resolution to use for testing, as well as a username and secret key for SauceLabs.</p>
 <p>If you are using a local Selenium server, your IP will be <code>localhost</code> and your port will probably be <code>4444</code>. So, for example:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">remDr</span> <span class="kw">&lt;-</span> <span class="no">remoteDriver</span>$<span class="fu">new</span>(<span class="kw">remoteServerAddr</span> <span class="kw">=</span> <span class="st">"localhost"</span>,
-                        <span class="kw">port</span> <span class="kw">=</span> <span class="fl">4444</span>,
-                        <span class="kw">browserName</span> <span class="kw">=</span> <span class="st">"firefox"</span>,
-                        <span class="kw">version</span> <span class="kw">=</span> <span class="st">"latest"</span>,
-                        <span class="kw">platform</span> <span class="kw">=</span> <span class="st">"macOS 10.15"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">remDr</span> <span class="op">&lt;-</span> <span class="va">remoteDriver</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>remoteServerAddr <span class="op">=</span> <span class="st">"localhost"</span>, 
+                        port <span class="op">=</span> <span class="fl">4444</span>,
+                        browserName <span class="op">=</span> <span class="st">"firefox"</span>,
+                        version <span class="op">=</span> <span class="st">"latest"</span>,
+                        platform <span class="op">=</span> <span class="st">"macOS 10.15"</span><span class="op">)</span></code></pre></div>
 <p>If you are using SauceLabs, your IP can be formed from your SauceLabs username and secret key. Your port will be <code>80</code>. For example:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r">user &lt;- Sys.getenv("SAUCE_USERNAME")
-pass &lt;- Sys.getenv("SAUCE_SECRET_KEY")
-port &lt;- 80
-ip &lt;- paste0(user, ":", pass, "@ondemand.saucelabs.com")
-
-extraCapabilities &lt;- list(
-  name = "Main test-integration",
-  username = user,
-  accessKey = pass,
-  tags = list("R", "Shiny"),
-  "screen-resolution" = "2560x1600")
-
-remDr &lt;- remoteDriver$new(
-    remoteServerAddr = ip,
-    port = 30,
-    browserName = "firefox",
-    version = "latest",
-    platform = "macOS 10.15"
-    extraCapabilities = extraCapabilities
-  )</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>user &lt;-<span class="st"> </span><span class="kw">Sys.getenv</span>(<span class="st">"SAUCE_USERNAME"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>pass &lt;-<span class="st"> </span><span class="kw">Sys.getenv</span>(<span class="st">"SAUCE_SECRET_KEY"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>port &lt;-<span class="st"> </span><span class="dv">80</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>ip &lt;-<span class="st"> </span><span class="kw">paste0</span>(user, <span class="st">":"</span>, pass, <span class="st">"@ondemand.saucelabs.com"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a>extraCapabilities &lt;-<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="dt">name =</span> <span class="st">"Main test-integration"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="dt">username =</span> user,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="dt">accessKey =</span> pass,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="dt">tags =</span> <span class="kw">list</span>(<span class="st">"R"</span>, <span class="st">"Shiny"</span>),</span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="st">"screen-resolution"</span> =<span class="st"> "2560x1600"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a>remDr &lt;-<span class="st"> </span>remoteDriver<span class="op">$</span><span class="kw">new</span>(</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="dt">remoteServerAddr =</span> ip,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="dt">port =</span> <span class="dv">30</span>,</span>
+<span id="cb7-16"><a href="#cb7-16"></a>    <span class="dt">browserName =</span> <span class="st">"firefox"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17"></a>    <span class="dt">version =</span> <span class="st">"latest"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18"></a>    <span class="dt">platform =</span> <span class="st">"macOS 10.15"</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>    <span class="dt">extraCapabilities =</span> extraCapabilities</span>
+<span id="cb7-20"><a href="#cb7-20"></a>  )</span></code></pre></div>
 <p>Then, once you make a remote driver object, you need to (1) open it, and (2) point it to your app URL.</p>
 <p>For example, with a remote web server:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>()
-<span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="st">"https://www.julianstanley.shinyapps.io/gfpopgui"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span><span class="op">)</span>
+<span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://www.julianstanley.shinyapps.io/gfpopgui"</span><span class="op">)</span></code></pre></div>
 <p>Or with a local web server through SauceConnect:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>()
-<span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="st">"http://julian.local:3000"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span><span class="op">)</span>
+<span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"http://julian.local:3000"</span><span class="op">)</span></code></pre></div>
 <p>Where I am running my local app on port 3000. Also see “SauceLabs + Local Application” header above, where I explained porting ‘localhost’ to ‘julian.local’</p>
 <p>Or, with a local web server that also has a local Selenium server:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>()
-<span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="st">"localhost:3000"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span><span class="op">)</span>
+<span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"localhost:3000"</span><span class="op">)</span></code></pre></div>
 <p>Where, again, the application is running on port 3000.</p>
 </div>
-<div id="running-tests-with-rselenium-and-testthat" class="section level1">
-<h1 class="hasAnchor">
-<a href="#running-tests-with-rselenium-and-testthat" class="anchor"></a>Running tests with RSelenium and testthat</h1>
+<div class="section level2">
+<h2 id="running-tests-with-rselenium-and-testthat">Running tests with RSelenium and testthat<a class="anchor" aria-label="anchor" href="#running-tests-with-rselenium-and-testthat"></a>
+</h2>
 <p>Once you have the remoteDriver object open to your application, it’s very easy to write simple tests. You can also wrap the tests in <code>testthat</code> in R so that they run automatically and fail more nicely. For example:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">testthat</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rselenium</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rselenium</span><span class="op">)</span>
 
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span>(<span class="st">"Can connect to app"</span>, {
-  <span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>(<span class="kw">silent</span> <span class="kw">=</span> <span class="no">T</span>)
-  <span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="no">appURL</span>)
-  <span class="no">remDr</span>$<span class="fu">setImplicitWaitTimeout</span>(<span class="kw">milliseconds</span> <span class="kw">=</span> <span class="fl">5000</span>)
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span>(<span class="no">remDr</span>$<span class="fu">getTitle</span>()<span class="kw">[[</span><span class="fl">1</span>]], <span class="st">"gfpopgui"</span>)
-  <span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>()
-})</pre></body></html></div>
+<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"Can connect to app"</span>, <span class="op">{</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span>silent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="va">appURL</span><span class="op">)</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">setImplicitWaitTimeout</span><span class="op">(</span>milliseconds <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>
+  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="va">remDr</span><span class="op">$</span><span class="fu">getTitle</span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"gfpopgui"</span><span class="op">)</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span></code></pre></div>
 <p>Note that it’s important to run <code>remDr$close()</code> at the end of each test. I also put it again at the end of the document, in case the tests are cut short by one of the expect statements failing.</p>
 <p>The RSelenium docs explain this in a bit more detail.</p>
 <p>Where the official docs come a bit short is in how to find more complicated DOM components when you are testing.</p>
-<p>My solution is to use the <a href="https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid?hl=en-US">Katalon Recorder Chrome Extension</a>. Install that to Chrome, navigate to your webserver, and click “record”. Then, click on the DOM element that you want to access. Then, you should see a table with “Command” and “Target”. For example, when I clicked on one cell in a datatable in my Shiny application, “Command” was “click” and “target” was “//table<span class="citation">[@id='DataTables_Table_2']</span>/tbody/tr[2]/td[6]”.</p>
+<p>My solution is to use the <a href="https://chrome.google.com/webstore/detail/katalon-recorder-selenium/ljdobmomdgdljniojadhoplhkpialdid?hl=en-US" class="external-link">Katalon Recorder Chrome Extension</a>. Install that to Chrome, navigate to your webserver, and click “record”. Then, click on the DOM element that you want to access. Then, you should see a table with “Command” and “Target”. For example, when I clicked on one cell in a datatable in my Shiny application, “Command” was “click” and “target” was “//table<span class="citation">[@id='DataTables_Table_2']</span>/tbody/tr[2]/td[6]”.</p>
 <p>This “target” data is an xpath locator–essentially a syntax with which to specify the location of DOM elements.</p>
 <p>So, in RSelenium, to get the content of that particular datatable cell, I can say:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">cell_element</span> <span class="kw">&lt;-</span> <span class="no">remDr</span>$<span class="fu">findElement</span>(<span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]"</span>)
-<span class="no">cell_content</span> <span class="kw">&lt;-</span> <span class="no">cell_element</span>$<span class="fu">getElementAttribute</span>(<span class="st">"innerHTML"</span>)<span class="kw">[[</span><span class="fl">1</span>]]</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cell_element</span> <span class="op">&lt;-</span> <span class="va">remDr</span><span class="op">$</span><span class="fu">findElement</span><span class="op">(</span><span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]"</span><span class="op">)</span>
+<span class="va">cell_content</span> <span class="op">&lt;-</span> <span class="va">cell_element</span><span class="op">$</span><span class="fu">getElementAttribute</span><span class="op">(</span><span class="st">"innerHTML"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> </code></pre></div>
 <p>And then you can test whether <code>cell_content</code> is what you expect it to be.</p>
 <p>You can also use the same technique to click on elements. For example, to click that cell in the datatable:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">cell_element</span> <span class="kw">&lt;-</span> <span class="no">remDr</span>$<span class="fu">findElement</span>(<span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]"</span>)
-<span class="fu">cell_element.clickElement</span>()</pre></body></html></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cell_element</span> <span class="op">&lt;-</span> <span class="va">remDr</span><span class="op">$</span><span class="fu">findElement</span><span class="op">(</span><span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_2']/tbody/tr[2]/td[6]"</span><span class="op">)</span>
+<span class="fu">cell_element.clickElement</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>To me, this was a more reliable way to find more complicated elements than the more-commonly used <code>remDr$findelement("id", ...)</code> command, that I would use for simpler elements, such as:</p>
 <p><code>remDr$findElement("id", "home_ui_1-genData")$clickElement()</code></p>
 </div>
-<div id="waiting-for-the-application-to-load" class="section level1">
-<h1 class="hasAnchor">
-<a href="#waiting-for-the-application-to-load" class="anchor"></a>Waiting for the application to load</h1>
+<div class="section level2">
+<h2 id="waiting-for-the-application-to-load">Waiting for the application to load<a class="anchor" aria-label="anchor" href="#waiting-for-the-application-to-load"></a>
+</h2>
 <p>One gripe I’ve had with this form of testing is that my application does not always load for a consistent amount of time.</p>
 <p>To get past that, I’ve been using constrained <code>while</code> loops that wait for certain components.</p>
 <p>For example, once the title of the application is loaded, I can be somewhat confident that the application is live. So, at the beginning of a test, I’ll look for the title each second until I find it, and then start the rest of the tests:</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">wait_for_title</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">remDr</span>, <span class="no">seconds</span>, <span class="no">title_expected</span>) {
-    <span class="no">count</span> <span class="kw">&lt;-</span> <span class="fl">0</span>
-    <span class="kw">while</span> (<span class="no">count</span> <span class="kw">&lt;</span> <span class="no">seconds</span>) {
-      <span class="no">appTitle</span> <span class="kw">&lt;-</span> <span class="no">remDr</span>$<span class="fu">getTitle</span>()<span class="kw">[[</span><span class="fl">1</span>]]
-      <span class="kw">if</span> (<span class="no">appTitle</span> <span class="kw">==</span> <span class="no">title_expected</span>) {
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wait_for_title</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">remDr</span>, <span class="va">seconds</span>, <span class="va">title_expected</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">count</span> <span class="op">&lt;-</span> <span class="fl">0</span>
+    <span class="kw">while</span> <span class="op">(</span><span class="va">count</span> <span class="op">&lt;</span> <span class="va">seconds</span><span class="op">)</span> <span class="op">{</span>
+      <span class="va">appTitle</span> <span class="op">&lt;-</span> <span class="va">remDr</span><span class="op">$</span><span class="fu">getTitle</span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+      <span class="kw">if</span> <span class="op">(</span><span class="va">appTitle</span> <span class="op">==</span> <span class="va">title_expected</span><span class="op">)</span> <span class="op">{</span>
         <span class="kw">break</span>
-      }
-      <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Waited "</span>, <span class="no">count</span>, <span class="st">" seconds. App isn't loaded yet, waiting
-                   for another second."</span>))
-      <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span>(<span class="fl">1</span>)
-      <span class="no">count</span> <span class="kw">&lt;-</span> <span class="no">count</span> + <span class="fl">1</span>
-    }
+      <span class="op">}</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Waited "</span>, <span class="va">count</span>, <span class="st">" seconds. App isn't loaded yet, waiting
+                   for another second."</span><span class="op">)</span><span class="op">)</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+      <span class="va">count</span> <span class="op">&lt;-</span> <span class="va">count</span> <span class="op">+</span> <span class="fl">1</span>
+    <span class="op">}</span>
 
-    <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">appTitle</span>)
-  }
-
-<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span>(<span class="st">"Example test"</span>, {
-  <span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>(<span class="kw">silent</span> <span class="kw">=</span> <span class="no">T</span>)
-  <span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="no">appURL</span>)
-  <span class="no">remDr</span>$<span class="fu">setImplicitWaitTimeout</span>(<span class="kw">milliseconds</span> <span class="kw">=</span> <span class="fl">5000</span>)
-  <span class="no">appTitle</span> <span class="kw">&lt;-</span> <span class="fu">wait_for_title</span>(<span class="no">remDr</span>, <span class="fl">10</span>, <span class="st">"gfpopgui"</span>)
+    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">appTitle</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+<span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"Example test"</span>, <span class="op">{</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span>silent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="va">appURL</span><span class="op">)</span>
+  <span class="va">remDr</span><span class="op">$</span><span class="fu">setImplicitWaitTimeout</span><span class="op">(</span>milliseconds <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>
+  <span class="va">appTitle</span> <span class="op">&lt;-</span> <span class="fu">wait_for_title</span><span class="op">(</span><span class="va">remDr</span>, <span class="fl">10</span>, <span class="st">"gfpopgui"</span><span class="op">)</span>
   <span class="co"># ... truncated, more tests below</span>
-})</pre></body></html></div>
+<span class="op">}</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="sending-test-status-to-saucelabs" class="section level1">
-<h1 class="hasAnchor">
-<a href="#sending-test-status-to-saucelabs" class="anchor"></a>Sending test status to SauceLabs</h1>
+<div class="section level2">
+<h2 id="sending-test-status-to-saucelabs">Sending test status to SauceLabs<a class="anchor" aria-label="anchor" href="#sending-test-status-to-saucelabs"></a>
+</h2>
 <p>While <code>testthat</code> will tell you whether or not your RSelenium tests failed, that information is not sent to SauceLabs. That’s not ideal because SauceLabs has a badge that updates, like Travis badges, to tell users whether or not your tests are passing. If RSelenium doesn’t send any test statuses to SauceLabs, then that badges never updates.</p>
 <p>Unfortunately, RSelenium can’t send test status directly. However, you can send those statuses via JavaScript with the <code>remDr$executeScript()</code> function.</p>
 <p>Through that function, you can send a job build, job name, and a result.</p>
 <p>All jobs names with the same build name will be compiled into one build on SauceLabs. I use this function:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">submit_job_info</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">remDr</span>, <span class="no">build</span>, <span class="no">name</span>, <span class="no">result</span>) {
-    <span class="kw">if</span> (!(<span class="no">result</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"passed"</span>, <span class="st">"failed"</span>, <span class="st">"true"</span>, <span class="st">"false"</span>))) {
-      <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Invalid result. Please use: passed, failed, true, or false"</span>)
-    }
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">submit_job_info</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">remDr</span>, <span class="va">build</span>, <span class="va">name</span>, <span class="va">result</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">result</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"passed"</span>, <span class="st">"failed"</span>, <span class="st">"true"</span>, <span class="st">"false"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Invalid result. Please use: passed, failed, true, or false"</span><span class="op">)</span>
+    <span class="op">}</span>
 
-    <span class="no">remDr</span>$<span class="fu">executeScript</span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"sauce:job-build="</span>, <span class="no">build</span>))
-    <span class="no">remDr</span>$<span class="fu">executeScript</span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"sauce:job-name="</span>, <span class="no">name</span>))
-    <span class="no">remDr</span>$<span class="fu">executeScript</span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"sauce:job-result="</span>, <span class="no">result</span>))
-  }</pre></body></html></div>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">executeScript</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"sauce:job-build="</span>, <span class="va">build</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">executeScript</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"sauce:job-name="</span>, <span class="va">name</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">executeScript</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"sauce:job-result="</span>, <span class="va">result</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span></code></pre></div>
 <p>Then, I’ll keep track of whether my test fails or succeeds, and pass that status to both <code>submit_job_info()</code> and <code>expect_equal</code>. For example:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"> <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span>(<span class="st">"the generate data button works"</span>, {
-    <span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">open</a></span>(<span class="kw">silent</span> <span class="kw">=</span> <span class="no">T</span>)
-    <span class="no">remDr</span>$<span class="fu">navigate</span>(<span class="kw">url</span> <span class="kw">=</span> <span class="no">appURL</span>)
-    <span class="no">remDr</span>$<span class="fu">setImplicitWaitTimeout</span>(<span class="kw">milliseconds</span> <span class="kw">=</span> <span class="fl">5000</span>)
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"> <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"the generate data button works"</span>, <span class="op">{</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span>silent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">navigate</span><span class="op">(</span>url <span class="op">=</span> <span class="va">appURL</span><span class="op">)</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">setImplicitWaitTimeout</span><span class="op">(</span>milliseconds <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>
 
     <span class="co"># Get entry from datatable 2; should be "Std"</span>
-    <span class="no">webElem</span> <span class="kw">&lt;-</span> <span class="no">remDr</span>$<span class="fu">findElement</span>(<span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_0']/tbody/tr/td[2]"</span>)
-    <span class="no">elemContent</span> <span class="kw">&lt;-</span> <span class="no">webElem</span>$<span class="fu">getElementAttribute</span>(<span class="st">"innerHTML"</span>)<span class="kw">[[</span><span class="fl">1</span>]]
-    <span class="no">result</span> <span class="kw">&lt;-</span> <span class="no">elemContent</span> <span class="kw">==</span> <span class="st">"Std"</span>
-
+    <span class="va">webElem</span> <span class="op">&lt;-</span> <span class="va">remDr</span><span class="op">$</span><span class="fu">findElement</span><span class="op">(</span><span class="st">"xpath"</span>, <span class="st">"//table[@id='DataTables_Table_0']/tbody/tr/td[2]"</span><span class="op">)</span>
+    <span class="va">elemContent</span> <span class="op">&lt;-</span> <span class="va">webElem</span><span class="op">$</span><span class="fu">getElementAttribute</span><span class="op">(</span><span class="st">"innerHTML"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+    <span class="va">result</span> <span class="op">&lt;-</span> <span class="va">elemContent</span> <span class="op">==</span> <span class="st">"Std"</span>
+    
     <span class="co"># Send result to SauceLabs</span>
-    <span class="fu">submit_job_info</span>(<span class="no">remDr</span>, <span class="no">buildName</span>,
-      <span class="kw">name</span> <span class="kw">=</span> <span class="st">"the generate data button works"</span>,
-      <span class="kw">result</span> <span class="kw">=</span> <span class="no">result</span>
-    )
-
+    <span class="fu">submit_job_info</span><span class="op">(</span><span class="va">remDr</span>, <span class="va">buildName</span>,
+      name <span class="op">=</span> <span class="st">"the generate data button works"</span>,
+      result <span class="op">=</span> <span class="va">result</span>
+    <span class="op">)</span>
+    
     <span class="co"># Make the same test with testthat</span>
-    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span>(<span class="no">elemContent</span>, <span class="st">"Std"</span>)
-    <span class="no">remDr</span>$<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>()
-  })</pre></body></html></div>
+    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="va">elemContent</span>, <span class="st">"Std"</span><span class="op">)</span>
+    <span class="va">remDr</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="conclusion" class="section level1">
-<h1 class="hasAnchor">
-<a href="#conclusion" class="anchor"></a>Conclusion</h1>
-<p>I hope this has helped! I wrote it a bit quickly, so please forgive any mistakes. It also may help to look at my <a href="https://github.com/julianstanley/gfpopgui/blob/master/tests/testthat/test-integration-RSelenium.R">testing file here</a>.</p>
+<div class="section level2">
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
+</h2>
+<p>I hope this has helped! I wrote it a bit quickly, so please forgive any mistakes. It also may help to look at my <a href="https://github.com/julianstanley/gfpopgui/blob/master/tests/testthat/test-integration-RSelenium.R" class="external-link">testing file here</a>.</p>
 <p>And, if you have any questions, feel free to email me at julianst=mit+edu.</p>
 </div>
   </div>
@@ -366,11 +355,13 @@ remDr &lt;- remoteDriver$new(
 
 
       <footer><div class="copyright">
-  <p>Developed by Julian Stanley.</p>
+  <p></p>
+<p>Developed by Julian Stanley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -378,6 +369,8 @@ remDr &lt;- remoteDriver$new(
 
   
 
+
+  
 
   </body>
 </html>
